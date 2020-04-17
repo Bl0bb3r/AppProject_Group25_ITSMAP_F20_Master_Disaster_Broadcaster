@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/personal_disaster_view"
+    android:layout_height="90dp"
+    android:layout_width="wrap_content"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="horizontal"
+    android:color="@color/colorPrimaryDark"
+    android:background="@drawable/roundcorner"
+    >
+
+
+    <ImageView
+        android:id="@+id/userImageView"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:color="#FFFFFF"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center"
+        android:background="@drawable/roundcorner"
+        app:srcCompat="@drawable/disasterdude" />
+
+    <ImageView
+        android:id="@+id/disasterTypeImageView"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginRight="70dp"
+        android:color="#FFFFFF"
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/volcano" />
+
+    <LinearLayout
+        android:layout_width="125dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@drawable/roundcorner">
+
+        <LinearLayout
+            android:layout_width="62.5dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/disasterPoints_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="0dp"
+                android:gravity="right"
+                android:text="5003567"
+
+                android:textColor="@color/colorWhite"
+                android:textSize="12dp"
+                android:textStyle="bold"></TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="62.5dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/labelPoints_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="right"
+                android:text="Points"
+                android:textColor="@color/colorWhite"
+                android:textSize="12dp"></TextView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
