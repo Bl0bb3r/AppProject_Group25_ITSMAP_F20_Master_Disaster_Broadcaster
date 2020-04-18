@@ -3,6 +3,8 @@ package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fr
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
 
@@ -39,7 +42,7 @@ public class mydisasters_fragment extends Fragment {
 
     ListView listViewMyDisasters;
     GridView gridViewEmblems;
-
+    Button btn_back;
     private mydisasters_adapter mydisastersAdapter;
     private emblem_adapter emblemAdapter;
 
@@ -134,6 +137,13 @@ public class mydisasters_fragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_mydisasters_fragment, container, false);
 
+        btn_back = (Button) rootView.findViewById(R.id.back_btn);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
+                fragmentmanager.popBackStack();
+            }
+        });
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
 
         gridViewEmblems = (GridView) rootView.findViewById(R.id.mydisasters_recyclerview);
