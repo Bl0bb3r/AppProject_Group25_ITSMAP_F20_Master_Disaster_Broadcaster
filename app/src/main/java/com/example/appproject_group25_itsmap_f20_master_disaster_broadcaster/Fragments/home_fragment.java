@@ -1,17 +1,24 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +30,10 @@ public class home_fragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    Intent serviceIntent;
+    ServiceConnection disasterServiceConnection;
+    DisasterService disasterService;
+    private boolean isBound;
 
     Button ongoing_btn;
     Button mydisasters_btn;
@@ -63,6 +74,10 @@ public class home_fragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        serviceIntent = new Intent(getActivity(), DisasterService.class);
+        //bind service
+        DisasterServiceConnection();
+        getActivity().bindService(serviceIntent, disasterServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -90,7 +105,52 @@ public class home_fragment extends Fragment {
                 transaction.commit();
             }
         });
+
+        rankings_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                //FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
+                //FragmentTransaction transaction = fragmentmanager.beginTransaction();
+
+                //transaction.replace(R.id.mainactivity_framelayout, new mydisasters_fragment());
+                //transaction.addToBackStack(null);
+                //transaction.commit();
+                disasterService.sendRequest(getContext());
+            }
+        });
+
+        ongoing_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentmanager.beginTransaction();
+
+                transaction.replace(R.id.mainactivity_framelayout, new ongoing_fragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+            }
+        });
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    private void DisasterServiceConnection()
+    {
+        disasterServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                DisasterService.DisasterServiceBinder binder = (DisasterService.DisasterServiceBinder) service;
+                disasterService = binder.getService();
+                isBound = true;
+                Log.wtf("Binder", "HomeFragment bound to service");
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                isBound = false;
+                Log.wtf("Binder", "HomeFragment unbound to service");
+            }
+        };
     }
 }
