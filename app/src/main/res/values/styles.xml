@@ -8,4 +8,17 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <!-- Buttons -->
+    <style name="btnBackTheme" parent="android:Widget.Button">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@color/colorAccent</item>
+    </style>
+
+    <style name="btnGoTheme" parent="android:Widget.Button">
+        <item name="android:textColor">@color/colorPrimaryCards</item>
+        <item name="android:background">@color/colorYellow</item>
+    </style>
+
+
 </resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">Tilbage</string>
+    <string name="logout" translatable="false">Log ud</string>
+    <string name="profile">Min Profil</string>
+    <string name="rankings">Rangliste</string>
+    <string name="my_disasters">Mine Katastrofer</string>
+    <string name="ongoing">Igangværende</string>
+    <string name="exit">Luk</string>
+    <string name="login">Log ind</string>
+    <string name="password">Kodeord</string>
+</resources>

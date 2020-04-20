@@ -7,6 +7,7 @@
     <color name="colorBackground">#0E2163</color>
     <color name="colorPrimaryCards">#16388F</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorYellow">#FFD11C</color>
 
 
 </resources>

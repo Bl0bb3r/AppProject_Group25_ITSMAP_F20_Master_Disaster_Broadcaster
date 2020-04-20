@@ -15,7 +15,7 @@ public class Geometry {
     private String type;
     //lat&long
     @SerializedName("coordinates")
-    private Coordinates coordinates;
+    //private Coordinates coordinates;
     //private ArrayList<Double> NumberCoordinates;
     //Polygon
     //private ArrayList<ArrayList<Double>> PolygonCoordinates;

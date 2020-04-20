@@ -89,7 +89,7 @@ public class event_adapter extends BaseAdapter {
                 {
                     emblemImage.setImageResource(R.drawable.cloud);
                 }
-                else if (title.contains("Volcano"))
+                else if (title.contains("volcano"))
                 {
                     emblemImage.setImageResource(R.drawable.volcano);
                 }
