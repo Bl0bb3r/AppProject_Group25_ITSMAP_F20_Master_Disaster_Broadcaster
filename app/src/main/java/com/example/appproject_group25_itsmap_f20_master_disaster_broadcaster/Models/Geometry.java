@@ -1,5 +1,6 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -12,8 +13,14 @@ public class Geometry {
     private String magnitudeUnit;
     private Date date;
     private String type;
+    //lat&long
     @SerializedName("coordinates")
-    private ArrayList<Coordinates> coordinates;
+    private Coordinates coordinates;
+    //private ArrayList<Double> NumberCoordinates;
+    //Polygon
+    //private ArrayList<ArrayList<Double>> PolygonCoordinates;
+    //MultiPolygon
+    //private Double[][][] MultiPolygonCoordinates;
 
     public double getMagnitudeValue() {
         return magnitudeValue;
@@ -46,11 +53,4 @@ public class Geometry {
         this.type = type;
     }
 
-    public ArrayList<Coordinates> getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(ArrayList<Coordinates> coordinates) {
-        this.coordinates = coordinates;
-    }
 }
