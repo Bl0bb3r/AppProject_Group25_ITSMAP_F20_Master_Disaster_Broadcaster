@@ -6,6 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,16 +24,41 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.event_adapter;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.mydisasters_adapter;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Eonet;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Event;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.MultiPolygonShape;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.PointShape;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.PolygonShape;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.Shape;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.ShapeDeserializer;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -37,7 +66,7 @@ import java.util.List;
  * Use the {@link ongoing_fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ongoing_fragment extends Fragment {
+public class ongoing_fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -46,11 +75,12 @@ public class ongoing_fragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private GoogleMap googleMap;
     ListView listViewEvents;
     Button btn_back;
     event_adapter eventAdapter;
-
+    MapView mapView;
+    Gson gson;
     private ArrayList<Event> events = new ArrayList<>();
     Intent serviceIntent;
     ServiceConnection disasterServiceConnection;
@@ -79,7 +109,9 @@ public class ongoing_fragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,6 +146,12 @@ public class ongoing_fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ongoing_fragment, container, false);
+        //Maps
+        //https://developers.google.com/maps/documentation/android-sdk/start
+        mapView = rootView.findViewById(R.id.mapView_ongoing);
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+        mapView.getMapAsync(this);
 
         btn_back = (Button) rootView.findViewById(R.id.ongoing_btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +180,7 @@ public class ongoing_fragment extends Fragment {
 
             }
         });
+
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -168,21 +207,67 @@ public class ongoing_fragment extends Fragment {
         };
     }
 
+
     private BroadcastReceiver DisasterReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
             if (intent.getAction().equals("NewEvent"))
             {
-
-                String stringEvent = intent.getStringExtra("event");
-                Gson gson = new Gson();
-                Eonet eonet = new Eonet();
-                eonet = gson.fromJson(stringEvent, Eonet.class);
                 events.clear();
-                events = eonet.getEvents();
+                events = disasterService.events;
                 eventAdapter.updateList(events);
 
+                // Add a marker in Sydney, Australia, and move the camera.
+                if (events != null) {
+                    for (Event event : events) {
+                        if (event.getGeometry() != null) {
+                           for (Shape shape : event.getGeometry()) {
+                               Shape.ShapeType type = shape.getType();
+
+                               switch (type) {
+                                   case Polygon:
+                                     PolygonShape polygon = (PolygonShape) shape;
+                                       List<LatLng> points = new ArrayList<>();
+                                      for(int i = 0; i< polygon.getCoordinates().length; i++)
+                                      {
+                                          int arayArrayLength = polygon.getCoordinates()[i].length;
+                                          for(int j = 0; j< polygon.getCoordinates()[i].length; j++)
+                                          {
+                                              double lat = polygon.getCoordinates()[i][j][0];
+                                              double lng = polygon.getCoordinates()[i][j][1];
+                                              LatLng latLng = new LatLng(lat, lng);
+                                              points.add(latLng);
+                                          }
+                                      }
+
+                                      googleMap.addPolygon(new PolygonOptions().addAll(points).fillColor(Color.BLUE).strokeColor(Color.YELLOW).visible(true));
+                                       Log.wtf("PolygonShape", "Polygon contains: " + points.size());
+
+                                       break;
+                                   case MultiPolygon:
+                                       break;
+                                   case Point:
+                                        PointShape point = (PointShape) shape;
+                                       Log.wtf("PointShape", "Point contains: " + " Lat: " +point.getCoordinates()[0]+" Lon: "+point.getCoordinates()[1]);
+                                       if (googleMap != null)
+                                       {
+                                           LatLng mapPoint = new LatLng(((PointShape) shape).getCoordinates()[0], point.getCoordinates()[1]);
+                                           Marker markerPoint = googleMap.addMarker(new MarkerOptions().position(mapPoint).title(event.getTitle()).alpha(0.7f));
+                                           markerPoint.setTag(event);
+
+                                       }
+
+                                       break;
+
+                                   default:
+                                       throw new JsonParseException("Unrecognized shape type: " + type);
+
+                               }
+                           }
+                        }
+                    }
+                }
 
             }
 
@@ -191,18 +276,41 @@ public class ongoing_fragment extends Fragment {
             {
                 //BAD DONT do this in a real app
                 //TODO figure out how to update adapter on first open
-                try{
+                //try{
 
-                    Thread.sleep(1500);
+                    //Thread.sleep(1500);
 
-                }
-                catch(InterruptedException e){
+                //}
+               // catch(InterruptedException e){
 
-                }
+               // }
                 if (isBound) {
 
                 }
             }
         }
     };
+
+    @Override
+    public void onMapReady(GoogleMap gMap) {
+        googleMap = gMap;
+
+        googleMap.setOnMarkerClickListener(this);
+        setUpMap();
+    }
+
+    public void setUpMap(){
+
+        //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        //googleMap.setMyLocationEnabled(true);
+    }
+
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+        Event event = (Event) marker.getTag();
+        Log.wtf("MapClick", "event: "+event.getTitle());
+        return false;
+    }
 }

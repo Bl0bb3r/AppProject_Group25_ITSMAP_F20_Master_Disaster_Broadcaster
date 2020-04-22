@@ -23,12 +23,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Eonet;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Event;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.Shape;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.ShapeDeserializer;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Global;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class DisasterService extends Service {
     public void onCreate() {
 
     global = new Global();
-    gson = new Gson();
+    //gson = new Gson();
 
         //First time install broadcast this or on open
         Intent intent = new Intent("FIRST_START");
@@ -128,8 +129,22 @@ public class DisasterService extends Service {
    private List<Event> ParseEvents(String json)
    {
        Eonet eonet = new Eonet();
+
+       //CoordinatesDeserializer deserializer = new CoordinatesDeserializer("type");
+       //deserializer.registerCoordinateType("Point", Point.class);
+       //deserializer.registerCoordinateType("Polygon", Polygon.class);
+
+       GsonBuilder builder = new GsonBuilder();
+       builder.registerTypeAdapter(Shape.class, new ShapeDeserializer());
+       gson = builder.create();
+       //gson = new GsonBuilder().registerTypeAdapter(Shape.class, new ShapeDeserializer()).create();
+
+
        //Type EventListType = new TypeToken<ArrayList<Event>>(){}.getType();
-       eonet = gson.fromJson(json, Eonet.class);
+       //eonet = gson.fromJson(json, Eonet.class);
+
+       eonet = gson.fromJson(json, new TypeToken<Eonet>(){}.getType());
+
        events = eonet.getEvents();
        Intent intent = new Intent("NewEvent");
        intent.putExtra("event", gson.toJson(eonet));

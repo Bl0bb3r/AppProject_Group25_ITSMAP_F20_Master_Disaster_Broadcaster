@@ -25,7 +25,6 @@ public class event_adapter extends BaseAdapter {
     private ArrayList<Event> events;
     private Event event;
 
-
     public event_adapter(Context c, ArrayList<Event> events) {
         this.context = c; //we need the context to inflate views
         this.events = events;

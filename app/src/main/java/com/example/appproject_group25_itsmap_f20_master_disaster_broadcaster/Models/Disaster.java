@@ -5,8 +5,6 @@ public class Disaster {
     private String id;
     private String DisasterImage;
 
-
-
     private DisasterType disasterType;
     private double disaster_longitude;
     private double disaster_latitude;
