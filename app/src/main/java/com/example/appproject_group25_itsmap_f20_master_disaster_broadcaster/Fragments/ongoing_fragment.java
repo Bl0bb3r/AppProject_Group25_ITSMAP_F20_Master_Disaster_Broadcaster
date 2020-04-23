@@ -14,6 +14,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.os.IBinder;
@@ -76,10 +77,11 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
     private String mParam1;
     private String mParam2;
     private GoogleMap googleMap;
+    MapView mapView;
     ListView listViewEvents;
     Button btn_back;
     event_adapter eventAdapter;
-    MapView mapView;
+
     Gson gson;
     private ArrayList<Event> events = new ArrayList<>();
     Intent serviceIntent;
@@ -310,7 +312,14 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
     public boolean onMarkerClick(final Marker marker) {
 
         Event event = (Event) marker.getTag();
-        Log.wtf("MapClick", "event: "+event.getTitle());
+        Log.wtf("MapClick", "event: "+event.getTitle()+" Type: "+event.getGeometry().get(0).getType());
+
+        FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentmanager.beginTransaction();
+
+        transaction.replace(R.id.mainactivity_framelayout, new submitDisaster_fragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
         return false;
     }
 }
