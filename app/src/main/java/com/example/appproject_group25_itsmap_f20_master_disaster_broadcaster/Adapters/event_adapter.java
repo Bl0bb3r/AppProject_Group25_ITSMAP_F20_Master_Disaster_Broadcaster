@@ -75,32 +75,84 @@ public class event_adapter extends BaseAdapter {
             ImageView emblemImage = (ImageView) convertView.findViewById(R.id.ongoing_disaster_image);
             TextView eventTitle = (TextView) convertView.findViewById(R.id.ongoing_title_disaster_text);
 
+            eventTitle.setText(event.getTitle());
             if (event.getTitle() != null) {
 
-                String title = event.getTitle();
-                eventTitle.setText(title);
+                String title = event.getTitle().toLowerCase();
 
-                if (title.contains("Wildfire"))
+                if (title.contains("fire"))
                 {
                     emblemImage.setImageResource(R.drawable.fire);
                 }
-                else if (title.contains("Cyclone"))
+                else if (title.contains("cyclone"))
                 {
-                    emblemImage.setImageResource(R.drawable.cloud);
+                    emblemImage.setImageResource(R.drawable.tornado);
                 }
-                else if (title.contains("Volcano"))
+                else if (title.contains("tornado"))
+                {
+                    emblemImage.setImageResource(R.drawable.tornado);
+                }
+                else if (title.contains("volcano"))
                 {
                     emblemImage.setImageResource(R.drawable.volcano);
                 }
-                else if (title.contains("Iceberg"))
+                else if (title.contains("iceberg"))
                 {
-                    emblemImage.setImageResource(R.drawable.freez);
+                    emblemImage.setImageResource(R.drawable.iceberg);
                 }
-                else{
+                else if (title.contains("flood"))
+                {
                     emblemImage.setImageResource(R.drawable.flood);
                 }
+                else if (title.contains("blizzard"))
+                {
+                    emblemImage.setImageResource(R.drawable.blizzard);
+                }
+                else if (title.contains("hail"))
+                {
+                    emblemImage.setImageResource(R.drawable.hail);
+                }
+                else if (title.contains("drought"))
+                {
+                    emblemImage.setImageResource(R.drawable.drought);
+                }
+                else if (title.contains("dust"))
+                {
+                    emblemImage.setImageResource(R.drawable.dust);
+                }
+                else if (title.contains("meteor"))
+                {
+                    emblemImage.setImageResource(R.drawable.meteor);
+                }
+                else if (title.contains("earthquake"))
+                {
+                    emblemImage.setImageResource(R.drawable.ground);
+                }
+                else if (title.contains("landslide"))
+                {
+                    emblemImage.setImageResource(R.drawable.danger);
+                }
+                else if (title.contains("avalance"))
+                {
+                    emblemImage.setImageResource(R.drawable.season);
+                }
+                else if (title.contains("thunder"))
+                {
+                    emblemImage.setImageResource(R.drawable.storm);
+                }
+                else if (title.contains("tsunamien"))
+                {
+                    emblemImage.setImageResource(R.drawable.wave);
+                }
+                else if (title.contains("heat"))
+                {
+                    emblemImage.setImageResource(R.drawable.sun);
+                }
+                else{
+                    emblemImage.setImageResource(R.drawable.cancel);
+                }
             } else {
-                emblemImage.setImageResource(R.drawable.flood);
+                emblemImage.setImageResource(R.drawable.cancel);
             }
         }
         return convertView;
@@ -110,4 +162,5 @@ public class event_adapter extends BaseAdapter {
         events = Updatedevents;
         notifyDataSetChanged();
     }
+
 }

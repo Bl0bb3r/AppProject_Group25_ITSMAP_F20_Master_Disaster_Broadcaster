@@ -33,10 +33,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.core.Query;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -99,7 +101,7 @@ public class DisasterService extends Service {
                     public void onResponse(String response) {
 
                         //log to the the content before parseing it word object.
-                        Log.wtf("StringRequest ", response);
+                        //Log.wtf("StringRequest ", response);
                         ParseEvents(response);
                     }
 
@@ -116,8 +118,11 @@ public class DisasterService extends Service {
                     //deprecated in API 26
                     v.vibrate(500);
                 }
+
                 Toast.makeText(ctx,"No events nearby", Toast.LENGTH_LONG).show();
 
+                Intent intent = new Intent("NoEvents");
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
             }
 
         })
@@ -162,6 +167,8 @@ public class DisasterService extends Service {
    //FIREBASE
     public void InsertDisaster(Disaster disaster)
     {
+        CollectionReference disasterCollRef = db.collection("disasters");
+
         // Add a new document with a generated ID
         db.collection("disasters")
                 .add(disaster)

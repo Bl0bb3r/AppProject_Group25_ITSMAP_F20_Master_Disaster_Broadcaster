@@ -29,17 +29,13 @@ import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Ser
  */
 public class home_fragment extends Fragment {
 
-    Intent serviceIntent;
-    ServiceConnection disasterServiceConnection;
-    DisasterService disasterService;
-    private boolean isBound;
-
     Button ongoing_btn;
-    static Button mydisasters_btn;
+    Button mydisasters_btn;
     Button rankings_btn;
     Button profile_btn;
     Button logout_btn;
 
+    private MainActivity mainActivity;
 
     public home_fragment() {
         // Required empty public constructor
@@ -98,7 +94,7 @@ public class home_fragment extends Fragment {
                 //transaction.replace(R.id.mainactivity_framelayout, new mydisasters_fragment());
                 //transaction.addToBackStack(null);
                 //transaction.commit();
-                disasterService.sendRequest(getContext());
+                //mainActivity.disasterService.sendRequest(getContext());
             }
         });
 
@@ -122,7 +118,12 @@ public class home_fragment extends Fragment {
         super.onStart();
 
     }
-    public void SetMyDisastersBtnVisible(){
-        mydisasters_btn.setVisibility(View.VISIBLE);
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        //get so that i can access DisasterService that is bound to main Activity.
+        mainActivity = (MainActivity) context;
+
     }
 }

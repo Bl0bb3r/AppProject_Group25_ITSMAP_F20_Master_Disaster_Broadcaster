@@ -94,18 +94,18 @@ public class MainActivity extends AppCompatActivity {
                 DisasterService.DisasterServiceBinder binder = (DisasterService.DisasterServiceBinder) service;
                 disasterService = binder.getService();
                 isBound = true;
-                Toast.makeText(disasterService, "disaster ID: "+disaster.getId(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(disasterService, "user ID: "+disaster.getId(), Toast.LENGTH_SHORT).show();
 
                 //firebase test TODO: DELETE THIS
                 disaster.setDistance(21);
                 disaster.setTitle("Firebase test4");
-                disaster.setDisasterType(DisasterType.SolarFlare);
+                disaster.setDisasterType(DisasterType.Thunderstorm);
                 disaster.setLonDisaster(55.0);
                 disaster.setLatDisaster(-33.0);
                 disaster.setLatUser(40.0);
                 disaster.setLonUser(-33.0);
                 disaster.setUserImage(""+R.drawable.disasterdude);
-                disaster.setEmblemImage(""+R.drawable.bolt);
+                disaster.setEmblemImage(""+R.drawable.storm);
 
 
                 //disasterService.InsertDisaster(disaster);
@@ -149,6 +149,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.wtf("UsersDisasters", "size: "+disasterService.UsersDisasters.size());
 
                     //home_fragment.SetMyDisastersBtnVisible();
+
+            }
+            else if (intent.getAction().equals("NoEvents")) {
+                Log.wtf("NoEvents", "There was no events at this time");
+
+                progressBar.setVisibility(View.INVISIBLE);
+                getSupportFragmentManager().beginTransaction().add(R.id.mainactivity_framelayout, home_fragment).commit();
 
             }
             //this is broadcast when the service is started for the first time.

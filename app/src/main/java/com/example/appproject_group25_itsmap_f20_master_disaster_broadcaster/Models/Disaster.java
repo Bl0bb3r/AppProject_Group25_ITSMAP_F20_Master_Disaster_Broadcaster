@@ -2,12 +2,13 @@ package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Mo
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class Disaster {
 
-    private String id;
     private String title;
+    private Date date;
     private String emblemImage;
 
     private DisasterType disasterType;
@@ -30,12 +31,10 @@ public class Disaster {
 
     public Disaster()
     {
-        id = UUID.randomUUID().toString();
+
     }
 
-    public String getId() {
-        return id;
-    }
+
 
     public String getEmblemImage() {
         return emblemImage;
@@ -142,5 +141,13 @@ public class Disaster {
 
     public String getUserId() {
         return userId;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

@@ -10,7 +10,7 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 //https://www.youtube.com/watch?v=8RPfrhzRw2s
 //https://stackoverflow.com/questions/18551587/java-object-with-variable-dimensional-array
-public class ShapeDeserializer implements JsonDeserializer<Shape> {
+    public class ShapeDeserializer implements JsonDeserializer<Shape> {
     @Override
     public Shape deserialize(JsonElement json, Type typeOfT,
                              JsonDeserializationContext context) throws JsonParseException {

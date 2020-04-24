@@ -82,7 +82,7 @@ public class emblem_adapter extends BaseAdapter {
                 emblemImage.setImageResource(Integer.parseInt(disaster.getEmblemImage()));
             }
             else{
-                emblemImage.setImageResource(R.drawable.flood);
+                emblemImage.setImageResource(R.drawable.cancel);
             }
         }
         return convertView;

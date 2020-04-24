@@ -8,8 +8,10 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.IBinder;
 import android.util.Log;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
@@ -43,11 +46,7 @@ import com.google.gson.Gson;
 
 public class submitDisaster_fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
     private static final String ARG_EVENT = "eventParam";
-    //Service
-    private Intent serviceIntent;
-    private ServiceConnection disasterServiceConnection;
-    private DisasterService disasterService;
-    private boolean isBound;
+
     //maps
     private GoogleMap googleMap;
     private MapView mapView;
@@ -58,11 +57,13 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
     //elements in view
     private Button btn_back;
     private Button btn_submit;
+    private Button btn_cam;
     // rest
     private Gson gson;
     private Disaster disaster;
 
-
+//MainActivity
+    MainActivity mainActivity;
     public submitDisaster_fragment() {
         // Required empty public constructor
     }
@@ -106,13 +107,30 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         mapView.onResume();
         mapView.getMapAsync(this);
 
+        //take pic button
+        btn_cam = rootView.findViewById(R.id.btn_cam);
+        btn_cam.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                //go to cam
+                FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentmanager.beginTransaction();
+
+                transaction.replace(R.id.mainactivity_framelayout, new camera_fragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+            }
+        });
         //back button
         btn_submit = (Button) rootView.findViewById(R.id.submit_btn_submit);
         btn_submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                disasterService.UsersDisasters.add(disaster);
-                Toast.makeText(disasterService, "You got "+disaster.getPoints()+" points!", Toast.LENGTH_LONG).show();
+
+                mainActivity.disasterService.UsersDisasters.add(disaster);
+                mainActivity.disasterService.InsertDisaster(disaster);
+                Toast.makeText(mainActivity.disasterService, "You got "+disaster.getPoints()+" points!", Toast.LENGTH_LONG).show();
                 //go back to ongoing fragment
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
                 fragmentmanager.popBackStack();
@@ -134,6 +152,13 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
 
         // Inflate the layout for this fragment
          return rootView;
+    }
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        //get so that i can access DisasterService that is bound to main Activity.
+        mainActivity = (MainActivity) context;
+
     }
     @Override
     public void onStart() {
@@ -160,6 +185,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         googleMap.setMyLocationEnabled(true);
 
         final LatLng disasterCords = new LatLng(disaster.getLatDisaster(), disaster.getLonDisaster());
+
         googleMap.addMarker(new MarkerOptions().position(disasterCords).title(disaster.getDisasterType().toString()).alpha(0.7f));
 
         locationRequest = LocationRequest.create();
@@ -212,8 +238,8 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                         disaster.setLonUser(user.longitude);
                         disaster.setDistance(results[0]/1000);
                         disaster.setUserImage(""+R.drawable.disasterdude);
-                        disaster.setDisasterType(DisasterType.Wildfire);
-                        disaster.setEmblemImage(""+R.drawable.fire);
+                        //disaster.setDisasterType(DisasterType.Wildfire);
+                        //disaster.setEmblemImage(""+R.drawable.fire);
                         disaster.setPoints();
                     }
                 }
@@ -277,22 +303,4 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         googleMap.setOnMarkerClickListener(this);
     }
 
-    private void DisasterServiceConnection()
-    {
-        disasterServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                DisasterService.DisasterServiceBinder binder = (DisasterService.DisasterServiceBinder) service;
-                disasterService = binder.getService();
-                isBound = true;
-                Log.wtf("Binder", "SubmitDisasterFragment bound to service");
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                isBound = false;
-                Log.wtf("Binder", "SubmitDisasterFragment unbound to service");
-            }
-        };
-    }
 }
