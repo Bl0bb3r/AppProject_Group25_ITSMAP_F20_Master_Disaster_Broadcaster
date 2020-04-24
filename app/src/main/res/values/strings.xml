@@ -11,4 +11,5 @@
     <string name="rankings">Rankings</string>
     <string name="logout">Logout</string>
     <string name="back">Back</string>
+    <string name="total_points">Total points</string>
 </resources>

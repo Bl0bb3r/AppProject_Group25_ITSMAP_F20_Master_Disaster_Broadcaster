@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,8 +28,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.event_adapter;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.mydisasters_adapter;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Eonet;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Event;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.MultiPolygonShape;
@@ -38,6 +42,11 @@ import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Mod
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.ShapeDeserializer;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -47,10 +56,13 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
@@ -84,12 +96,13 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
 
     Gson gson;
     private ArrayList<Event> events = new ArrayList<>();
-    Intent serviceIntent;
-    ServiceConnection disasterServiceConnection;
-    DisasterService disasterService;
-    private boolean isBound;
-    private LocalBroadcastManager localBroadcastManager;
+    MainActivity mainContext;
+    //DisasterService disasterService;
 
+    //User Location
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
 
     public ongoing_fragment() {
         // Required empty public constructor
@@ -122,25 +135,9 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        //setup broadcast filters and register it.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("NewEvent");
-
-
-        localBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
-        localBroadcastManager.registerReceiver(DisasterReceiver, filter);
-
-        Event testEvent1 = new Event();
-        testEvent1.setId("1");
-        testEvent1.setTitle("Wildfire");
-        events.add(testEvent1);
-
-        serviceIntent = new Intent(getActivity(), DisasterService.class);
-        //bind service
-        DisasterServiceConnection();
-        getActivity().bindService(serviceIntent, disasterServiceConnection, Context.BIND_AUTO_CREATE);
-
+        //mainContext.disasterService.sendRequest(getActivity().getApplicationContext());
+        //get user location
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
     }
 
@@ -151,9 +148,11 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         //Maps
         //https://developers.google.com/maps/documentation/android-sdk/start
         mapView = rootView.findViewById(R.id.mapView_ongoing);
-        mapView.onCreate(savedInstanceState);
-        mapView.onResume();
-        mapView.getMapAsync(this);
+            mapView.onCreate(savedInstanceState);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+
+
 
         btn_back = (Button) rootView.findViewById(R.id.ongoing_btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -164,11 +163,10 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         });
 
         listViewEvents = (ListView) rootView.findViewById(R.id.ongoing_listview);
-        if (isBound) {
-            if (disasterService.events.size() > 1) {
-                events = disasterService.events;
+
+            if (mainContext.disasterService.events.size() > 0) {
+                events = mainContext.disasterService.events;
             }
-        }
         eventAdapter = new event_adapter(getContext(), events);
         eventAdapter.notifyDataSetChanged();
 
@@ -178,148 +176,227 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //TODO: go to SubmitDisasterFragment
-
+               if (googleMap != null) {
+                   if (events.size() > position) {
+                       googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(GetCords(events.get(position)), 10));
+                   }
+               }
             }
         });
 
         // Inflate the layout for this fragment
         return rootView;
     }
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        //get so that i can access DisasterService that is bound to main Activity.
+        mainContext = (MainActivity) context;
 
-    private void DisasterServiceConnection()
-    {
-        disasterServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                DisasterService.DisasterServiceBinder binder = (DisasterService.DisasterServiceBinder) service;
-                isBound = true;
-                disasterService = binder.getService();
+    }
+    @Override
+    public void onResume() {
+        Log.e("DEBUG", "onResume of LoginFragment");
+        super.onResume();
+    }
+    @Override
+    public void onStart() {
 
+        super.onStart();
 
-                disasterService.sendRequest(getActivity().getApplicationContext());
-                Log.wtf("Binder", "OngoingFragment bound to service");
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                isBound = false;
-                Log.wtf("Binder", "OngoingFragment unbound to service");
-            }
-        };
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
 
-    private BroadcastReceiver DisasterReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
 
-            if (intent.getAction().equals("NewEvent"))
-            {
-                events.clear();
-                events = disasterService.events;
-                eventAdapter.updateList(events);
-
-                // Add a marker in Sydney, Australia, and move the camera.
-                if (events != null) {
-                    for (Event event : events) {
-                        if (event.getGeometry() != null) {
-                           for (Shape shape : event.getGeometry()) {
-                               Shape.ShapeType type = shape.getType();
-
-                               switch (type) {
-                                   case Polygon:
-                                     PolygonShape polygon = (PolygonShape) shape;
-                                       List<LatLng> points = new ArrayList<>();
-                                      for(int i = 0; i< polygon.getCoordinates().length; i++)
-                                      {
-                                          int arayArrayLength = polygon.getCoordinates()[i].length;
-                                          for(int j = 0; j< polygon.getCoordinates()[i].length; j++)
-                                          {
-                                              double lat = polygon.getCoordinates()[i][j][0];
-                                              double lng = polygon.getCoordinates()[i][j][1];
-                                              LatLng latLng = new LatLng(lat, lng);
-                                              points.add(latLng);
-                                          }
-                                      }
-
-                                      googleMap.addPolygon(new PolygonOptions().addAll(points).fillColor(Color.BLUE).strokeColor(Color.YELLOW).visible(true));
-                                       Log.wtf("PolygonShape", "Polygon contains: " + points.size());
-
-                                       break;
-                                   case MultiPolygon:
-                                       break;
-                                   case Point:
-                                        PointShape point = (PointShape) shape;
-                                       Log.wtf("PointShape", "Point contains: " + " Lat: " +point.getCoordinates()[0]+" Lon: "+point.getCoordinates()[1]);
-                                       if (googleMap != null)
-                                       {
-                                           LatLng mapPoint = new LatLng(((PointShape) shape).getCoordinates()[0], point.getCoordinates()[1]);
-                                           Marker markerPoint = googleMap.addMarker(new MarkerOptions().position(mapPoint).title(event.getTitle()).alpha(0.7f));
-                                           markerPoint.setTag(event);
-
-                                       }
-
-                                       break;
-
-                                   default:
-                                       throw new JsonParseException("Unrecognized shape type: " + type);
-
-                               }
-                           }
-                        }
-                    }
-                }
-
-            }
-
-            //this is broadcast when the service is started for the first time.
-            else if (intent.getAction().equals("FIRST_START"))
-            {
-                //BAD DONT do this in a real app
-                //TODO figure out how to update adapter on first open
-                //try{
-
-                    //Thread.sleep(1500);
-
-                //}
-               // catch(InterruptedException e){
-
-               // }
-                if (isBound) {
-
-                }
-            }
-        }
-    };
 
     @Override
     public void onMapReady(GoogleMap gMap) {
         googleMap = gMap;
+        setUpMap();
+        if (events.size() > 0) {
+            SetMarkersOnMap(events);
+        }
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(20 * 1000);
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    if (location != null) {
+                        //data here
+                        LatLng user = new LatLng(location.getLatitude(), location.getLongitude());
+                        //move camera to user
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user,10));
+                        // Zoom in, animating the camera.
+                        //googleMap.animateCamera(CameraUpdateFactory.zoomIn());
+
+                    }
+                }
+            }
+        };
+
+        //https://stackoverflow.com/questions/48529963/using-mfusedlocationclient-to-get-current-location-within-a-firebase-service
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            //data here
+                            LatLng user = new LatLng(location.getLatitude(), location.getLongitude());
+                            //move camera to user
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user,10));
+                            // Zoom in, animating the camera.
+                            //googleMap.animateCamera(CameraUpdateFactory.zoomIn());
+
+
+
+                        }
+                    }
+                });
+
 
         googleMap.setOnMarkerClickListener(this);
-        setUpMap();
+
     }
 
     public void setUpMap(){
 
-        //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        //googleMap.setMyLocationEnabled(true);
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
     }
 
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
 
-        Event event = (Event) marker.getTag();
-        Log.wtf("MapClick", "event: "+event.getTitle()+" Type: "+event.getGeometry().get(0).getType());
+        Disaster disaster = (Disaster) marker.getTag();
+        gson = new Gson();
 
         FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = fragmentmanager.beginTransaction();
 
-        transaction.replace(R.id.mainactivity_framelayout, new submitDisaster_fragment());
+        String jsonDisaster = gson.toJson(disaster);
+
+
+        submitDisaster_fragment mFragment = submitDisaster_fragment.newInstance(jsonDisaster);
+        transaction.replace(R.id.mainactivity_framelayout, mFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+
         return false;
+    }
+
+    private void SetMarkersOnMap(List<Event> events)
+    {
+        if (events != null) {
+            for (Event event : events) {
+                if (event.getGeometry() != null) {
+                    for (Shape shape : event.getGeometry()) {
+                        Shape.ShapeType type = shape.getType();
+
+                        switch (type) {
+                            case Polygon:
+                                PolygonShape polygon = (PolygonShape) shape;
+                                List<LatLng> points = new ArrayList<>();
+                                for(int i = 0; i< polygon.getCoordinates().length; i++)
+                                {
+                                    int arayArrayLength = polygon.getCoordinates()[i].length;
+                                    for(int j = 0; j< polygon.getCoordinates()[i].length; j++)
+                                    {
+                                        //Cords from nasa is Lon/lat
+                                        double lat = polygon.getCoordinates()[i][j][1];
+                                        double lng = polygon.getCoordinates()[i][j][0];
+                                        LatLng latLng = new LatLng(lat, lng);
+                                        points.add(latLng);
+                                    }
+                                }
+
+                                googleMap.addPolygon(new PolygonOptions().addAll(points).fillColor(Color.BLUE).strokeColor(Color.YELLOW).visible(true));
+                                Log.wtf("PolygonShape", "Polygon contains: " + points.size());
+
+                                break;
+                            case MultiPolygon:
+                                break;
+                            case Point:
+                                PointShape point = (PointShape) shape;
+                                //Cords from nasa is Lon/lat
+                                Log.wtf("PointShape", "Point contains: " + " Lat: " +point.getCoordinates()[1]+" Lon: "+point.getCoordinates()[0]);
+                                if (googleMap != null)
+                                {
+                                    //Cords from nasa is Lon/lat
+                                    LatLng mapPoint = new LatLng(((PointShape) shape).getCoordinates()[1], point.getCoordinates()[0]);
+                                    Marker markerPoint = googleMap.addMarker(new MarkerOptions().position(mapPoint).title(event.getTitle()).alpha(0.7f));
+                                    Disaster disaster = new Disaster();
+                                    disaster.setDisasterType(DisasterType.Wildfire);
+                                    disaster.setLatDisaster(mapPoint.latitude);
+                                    disaster.setLonDisaster(mapPoint.longitude);
+                                    markerPoint.setTag(disaster);
+
+                                }
+
+                                break;
+
+                            default:
+                                throw new JsonParseException("Unrecognized shape type: " + type);
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private LatLng GetCords(Event event)
+    {
+                if (event.getGeometry() != null) {
+                    for (Shape shape : event.getGeometry()) {
+                        Shape.ShapeType type = shape.getType();
+
+                        switch (type) {
+                            case Polygon:
+                                PolygonShape polygon = (PolygonShape) shape;
+                                List<LatLng> points = new ArrayList<>();
+                                for(int i = 0; i< polygon.getCoordinates().length; i++)
+                                {
+                                    int arayArrayLength = polygon.getCoordinates()[i].length;
+                                    for(int j = 0; j< polygon.getCoordinates()[i].length; j++)
+                                    {
+                                        //Cords from nasa is Lon/lat
+                                        double lat = polygon.getCoordinates()[i][j][1];
+                                        double lng = polygon.getCoordinates()[i][j][0];
+                                        LatLng latLng = new LatLng(lat, lng);
+                                        points.add(latLng);
+                                    }
+                                }
+                                return points.get(0);
+
+                            case MultiPolygon:
+                                return null;
+
+                            case Point:
+                                PointShape point = (PointShape) shape;
+                                    //Cords from nasa is Lon/lat
+                                    LatLng latLng = new LatLng(((PointShape) shape).getCoordinates()[1], point.getCoordinates()[0]);
+                                    return latLng;
+
+
+                            default:
+                                throw new JsonParseException("Unrecognized shape type: " + type);
+
+                        }
+                    }
+                }
+                return null;
     }
 }

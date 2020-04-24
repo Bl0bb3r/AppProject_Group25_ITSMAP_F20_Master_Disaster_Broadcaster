@@ -19,7 +19,7 @@
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="300dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,8 +29,8 @@
 
                 android:id="@+id/imageView_submitDisaster"
                 android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:layout_marginTop="5dp"
+                android:layout_height="250dp"
+
                 android:layout_marginBottom="5dp"
                 android:src="@drawable/disasterdude" />
 
@@ -45,9 +45,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/roundcorner"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/submit_btn_back"
             app:layout_constraintEnd_toEndOf="parent"
@@ -59,11 +58,7 @@
                 android:id="@+id/mapView_submitDisaster"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/roundcorner"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp" />
+             />
         </LinearLayout>
         <Button
             android:id="@+id/submit_btn_back"
