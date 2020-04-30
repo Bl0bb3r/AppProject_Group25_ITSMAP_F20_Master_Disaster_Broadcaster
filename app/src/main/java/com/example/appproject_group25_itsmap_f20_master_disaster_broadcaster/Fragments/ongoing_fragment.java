@@ -206,7 +206,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
             }
         };
 
-        //https://stackoverflow.com/questions/48529963/using-mfusedlocationclient-to-get-current-location-within-a-firebase-service
+       //https://stackoverflow.com/questions/48529963/using-mfusedlocationclient-to-get-current-location-within-a-firebase-service
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
@@ -219,8 +219,6 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user,10));
                             // Zoom in, animating the camera.
                             //googleMap.animateCamera(CameraUpdateFactory.zoomIn());
-
-
 
                         }
                     }

@@ -152,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
                     else
                     {
                         Intent intent = new Intent(getApplication(), MainActivity.class);
+                        intent.putExtra("userID", currentUser.getUid());
                         startActivity(intent);
                         //disasterService.GetAllDisasters();
                         Toast.makeText(LoginActivity.this,"User: "+currentUser.getUid(), Toast.LENGTH_SHORT).show();

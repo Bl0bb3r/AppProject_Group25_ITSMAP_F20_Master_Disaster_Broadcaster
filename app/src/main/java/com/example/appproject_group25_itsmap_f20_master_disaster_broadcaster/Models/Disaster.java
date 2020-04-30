@@ -1,12 +1,15 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.Exclude;
 
 import java.util.Date;
 import java.util.UUID;
 
 public class Disaster {
 
+@Exclude
+    private String id;
     private String title;
     private Date date;
     private String emblemImage;
@@ -14,7 +17,6 @@ public class Disaster {
     private DisasterType disasterType;
 
     private String userImage;
-    private String userId;
     private int points;
     private double distance;
 
@@ -34,7 +36,13 @@ public class Disaster {
 
     }
 
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getEmblemImage() {
         return emblemImage;
@@ -139,9 +147,6 @@ public class Disaster {
         this.distance = distance;
     }
 
-    public String getUserId() {
-        return userId;
-    }
 
     public Date getDate() {
         return date;

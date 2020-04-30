@@ -25,6 +25,8 @@ import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
 
     //Service
@@ -33,21 +35,22 @@ public class MainActivity extends AppCompatActivity {
     public DisasterService disasterService;
     public LocalBroadcastManager localBroadcastManager;
     private boolean isBound;
-
     //MainActivity view
     ProgressBar progressBar;
-
     //HomeFragment
     Button btn_myDisasters;
-
     //disaster
     Disaster disaster;
+    //User ID
+    public String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent intent = getIntent();
+        userId = intent.getStringExtra("userID");
         disaster = new Disaster();
         serviceIntent = new Intent(this, DisasterService.class);
         // initiate progress bar and start button
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //firebase test TODO: DELETE THIS
                 disaster.setDistance(21);
-                disaster.setTitle("Firebase test4");
+                disaster.setTitle("Firebase test9");
                 disaster.setDisasterType(DisasterType.Thunderstorm);
                 disaster.setLonDisaster(55.0);
                 disaster.setLatDisaster(-33.0);
@@ -101,12 +104,14 @@ public class MainActivity extends AppCompatActivity {
                 disaster.setLonUser(-33.0);
                 disaster.setUserImage(""+R.drawable.disasterdude);
                 disaster.setEmblemImage(""+R.drawable.storm);
+                Date date = new Date();
+                date.getTime();
+                disaster.setDate(date);
+
+                disasterService.InsertDisaster(disaster, userId);
 
 
-                //disasterService.InsertDisaster(disaster);
-
-
-
+                disasterService.GetAllDisasters(userId);
                 disasterService.sendRequest(getApplicationContext());
                 Log.wtf("Binder", "MainActivity bound to service");
             }
@@ -135,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().add(R.id.mainactivity_framelayout, home_fragment).commit();
 
                 //when homepage is loaded get disasters
-                if (disasterService.UsersDisasters.size() < 1) {
-                    disasterService.GetAllDisasters();
+                if (disasterService.UsersDisasters.size() < 0) {
+                    disasterService.GetAllDisasters(userId);
                 }
 
             }

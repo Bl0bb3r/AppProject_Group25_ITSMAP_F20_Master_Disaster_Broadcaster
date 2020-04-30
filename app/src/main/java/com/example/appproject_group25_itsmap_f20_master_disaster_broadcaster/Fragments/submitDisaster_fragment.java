@@ -43,6 +43,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 
 public class submitDisaster_fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
     private static final String ARG_EVENT = "eventParam";
@@ -126,10 +129,11 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         btn_submit = (Button) rootView.findViewById(R.id.submit_btn_submit);
         btn_submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-
+                Date date = new Date();
+                date.getTime();
+                disaster.setDate(date);
                 mainActivity.disasterService.UsersDisasters.add(disaster);
-                mainActivity.disasterService.InsertDisaster(disaster);
+                mainActivity.disasterService.InsertDisaster(disaster, mainActivity.userId);
                 Toast.makeText(mainActivity.disasterService, "You got "+disaster.getPoints()+" points!", Toast.LENGTH_LONG).show();
                 //go back to ongoing fragment
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();

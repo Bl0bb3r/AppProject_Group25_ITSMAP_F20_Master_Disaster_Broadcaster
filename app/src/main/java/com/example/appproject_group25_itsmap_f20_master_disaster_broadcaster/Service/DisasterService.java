@@ -33,15 +33,21 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.core.Query;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +64,10 @@ public class DisasterService extends Service {
     private Gson gson;
     //firebase
     FirebaseFirestore db;
+    //Firebase authentication variable
+    private FirebaseAuth mAuth;
+    FirebaseUser currentUser;
+
     @Override
     public void onCreate() {
 
@@ -65,6 +75,8 @@ public class DisasterService extends Service {
         FirebaseApp.initializeApp(getApplicationContext());
          db = FirebaseFirestore.getInstance();
 
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
         global = new Global();
 
         //First time install broadcast this or on open
@@ -165,17 +177,18 @@ public class DisasterService extends Service {
    }
 
    //FIREBASE
-    public void InsertDisaster(Disaster disaster)
+    public void InsertDisaster(Disaster disaster, String userId)
     {
-        CollectionReference disasterCollRef = db.collection("disasters");
-
+        CollectionReference disasterCollRef = db.collection("users").document(userId).collection("disasters");
         // Add a new document with a generated ID
-        db.collection("disasters")
+        disasterCollRef
                 .add(disaster)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d("FIREBASE", "DocumentSnapshot added with ID: " + documentReference.getId());
+
+                        GetAllDisasters(userId);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -187,8 +200,8 @@ public class DisasterService extends Service {
 
     }
 
-    public void GetAllDisasters(){
-         db.collection("disasters")
+    public void GetAllDisasters(String userID){
+         db.collection("users").document(userID).collection("disasters")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -197,7 +210,16 @@ public class DisasterService extends Service {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
 
-                                UsersDisasters.add(document.toObject(Disaster.class));
+                                UsersDisasters.clear();
+                                if (document.toObject(Disaster.class).getId() != null)
+                                {
+                                    UsersDisasters.add(document.toObject(Disaster.class));
+                                }
+                                else{
+                                    Disaster disaster = document.toObject(Disaster.class);
+                                    disaster.setId(document.getId());
+                                    UsersDisasters.add(disaster);
+                                }
                             }
                             Intent intent = new Intent("GetALLDB");
                             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
@@ -206,6 +228,32 @@ public class DisasterService extends Service {
                         }
                     }
                 });
+    }
+
+    public Disaster getDisaster(String userId, String disasterId)
+    {
+
+        final Disaster[] disaster = new Disaster[1];
+        db.collection("users").document(userId).collection("disasters").document(disasterId).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                           DocumentSnapshot document = task.getResult();
+                                Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
+                                disaster[0] = document.toObject(Disaster.class);
+                                Log.wtf("FIREBASE", "ID: "+document.getId()+" title: "+disaster[0].getTitle());
+                            //Intent intent = new Intent("GetALLDB");
+                            //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                        } else {
+                            Log.wtf("FIREBASE", "Error getting documents.", task.getException());
+                        }
+                    }
+
+                });
+
+
+                return disaster[0];
     }
 }
 

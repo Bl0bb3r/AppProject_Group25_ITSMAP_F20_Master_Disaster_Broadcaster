@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
 
@@ -30,6 +32,9 @@ public class home_fragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    MainActivity mainActivity;
+
     Intent serviceIntent;
     ServiceConnection disasterServiceConnection;
     DisasterService disasterService;
@@ -115,7 +120,8 @@ public class home_fragment extends Fragment {
                 //transaction.replace(R.id.mainactivity_framelayout, new mydisasters_fragment());
                 //transaction.addToBackStack(null);
                 //transaction.commit();
-                disasterService.sendRequest(getContext());
+                String id = disasterService.UsersDisasters.get(0).getId();
+                disasterService.getDisaster(mainActivity.userId, id);
             }
         });
 
@@ -134,7 +140,13 @@ public class home_fragment extends Fragment {
         // Inflate the layout for this fragment
         return rootView;
     }
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        //get so that i can access DisasterService that is bound to main Activity.
+        mainActivity = (MainActivity) context;
 
+    }
     private void DisasterServiceConnection()
     {
         disasterServiceConnection = new ServiceConnection() {
