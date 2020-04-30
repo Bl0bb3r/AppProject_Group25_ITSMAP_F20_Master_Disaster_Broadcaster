@@ -20,10 +20,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static android.content.ContentValues.TAG;
-import static com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.LoginActivity.mAuth;
 
 public class CreateNewUserFragment extends Fragment {
 
@@ -33,6 +33,8 @@ public class CreateNewUserFragment extends Fragment {
     Button SignUpBtn;
     TextInputEditText Email;
     TextInputEditText Password;
+
+    private FirebaseAuth mAuth;
 
     //TODO: Firebase database med users?
     //FirebaseDatabase FirebaseDB;
@@ -69,14 +71,6 @@ public class CreateNewUserFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        // Firebase setup assistant
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser ExistingUser = LoginActivity.getCurrentUser();
-        updateUI(ExistingUser);
-    }
-
-    private void updateUI(FirebaseUser user) {
 
     }
 
