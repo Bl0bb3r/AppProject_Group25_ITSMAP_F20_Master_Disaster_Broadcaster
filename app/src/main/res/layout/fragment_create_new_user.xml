@@ -11,10 +11,10 @@
         android:id="@+id/TVRegisterNewUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/audiowide"
+        android:layout_marginTop="15dp"
+        android:fontFamily="sans-serif"
         android:text="@string/registerNewUser"
         android:textColor="@color/colorYellow"
-        android:layout_marginTop="15dp"
         android:textSize="23sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +49,7 @@
         <com.google.android.material.textfield.TextInputLayout
 
             android:id="@+id/F_CNU_input_email"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="60"
             android:background="@drawable/roundcorner"
@@ -64,10 +64,11 @@
                 android:id="@+id/F_CNU_EmailEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="sans-serif"
                 android:hint="@string/email_hint"
                 android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:layout_gravity="center_vertical">
+                android:maxLines="1">
 
             </com.google.android.material.textfield.TextInputEditText>
 
@@ -103,7 +104,7 @@
         <com.google.android.material.textfield.TextInputLayout
 
             android:id="@+id/F_CNU_input_password"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="60"
             android:background="@drawable/roundcorner"
@@ -156,7 +157,7 @@
         <com.google.android.material.textfield.TextInputLayout
 
             android:id="@+id/F_CNU_input_verifyPassword"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="60"
             android:background="@drawable/roundcorner"
@@ -170,7 +171,7 @@
 
                 android:id="@+id/F_CNU_verifyPasswordEditText"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="35dp"
                 android:layout_gravity="center_vertical"
                 android:hint="@string/password_hint"
                 android:inputType="textEmailAddress"
@@ -188,12 +189,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
-        android:fontFamily="@font/audiowide"
+        android:fontFamily="sans-serif"
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/Btn_SignUp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        />
 
     <Button
         android:id="@+id/Btn_SignUp"
@@ -203,11 +204,11 @@
         android:layout_marginEnd="80dp"
         android:layout_marginRight="80dp"
         android:layout_marginBottom="50dp"
-        android:fontFamily="@font/audiowide"
+        android:fontFamily="sans-serif"
         android:text="@string/signUp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+         />
 
 
 
