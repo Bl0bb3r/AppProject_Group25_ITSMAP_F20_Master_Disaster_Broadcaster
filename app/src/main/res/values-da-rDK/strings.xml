@@ -7,6 +7,19 @@
     <string name="my_disasters">Mine Katastrofer</string>
     <string name="ongoing">Igangværende Katastrofer</string>
     <string name="exit">Luk</string>
-    <string name="login">Log ind</string>
+    <string name="signIn">Log ind</string>
     <string name="password">Kodeord</string>
+    <string name="register">Har du ikke en bruger? Registrer her!</string>
+    <string name="signUp">Registrer</string>
+    <string name="cancel">Annuller</string>
+    <string name="registerNewUser">Registrer ny bruger</string>
+    <string name="enterEmail">Indtast Email Adresse</string>
+    <string name="passEmpty">Kodeordsfeltet er tomt, prøv venligst igen...</string>
+    <string name="passShort">Kodeordet var for kort, indsæt minimum 8 karakterer</string>
+    <string name="emailEmpty">Email felt er tomt, prøv igen</string>
+    <string name="registrationSuccess">Registrering fuldendt</string>
+    <string name="registrationFailed">Registrering fejlede, prøv igen</string>
+    <string name="enterPassword">Indtast nyt Kodeord</string>
+    <string name="password_hint">Kodeord</string>
+    <string name="verifyPassword">Bekræft nyt Kodeord:</string>
 </resources>
