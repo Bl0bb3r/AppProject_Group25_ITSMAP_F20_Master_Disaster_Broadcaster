@@ -1,26 +1,26 @@
-package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models;
+package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-public class Geometry {
+public class MultiPolygonShape implements Shape {
+    private final ShapeType type = ShapeType.MultiPolygon;
+    private double[][][][] coordinates;
+
+    public ShapeType getType() {
+        return type;
+    }
+
+    public double[][][][] getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(double[][][][] coordinates) {
+        this.coordinates = coordinates;
+    }
 
     private double magnitudeValue;
     private String magnitudeUnit;
     private Date date;
-    private String type;
-    //lat&long
-    @SerializedName("coordinates")
-    private Coordinates coordinates;
-    //private ArrayList<Double> NumberCoordinates;
-    //Polygon
-    //private ArrayList<ArrayList<Double>> PolygonCoordinates;
-    //MultiPolygon
-    //private Double[][][] MultiPolygonCoordinates;
 
     public double getMagnitudeValue() {
         return magnitudeValue;
@@ -37,6 +37,7 @@ public class Geometry {
     public void setMagnitudeUnit(String magnitudeUnit) {
         this.magnitudeUnit = magnitudeUnit;
     }
+
     public Date getDate() {
         return date;
     }
@@ -44,13 +45,4 @@ public class Geometry {
     public void setDate(Date date) {
         this.date = date;
     }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
 }

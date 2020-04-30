@@ -1,14 +1,32 @@
 <resources>
-    <string name="app_name">AppProject_Group25_ITSMAP_F20_Master_Disaster_Broadcaster</string>
-
+    <string name="app_name" translatable="false">AppProject_Group25_ITSMAP_F20_Master_Disaster_Broadcaster</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="disaster_icon">Disaster icon</string>
-    <string name="ongoing">ongoing</string>
+    <string name="disaster_icon" translatable="false">Disaster icon</string>
+    <string name="ongoing">Ongoing Disasters</string>
     <string name="my_disasters">My Disasters</string>
-    <string name="button">Button</string>
-    <string name="profile">Profile</string>
+    <string name="button" translatable="false">Button</string>
+    <string name="profile">My Profile</string>
     <string name="rankings">Rankings</string>
     <string name="logout">Logout</string>
     <string name="back">Back</string>
+    <string name="exit">Exit</string>
+    <string name="signIn">Sign In</string>
+    <string name="email_hint" translatable="false">Email</string>
+    <string name="password">Password</string>
+    <string name="appHeadline1" translatable="false">Disaster Master</string>
+    <string name="appHeadline2" translatable="false">Broadcaster</string>
+    <string name="register">Don\'t have an Account? Register here!</string>
+    <string name="signUp">Sign Up</string>
+    <string name="cancel">Cancel</string>
+    <string name="registerNewUser">Register new user</string>
+    <string name="enterEmail">Enter Email address:</string>
+    <string name="passEmpty">Password field is empty, please try again...</string>
+    <string name="passShort">Password was too short, enter minimum 8 characters</string>
+    <string name="emailEmpty">Email Address field is empty, please try again</string>
+    <string name="registrationSuccess">Registration completed</string>
+    <string name="registrationFailed">Registration failed</string>
+    <string name="enterPassword">Enter new Password:</string>
+    <string name="password_hint">Password</string>
+    <string name="verifyPassword">Verify new Password:</string>
+    <string name="total_points" />
 </resources>

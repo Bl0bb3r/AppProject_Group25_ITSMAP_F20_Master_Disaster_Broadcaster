@@ -49,12 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         disaster = new Disaster();
-
-        //Start service
         serviceIntent = new Intent(this, DisasterService.class);
-        startService(serviceIntent);
-        Log.wtf("MainActivity","StartService called");
-
         // initiate progress bar and start button
         progressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
         //visible the progress bar

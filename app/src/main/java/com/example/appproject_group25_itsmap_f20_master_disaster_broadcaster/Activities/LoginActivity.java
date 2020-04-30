@@ -1,9 +1,13 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -14,11 +18,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.CreateNewUserFragment;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.Login;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.home_fragment;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -34,8 +41,12 @@ public class LoginActivity extends AppCompatActivity {
 
     //Firebase authentication variable
     private FirebaseAuth mAuth;
-
-
+    //Service
+    public Intent serviceIntent;
+    public ServiceConnection disasterServiceConnection;
+    public DisasterService disasterService;
+    private boolean isBound;
+    Bundle savedIn;
     //TODO: Insert NavController
 
     @Override
@@ -43,34 +54,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstance);
 
         setContentView(R.layout.activity_login);
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        //check Fragment
-        if (findViewById(R.id.loginactivity_framelayout) != null)
-        {
-            if (savedInstance != null)
-            {
-                return;
-            }
+        savedIn = savedInstance;
+        //Start service
+        serviceIntent = new Intent(this, DisasterService.class);
+        startService(serviceIntent);
 
-            if (currentUser == null) {
-                Login loginFragment = new Login();
-                getSupportFragmentManager().beginTransaction().add(R.id.loginactivity_framelayout, loginFragment).commit();
-            }
-            else
-            {
-                Intent intent = new Intent(getApplication(), MainActivity.class);
-                startActivity(intent);
-                Toast.makeText(LoginActivity.this,"User: "+currentUser.getUid(), Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-
-
+        //bind service
+        DisasterServiceConnection();
+        bindService(serviceIntent, disasterServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     public void Authenticate(String Email, String Password, final View view) {
@@ -92,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                         //Navigate
                         //navController.navigate(R.id.action_loginFragment_to_settingsOverviewFragment);
 
-                        Intent intent = new Intent(getApplication(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
 
                     } else {
@@ -129,6 +125,56 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public void DisasterServiceConnection()
+    {
+        disasterServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                DisasterService.DisasterServiceBinder binder = (DisasterService.DisasterServiceBinder) service;
+                disasterService = binder.getService();
+                isBound = true;
 
+
+                mAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                //check Fragment
+                if (findViewById(R.id.loginactivity_framelayout) != null)
+                {
+                    if (savedIn != null)
+                    {
+                        return;
+                    }
+
+                    if (currentUser == null) {
+                        Login loginFragment = new Login();
+                        getSupportFragmentManager().beginTransaction().add(R.id.loginactivity_framelayout, loginFragment).commit();
+                    }
+                    else
+                    {
+                        Intent intent = new Intent(getApplication(), MainActivity.class);
+                        startActivity(intent);
+                        //disasterService.GetAllDisasters();
+                        Toast.makeText(LoginActivity.this,"User: "+currentUser.getUid(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                Log.wtf("Binder", "Login bound to service");
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                isBound = false;
+                Log.wtf("Binder", "Login unbound to service");
+            }
+        };
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isBound)
+        {
+            unbindService(disasterServiceConnection);
+            isBound = false;
+        }
+    }
 
 }
