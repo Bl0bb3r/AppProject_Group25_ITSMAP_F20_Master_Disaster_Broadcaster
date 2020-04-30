@@ -6,21 +6,22 @@ public enum DisasterType {
     Avalanche,
     Landslide,
     Earthquake,
-    Sunkhole,
-    VolcanicEruption,
+    Volcano,
     Flood,
     Tsunami,
-    LimnicEruption,
     CyclonicStorm,
     HailStorm,
     IceStorm,
     HeatWeave,
-    Droughts,
+    Drought,
     Thunderstorm,
-    Tornadoes,
+    Tornado,
     Wildfire,
     SolarFlare,
-    ImpactEvent,
+    Meteor,
+    Iceberg,
+    DustStorm,
+    Unknown
 
 
 }

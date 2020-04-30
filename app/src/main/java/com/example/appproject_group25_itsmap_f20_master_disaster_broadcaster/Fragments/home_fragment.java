@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.LoginActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
 

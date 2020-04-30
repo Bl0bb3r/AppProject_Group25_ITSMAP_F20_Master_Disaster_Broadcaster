@@ -17,8 +17,9 @@
 
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="200dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,6 +33,29 @@
             </ListView>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/roundcorner"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/ongoing_btn_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView_ongoing"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/roundcorner"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp" />
+        </LinearLayout>
         <Button
             android:id="@+id/ongoing_btn_back"
             style="@style/Widget.AppCompat.Button.Colored"

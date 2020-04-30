@@ -1,5 +1,6 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.Shape;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class Event {
     @SerializedName("categories")
     private List<Categories> categories;
     private List<Sources> sources;
-    private List<Geometry> geometry;
+    private List<Shape> geometry;
 
     public String getId() {
         return id;
@@ -72,11 +73,11 @@ public class Event {
         this.sources = sources;
     }
 
-    public List<Geometry> getGeometry() {
+    public List<Shape> getGeometry() {
         return geometry;
     }
 
-    public void setGeometry(List<Geometry> geometry) {
+    public void setGeometry(List<Shape> geometry) {
         this.geometry = geometry;
     }
 

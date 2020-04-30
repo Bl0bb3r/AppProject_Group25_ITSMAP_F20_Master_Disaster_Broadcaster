@@ -7,11 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
@@ -79,14 +75,14 @@ public class emblem_adapter extends BaseAdapter {
             // set image
             ImageView emblemImage = (ImageView) convertView.findViewById(R.id.emblem_list_image);
 
-            Log.wtf("CustomAdapter", "Image ID: " + disaster.getDisasterImage());
+            Log.wtf("CustomAdapter", "Image ID: " + disaster.getEmblemImage());
 
-            if (disaster.getDisasterImage() != null)
+            if (disaster.getEmblemImage() != null)
             {
-                emblemImage.setImageResource(Integer.parseInt(disaster.getDisasterImage()));
+                emblemImage.setImageResource(Integer.parseInt(disaster.getEmblemImage()));
             }
             else{
-                emblemImage.setImageResource(R.drawable.flood);
+                emblemImage.setImageResource(R.drawable.cancel);
             }
         }
         return convertView;

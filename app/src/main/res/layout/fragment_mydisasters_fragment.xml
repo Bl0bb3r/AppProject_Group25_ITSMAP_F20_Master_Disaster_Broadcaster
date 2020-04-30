@@ -34,20 +34,21 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textview_totalPoints"
+                    android:id="@+id/textview_label_points"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_marginStart="10dp"
 
-                    android:text="Total points"
                     android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/total_points"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp"
                     tools:text="Total points" />
 
                 <TextView
-                    android:id="@+id/textview_points"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/textview_totalPoints"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="100dp"
@@ -67,7 +68,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textview_worldRank"
+                    android:id="@+id/textview_label_rank"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -75,11 +76,12 @@
                     android:text="World rank"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp"
-                    tools:text="World rank" />
+                    tools:text="World rank"
+                    android:layout_marginStart="10dp" />
 
                 <TextView
-                    android:id="@+id/textview_rank"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/textview_worldRank"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="100dp"

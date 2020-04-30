@@ -11,6 +11,7 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -21,14 +22,27 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Eonet;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Event;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.Shape;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.ShapeDeserializer;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Global;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.core.Query;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,13 +54,18 @@ public class DisasterService extends Service {
     private Global global;
     private IBinder binder = new DisasterServiceBinder();
     public ArrayList<Event> events = new ArrayList<>();
+    public ArrayList<Disaster> UsersDisasters = new ArrayList<>();
     private Gson gson;
-
+    //firebase
+    FirebaseFirestore db;
     @Override
     public void onCreate() {
 
-    global = new Global();
-    gson = new Gson();
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseApp.initializeApp(getApplicationContext());
+         db = FirebaseFirestore.getInstance();
+
+        global = new Global();
 
         //First time install broadcast this or on open
         Intent intent = new Intent("FIRST_START");
@@ -82,7 +101,7 @@ public class DisasterService extends Service {
                     public void onResponse(String response) {
 
                         //log to the the content before parseing it word object.
-                        Log.wtf("StringRequest ", response);
+                        //Log.wtf("StringRequest ", response);
                         ParseEvents(response);
                     }
 
@@ -99,8 +118,11 @@ public class DisasterService extends Service {
                     //deprecated in API 26
                     v.vibrate(500);
                 }
+
                 Toast.makeText(ctx,"No events nearby", Toast.LENGTH_LONG).show();
 
+                Intent intent = new Intent("NoEvents");
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
             }
 
         })
@@ -128,13 +150,62 @@ public class DisasterService extends Service {
    private List<Event> ParseEvents(String json)
    {
        Eonet eonet = new Eonet();
-       //Type EventListType = new TypeToken<ArrayList<Event>>(){}.getType();
-       eonet = gson.fromJson(json, Eonet.class);
+
+       GsonBuilder builder = new GsonBuilder();
+       builder.registerTypeAdapter(Shape.class, new ShapeDeserializer());
+       gson = builder.create();
+
+       eonet = gson.fromJson(json, new TypeToken<Eonet>(){}.getType());
+
        events = eonet.getEvents();
        Intent intent = new Intent("NewEvent");
        intent.putExtra("event", gson.toJson(eonet));
        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
        return events;
    }
+
+   //FIREBASE
+    public void InsertDisaster(Disaster disaster)
+    {
+        CollectionReference disasterCollRef = db.collection("disasters");
+
+        // Add a new document with a generated ID
+        db.collection("disasters")
+                .add(disaster)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("FIREBASE", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FIREBASE", "Error adding document", e);
+                    }
+                });
+
+    }
+
+    public void GetAllDisasters(){
+         db.collection("disasters")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
+
+                                UsersDisasters.add(document.toObject(Disaster.class));
+                            }
+                            Intent intent = new Intent("GetALLDB");
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                        } else {
+                            Log.wtf("FIREBASE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
 }
 

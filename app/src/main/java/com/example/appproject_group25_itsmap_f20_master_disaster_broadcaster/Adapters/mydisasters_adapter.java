@@ -74,11 +74,11 @@ public class mydisasters_adapter extends BaseAdapter {
             // set image
             ImageView Typeimage = (ImageView) convertView.findViewById(R.id.disasterTypeImageView);
             ImageView userImage = (ImageView) convertView.findViewById(R.id.userImageView);
-            Log.wtf("CustomAdapter", "Image ID: " + disaster.getDisasterImage());
+            Log.wtf("CustomAdapter", "Image ID: " + disaster.getEmblemImage());
 
-            if (disaster.getDisasterImage() != null)
+            if (disaster.getEmblemImage() != null)
             {
-                Typeimage.setImageResource(Integer.parseInt(disaster.getDisasterImage()));
+                Typeimage.setImageResource(Integer.parseInt(disaster.getEmblemImage()));
             }
             else{
                 Typeimage.setImageResource(R.drawable.flood);
