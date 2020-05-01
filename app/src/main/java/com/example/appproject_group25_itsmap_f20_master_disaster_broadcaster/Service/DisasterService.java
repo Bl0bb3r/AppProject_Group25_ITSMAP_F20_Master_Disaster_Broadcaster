@@ -3,6 +3,7 @@ package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Se
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -43,16 +44,24 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.core.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Document;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class DisasterService extends Service {
 
@@ -64,9 +73,12 @@ public class DisasterService extends Service {
     private Gson gson;
     //firebase
     FirebaseFirestore db;
+    FirebaseStorage storage;
+    public StorageReference storageRef;
     //Firebase authentication variable
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
+
 
     @Override
     public void onCreate() {
@@ -74,9 +86,17 @@ public class DisasterService extends Service {
         // Access a Cloud Firestore instance from your Activity
         FirebaseApp.initializeApp(getApplicationContext());
          db = FirebaseFirestore.getInstance();
-
+         storage = FirebaseStorage.getInstance("gs://disastermasterbroadcaster.appspot.com/");
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+        // Create a storage reference from our app
+        storageRef = storage.getReference();
+
+
+
+
+
         global = new Global();
 
         //First time install broadcast this or on open
@@ -254,6 +274,26 @@ public class DisasterService extends Service {
 
 
                 return disaster[0];
+    }
+
+    public String UploadImage(String filePath){
+        Uri file = Uri.fromFile(new File(filePath));
+        StorageReference ref = storageRef.child(UUID.randomUUID().toString());
+        UploadTask uploadTask = ref.putFile(file);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                Toast.makeText(getApplicationContext(),"Snapshot Name: "+taskSnapshot.getMetadata().getName(), Toast.LENGTH_LONG).show();
+            }
+        });
+        return ref.getName();
     }
 }
 

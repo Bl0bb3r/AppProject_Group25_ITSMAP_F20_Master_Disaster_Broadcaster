@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bumptech.glide.Glide;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
@@ -39,6 +41,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
@@ -66,6 +69,9 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
     private Gson gson;
     private Disaster disaster;
 
+    //File
+    File currentFile;
+
     //View
     View rootView;
 
@@ -80,7 +86,19 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         // Required empty public constructor
     }
 
+    public void updateImage(String filename)
+    {
+        currentFile = new File(filename);
+        //Bitmap bitmap = BitmapFactory.decodeFile(currentFile.getPath());
+        //disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
+        //disasterImage = (ImageView)findViewById(R.id.imageView_submitDisaster);
+        //if (bitmap != null) {
 
+        //disasterImage.setImageResource(R.drawable.disasterdude);
+        //disasterImage.setImageResource(R.drawable.blizzard);
+
+        //}
+    }
     // TODO: Rename and change types and number of parameters
     public static submitDisaster_fragment newInstance(String disObject) {
         submitDisaster_fragment fragment = new submitDisaster_fragment();
@@ -96,9 +114,9 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         //get arguments here we get the disaster object the user picked
         if (getArguments() != null) {
             gson = new Gson();
-            disaster = gson.fromJson(getArguments().getString(ARG_EVENT),Disaster.class);
-        }
+            disaster = gson.fromJson(getArguments().getString(ARG_EVENT), Disaster.class);
 
+        }
 
 
         //get user location
@@ -113,9 +131,24 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_submit_disaster_fragment, container, false);
          //DisasterImage
-        //disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
+        disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
         //disasterImage.setImageResource(R.drawable.flood);
+        //get Image
+        if (disaster.getUserImage() != null) {
+            mainActivity.disasterService.storageRef.child(disaster.getUserImage()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    // Got the download URL for 'users/me/profile.png'
+                    Glide.with(rootView).load(uri).placeholder(R.drawable.ic_launcher_foreground).into(disasterImage);
 
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        }
         //Maps
         //https://developers.google.com/maps/documentation/android-sdk/start
         mapView = rootView.findViewById(R.id.mapView_submitDisaster);
@@ -147,8 +180,12 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                 Date date = new Date();
                 date.getTime();
                 disaster.setDate(date);
+
+                String ImageName = mainActivity.disasterService.UploadImage(currentFile.getAbsolutePath());
+                disaster.setUserImage(ImageName);
                 mainActivity.disasterService.UsersDisasters.add(disaster);
                 mainActivity.disasterService.InsertDisaster(disaster, mainActivity.userId);
+
                 Toast.makeText(mainActivity.disasterService, "You got "+disaster.getPoints()+" points!", Toast.LENGTH_LONG).show();
                 //go back to ongoing fragment
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
@@ -162,6 +199,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         btn_back = (Button) rootView.findViewById(R.id.submit_btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
                 fragmentmanager.popBackStack();
 
@@ -322,15 +360,5 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         googleMap.setOnMarkerClickListener(this);
     }
 
-    public void updateImage(String filename)
-    {
-        //File imgFile = new File(filename);
-        //Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
-        //if (bitmap != null) {
-            disasterImage.setImageResource(R.drawable.disasterdude);
-
-        //}
-    }
 
 }

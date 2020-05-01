@@ -74,6 +74,7 @@ public class mydisasters_adapter extends BaseAdapter {
             // set image
             ImageView Typeimage = (ImageView) convertView.findViewById(R.id.disasterTypeImageView);
             ImageView userImage = (ImageView) convertView.findViewById(R.id.userImageView);
+
             Log.wtf("CustomAdapter", "Image ID: " + disaster.getEmblemImage());
 
             if (disaster.getEmblemImage() != null)
