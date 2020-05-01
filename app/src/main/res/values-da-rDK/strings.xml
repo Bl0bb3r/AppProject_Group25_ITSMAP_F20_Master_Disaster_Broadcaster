@@ -14,7 +14,7 @@
     <string name="cancel">Annuller</string>
     <string name="registerNewUser">Registrer ny bruger</string>
     <string name="enterEmail">Indtast Email Adresse</string>
-    <string name="passEmpty">Kodeordsfeltet er tomt, prøv venligst igen...</string>
+    <string name="passEmpty">Kodeordsfeltet er tomt, prøv venligst igen…</string>
     <string name="passShort">Kodeordet var for kort, indsæt minimum 8 karakterer</string>
     <string name="emailEmpty">Email felt er tomt, prøv igen</string>
     <string name="registrationSuccess">Registrering fuldendt</string>
@@ -22,4 +22,8 @@
     <string name="enterPassword">Indtast nyt Kodeord</string>
     <string name="password_hint">Kodeord</string>
     <string name="verifyPassword">Bekræft nyt Kodeord:</string>
+    <string name="myProfile">Min Profil:</string>
+    <string name="name">"Navn: "</string>
+    <string name="nickname">"Kælenavn: "</string>
+    <string name="country">"Land: "</string>
 </resources>

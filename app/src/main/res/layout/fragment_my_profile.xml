@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context=".Fragments.MyProfileFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/MyProfilePageHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/myProfile"
+            android:textColor="@color/colorYellow"
+            android:textSize="26sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/editProfilePicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="70dp"
+            android:layout_marginRight="70dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfilePageHint"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/MyProfileNameHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/name"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editProfilePicture" />
+
+        <TextView
+            android:id="@+id/MyProfileNicknameHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/nickname"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileNameHint" />
+
+        <TextView
+            android:id="@+id/MyProfileCountryHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/country"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileNicknameHint" />
+
+        <TextView
+            android:id="@+id/MyProfileRankHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/rank"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileCountryHint" />
+
+        <TextView
+            android:id="@+id/MyProfileRankField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryCards"
+            android:layout_marginTop="40dp"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/zero"
+            android:textColor="@color/colorYellow"
+            android:textSize="24sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileRankHint"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileCountryHint" />
+
+        <TextView
+            android:id="@+id/MyProfilePointsHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/points"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileRankHint" />
+
+        <TextView
+            android:id="@+id/MyProfilePointsField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryCards"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/zero"
+            android:textColor="@color/colorYellow"
+            android:textSize="24sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileRankHint"
+            app:layout_constraintTop_toTopOf="@+id/MyProfilePointsHint" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
