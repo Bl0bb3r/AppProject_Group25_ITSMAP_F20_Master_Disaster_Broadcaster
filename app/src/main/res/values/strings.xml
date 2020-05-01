@@ -38,4 +38,5 @@
     <string name="rank" translatable="false">Rank:</string>
     <string name="points" translatable="false">"Points: "</string>
     <string name="zero" translatable="false">0</string>
+    <string name="apply">Apply</string>
 </resources>

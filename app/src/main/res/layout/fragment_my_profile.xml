@@ -81,6 +81,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MyProfileNicknameHint" />
 
+        <com.scrounger.countrycurrencypicker.library.Buttons.CountryCurrencyButton
+            android:id="@+id/CountryBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="@color/colorPrimaryCards"
+            app:country_code="US"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileNicknameHint"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileNicknameHint"
+            app:show_currency="false" />
+
         <TextView
             android:id="@+id/MyProfileRankHint"
             android:layout_width="wrap_content"
@@ -100,15 +112,15 @@
             android:id="@+id/MyProfileRankField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryCards"
             android:layout_marginTop="40dp"
+            android:background="@color/colorPrimaryCards"
             android:fontFamily="@font/audiowide"
             android:text="@string/zero"
             android:textColor="@color/colorYellow"
             android:textSize="24sp"
 
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/MyProfileRankHint"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileNicknameHint"
             app:layout_constraintTop_toBottomOf="@+id/MyProfileCountryHint" />
 
         <TextView
@@ -137,8 +149,32 @@
             android:textSize="24sp"
 
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/MyProfileRankHint"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileNicknameHint"
             app:layout_constraintTop_toTopOf="@+id/MyProfilePointsHint" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/btnBackTheme"
+            android:layout_marginLeft="75dp"
+            android:layout_marginStart="75dp"
+            android:text="@string/back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfilePointsHint" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/btnGoTheme"
+
+            android:layout_marginRight="75dp"
+            android:layout_marginEnd="75dp"
+            android:text="@string/apply"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfilePointsHint" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
