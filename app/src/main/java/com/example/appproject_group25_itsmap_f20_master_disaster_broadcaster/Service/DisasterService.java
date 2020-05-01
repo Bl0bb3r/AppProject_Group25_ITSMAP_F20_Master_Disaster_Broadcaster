@@ -230,7 +230,7 @@ public class DisasterService extends Service {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
 
-                                UsersDisasters.clear();
+
                                 if (document.toObject(Disaster.class).getId() != null)
                                 {
                                     UsersDisasters.add(document.toObject(Disaster.class));

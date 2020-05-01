@@ -25,12 +25,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+
             <ImageView
 
                 android:id="@+id/imageView_submitDisaster"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="250dp"
-
+                android:src="@drawable/fire"
                 android:layout_marginBottom="5dp"
                  />
 

@@ -89,6 +89,10 @@ public class mydisasters_fragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_mydisasters_fragment, container, false);
 
+      if (disasters != null)
+      {
+          disasters.clear();
+      }
         disasters = mainActivity.disasterService.UsersDisasters;
 
 

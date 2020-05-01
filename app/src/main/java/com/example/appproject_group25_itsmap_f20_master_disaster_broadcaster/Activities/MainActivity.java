@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                 getSupportFragmentManager().beginTransaction().add(R.id.mainactivity_framelayout, home_fragment).commit();
 
                 //when homepage is loaded get disasters
-                if (disasterService.UsersDisasters.size() < 0) {
+                if (disasterService.UsersDisasters.size() < 1) {
                     disasterService.GetAllDisasters(userId);
                 }
 

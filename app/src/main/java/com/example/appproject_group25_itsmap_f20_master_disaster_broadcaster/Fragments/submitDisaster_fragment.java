@@ -88,14 +88,8 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
 
     public void updateImage(String filename)
     {
+        BitmapFactory.Options options;
         currentFile = new File(filename);
-        //Bitmap bitmap = BitmapFactory.decodeFile(currentFile.getPath());
-        //disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
-        //disasterImage = (ImageView)findViewById(R.id.imageView_submitDisaster);
-        //if (bitmap != null) {
-
-        //disasterImage.setImageResource(R.drawable.disasterdude);
-        //disasterImage.setImageResource(R.drawable.blizzard);
 
         //}
     }
@@ -132,23 +126,9 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         rootView = inflater.inflate(R.layout.fragment_submit_disaster_fragment, container, false);
          //DisasterImage
         disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
-        //disasterImage.setImageResource(R.drawable.flood);
-        //get Image
-        if (disaster.getUserImage() != null) {
-            mainActivity.disasterService.storageRef.child(disaster.getUserImage()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    // Got the download URL for 'users/me/profile.png'
-                    Glide.with(rootView).load(uri).placeholder(R.drawable.ic_launcher_foreground).into(disasterImage);
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
-        }
+        Glide.with(rootView).load(currentFile).placeholder(R.drawable.disasterdude).into(disasterImage);
+
         //Maps
         //https://developers.google.com/maps/documentation/android-sdk/start
         mapView = rootView.findViewById(R.id.mapView_submitDisaster);
