@@ -14,11 +14,15 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.camera_fragment;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.home_fragment;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.mydisasters_fragment;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.submitDisaster_fragment;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
@@ -27,13 +31,21 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements camera_fragment.CameraFragmentListener{
 
     //Service
     public Intent serviceIntent;
     public ServiceConnection disasterServiceConnection;
     public DisasterService disasterService;
     public LocalBroadcastManager localBroadcastManager;
+
+    //fragment
+       submitDisaster_fragment submit;
+       camera_fragment camera;
+       home_fragment home;
+       mydisasters_fragment userDisasters;
+
+
     private boolean isBound;
     //MainActivity view
     ProgressBar progressBar;
@@ -43,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     Disaster disaster;
     //User ID
     public String userId;
+
+    public String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
     }
 
     @Override
@@ -75,7 +90,10 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("NewEvent");
         filter.addAction("GetALLDB");
-
+        filter.addAction("GoToCamera");
+        filter.addAction("GoToSubmit");
+        filter.addAction("ReturnFromCamera");
+        filter.addAction("ReturnFromSubmit");
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         localBroadcastManager.registerReceiver(DisasterReceiver, filter);
 
@@ -108,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 date.getTime();
                 disaster.setDate(date);
 
-                disasterService.InsertDisaster(disaster, userId);
+                //disasterService.InsertDisaster(disaster, userId);
 
 
                 disasterService.GetAllDisasters(userId);
@@ -158,8 +176,26 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().add(R.id.mainactivity_framelayout, home_fragment).commit();
 
             }
-            //this is broadcast when the service is started for the first time.
-            else if (intent.getAction().equals("FIRST_START")) {
+            else if(intent.getAction().equals("GoToCamera")) {
+                camera = camera_fragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, camera).addToBackStack(null).commit();
+            }
+            else if(intent.getAction().equals("GoToSubmit")) {
+
+                String disaster = intent.getStringExtra("Disaster");
+
+                submit = submitDisaster_fragment.newInstance(disaster);
+                getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, submit).addToBackStack(null).commit();
+            }
+
+            else if (intent.getAction().equals("ReturnFromCamera")) {
+
+                FragmentManager fragmentmanager = getSupportFragmentManager();
+                fragmentmanager.popBackStack();
+            }
+            else if (intent.getAction().equals("ReturnFromSubmit")) {
+                FragmentManager fragmentmanager = getSupportFragmentManager();
+                fragmentmanager.popBackStack();
             }
         }
     };
@@ -173,5 +209,12 @@ public class MainActivity extends AppCompatActivity {
             isBound = false;
             localBroadcastManager.unregisterReceiver(DisasterReceiver);
         }
+    }
+
+    @Override
+    public void onImageSent(String input) {
+
+            submit.updateImage(input);
+
     }
 }

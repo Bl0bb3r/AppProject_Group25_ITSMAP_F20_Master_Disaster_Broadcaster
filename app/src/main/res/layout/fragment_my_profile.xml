@@ -80,7 +80,7 @@
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MyProfileNicknameHint" />
-
+        <!-- country part picker TODO: find one that support 16
         <com.scrounger.countrycurrencypicker.library.Buttons.CountryCurrencyButton
             android:id="@+id/CountryBtn"
             android:layout_width="wrap_content"
@@ -92,7 +92,7 @@
             app:layout_constraintStart_toEndOf="@+id/MyProfileNicknameHint"
             app:layout_constraintTop_toBottomOf="@+id/MyProfileNicknameHint"
             app:show_currency="false" />
-
+-->
         <TextView
             android:id="@+id/MyProfileRankHint"
             android:layout_width="wrap_content"

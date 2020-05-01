@@ -3,6 +3,7 @@ package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fr
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -10,8 +11,11 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.os.Environment;
 import android.util.Log;
@@ -24,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Utility.CameraPreview;
 
@@ -38,18 +43,24 @@ import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 
 public class camera_fragment extends Fragment{
 
-
+    private CameraFragmentListener listener;
     private Camera mCamera;
     private CameraPreview mPreview;
     private MediaRecorder mediaRecorder;
     private boolean isRecording = false;
     final int CAMERA_REQUEST_CODE = 1;
+    MainActivity mainActivity;
+    String filename;
     public camera_fragment() {
         // Required empty public constructor
     }
 
+    public interface CameraFragmentListener{
+        void onImageSent(String input);
+    }
+
     // TODO: Rename and change types and number of parameters
-    public static camera_fragment newInstance(String param1, String param2) {
+    public static camera_fragment newInstance() {
         camera_fragment fragment = new camera_fragment();
 
         return fragment;
@@ -73,8 +84,49 @@ public class camera_fragment extends Fragment{
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_camera_fragment, container, false);
-
         Button btn_swap = rootView.findViewById(R.id.btn_switch_cam);
+        Button btn_closePreview = (Button) rootView.findViewById(R.id.btn_close_preview_cam);
+        Button btn_back_with_img =(Button) rootView.findViewById(R.id.btn_back_with_img);
+
+        btn_closePreview.setVisibility(View.INVISIBLE);
+        btn_back_with_img.setVisibility(View.INVISIBLE);
+
+        btn_closePreview.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (mPreview.ispreview) {
+                            mCamera.stopPreview();
+                        }
+                        mCamera.release();
+                        //swap the id of the camera to be used
+                        int currentCameraId = 0;
+                        if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK){
+                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+                        }
+                        else if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT){
+                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                        }
+                        else {
+                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+                        }
+                        mCamera = Camera.open(currentCameraId);
+
+                        setCameraDisplayOrientation(getActivity(), currentCameraId, mCamera);
+                        try {
+
+                            mCamera.setPreviewDisplay(mPreview.getHolder());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        mCamera.startPreview();
+                        btn_swap.setVisibility(View.VISIBLE);
+                        btn_closePreview.setVisibility(View.INVISIBLE);
+                    }
+                }
+        );
+
         btn_swap.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -107,51 +159,36 @@ public class camera_fragment extends Fragment{
 
                 }
         );
+
+        btn_back_with_img.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // get an image from the camera
+                        mainActivity.fileName = filename;
+                        listener.onImageSent(filename);
+                        //go back
+                        Intent intent = new Intent("ReturnFromCamera");
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+                    }
+                }
+        );
         // Add a listener to the Capture button
         Button captureButton = (Button) rootView.findViewById(R.id.button_capture);
         captureButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                    // get an image from the camera
+                        mCamera.takePicture(null, null, mPicture);
+                        btn_closePreview.setVisibility(View.VISIBLE);
+                        btn_swap.setVisibility(View.INVISIBLE);
+                        btn_back_with_img.setVisibility(View.VISIBLE);
                     }
                 }
         );
 
-        captureButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (isRecording) {
-                    // stop recording and release camera
-                    mediaRecorder.stop();  // stop the recording
-                    releaseMediaRecorder(); // release the MediaRecorder object
-                    mCamera.lock();         // take camera access back from MediaRecorder
-
-                    // inform the user that recording has stopped
-                    //captureButton.setText("Capture");
-                    isRecording = false;
-
-                } else {
-                    // initialize video camera
-                    if (prepareVideoRecorder()) {
-                        // Camera is available and unlocked, MediaRecorder is prepared,
-                        // now you can start recording
-                        mediaRecorder.start();
-
-                        // inform the user that recording has started
-                        //captureButton.setText("Stop");
-                        isRecording = true;
-
-                    } else {
-                        // prepare didn't work, release the camera
-                        releaseMediaRecorder();
-                        // inform user
-
-                    }
-                }
-                return false;
-            }
-        });
         // Create our Preview view and set it as the content of our activity.
         mPreview = new CameraPreview(getActivity(), mCamera);
         FrameLayout preview = (FrameLayout) rootView.findViewById(R.id.camera_preview);
@@ -175,7 +212,7 @@ public class camera_fragment extends Fragment{
 
             File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
             if (pictureFile == null){
-                Log.d("TAG", "Error creating media file, check storage permissions");
+                Log.wtf("TAG", "Error creating media file, check storage permissions");
                 return;
             }
 
@@ -183,13 +220,36 @@ public class camera_fragment extends Fragment{
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
+                filename = pictureFile.getAbsolutePath();
             } catch (FileNotFoundException e) {
-                Log.d("TAG", "File not found: " + e.getMessage());
+                Log.wtf("TAG", "File not found: " + e.getMessage());
             } catch (IOException e) {
-                Log.d("TAG", "Error accessing file: " + e.getMessage());
+                Log.wtf("TAG", "Error accessing file: " + e.getMessage());
             }
         }
     };
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        //get so that i can access DisasterService that is bound to main Activity.
+        mainActivity = (MainActivity) context;
+        if (context instanceof CameraFragmentListener)
+        {
+            listener = (CameraFragmentListener) context;
+        }
+        else
+        {
+            throw new RuntimeException(context.toString() + " must implement cameraFragmentListener");
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
     /** A safe way to get an instance of the Camera object. */
     public static Camera getCameraInstance(){
         Camera c = null;
@@ -226,14 +286,14 @@ public class camera_fragment extends Fragment{
         // using Environment.getExternalStorageState() before doing this.
 
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+                Environment.DIRECTORY_PICTURES), "DisasterMaster");
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
-                Log.d("MyCameraApp", "failed to create directory");
+                Log.d("DisasterMaster", "failed to create directory");
                 return null;
             }
         }

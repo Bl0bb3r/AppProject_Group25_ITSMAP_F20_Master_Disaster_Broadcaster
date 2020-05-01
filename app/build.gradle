@@ -62,7 +62,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
 
     // Country and currencyt picker
-    implementation 'com.github.scrounger:countrycurrencypicker:1.1.1'
+   // implementation 'com.github.scrounger:countrycurrencypicker:1.1.1'
     
 }
 apply plugin: 'com.google.gms.google-services'

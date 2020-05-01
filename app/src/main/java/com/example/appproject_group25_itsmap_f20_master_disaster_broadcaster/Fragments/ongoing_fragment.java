@@ -1,6 +1,7 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -249,10 +251,14 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         String jsonDisaster = gson.toJson(disaster);
 
         //go to submit disaster
-        submitDisaster_fragment mFragment = submitDisaster_fragment.newInstance(jsonDisaster);
-        transaction.replace(R.id.mainactivity_framelayout, mFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        Intent intent = new Intent("GoToSubmit");
+        intent.putExtra("Disaster", jsonDisaster);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+        //submitDisaster_fragment mFragment = submitDisaster_fragment.newInstance(jsonDisaster);
+        //transaction.replace(R.id.mainactivity_framelayout, mFragment);
+        //transaction.addToBackStack(null);
+        //transaction.commit();
 
         return false;
     }

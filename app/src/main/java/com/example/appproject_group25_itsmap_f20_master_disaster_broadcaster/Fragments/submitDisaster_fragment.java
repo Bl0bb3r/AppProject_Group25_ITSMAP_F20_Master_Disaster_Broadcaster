@@ -1,31 +1,30 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
-import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -43,13 +42,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
-import java.time.LocalDateTime;
+import java.io.File;
 import java.util.Date;
 
 
 public class submitDisaster_fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
     private static final String ARG_EVENT = "eventParam";
 
+    private submitDisasterListener listener;
     //maps
     private GoogleMap googleMap;
     private MapView mapView;
@@ -61,12 +61,21 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
     private Button btn_back;
     private Button btn_submit;
     private Button btn_cam;
+    private ImageView disasterImage;
     // rest
     private Gson gson;
     private Disaster disaster;
 
+    //View
+    View rootView;
+
 //MainActivity
     MainActivity mainActivity;
+
+    public interface submitDisasterListener{
+        void onInputSubmitSent(String input);
+    }
+
     public submitDisaster_fragment() {
         // Required empty public constructor
     }
@@ -91,6 +100,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         }
 
 
+
         //get user location
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -101,7 +111,10 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-         View rootView = inflater.inflate(R.layout.fragment_submit_disaster_fragment, container, false);
+        rootView = inflater.inflate(R.layout.fragment_submit_disaster_fragment, container, false);
+         //DisasterImage
+        //disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
+        //disasterImage.setImageResource(R.drawable.flood);
 
         //Maps
         //https://developers.google.com/maps/documentation/android-sdk/start
@@ -114,14 +127,16 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         btn_cam = rootView.findViewById(R.id.btn_cam);
         btn_cam.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 //go to cam
-                FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentmanager.beginTransaction();
+                Intent intent = new Intent("GoToCamera");
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                //go to cam
+                //FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
+                //FragmentTransaction transaction = fragmentmanager.beginTransaction();
 
-                transaction.replace(R.id.mainactivity_framelayout, new camera_fragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
+                //transaction.replace(R.id.mainactivity_framelayout, new camera_fragment());
+                //transaction.addToBackStack(null);
+                //transaction.commit();
 
             }
         });
@@ -241,7 +256,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                         disaster.setLatUser(user.latitude);
                         disaster.setLonUser(user.longitude);
                         disaster.setDistance(results[0]/1000);
-                        disaster.setUserImage(""+R.drawable.disasterdude);
+                        //disaster.setUserImage(""+);
                         //disaster.setDisasterType(DisasterType.Wildfire);
                         //disaster.setEmblemImage(""+R.drawable.fire);
                         disaster.setPoints();
@@ -295,7 +310,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                             disaster.setLatUser(user.latitude);
                             disaster.setLonUser(user.longitude);
                             disaster.setDistance(results[0]/1000);
-                            disaster.setUserImage(""+R.drawable.disasterdude);
+                            //disaster.setUserImage(""+R.drawable.disasterdude);
                             disaster.setEmblemImage(""+R.drawable.fire);
                             disaster.setDisasterType(DisasterType.Wildfire);
                             disaster.setPoints();
@@ -305,6 +320,17 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                 });
 
         googleMap.setOnMarkerClickListener(this);
+    }
+
+    public void updateImage(String filename)
+    {
+        //File imgFile = new File(filename);
+        //Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
+        //if (bitmap != null) {
+            disasterImage.setImageResource(R.drawable.disasterdude);
+
+        //}
     }
 
 }
