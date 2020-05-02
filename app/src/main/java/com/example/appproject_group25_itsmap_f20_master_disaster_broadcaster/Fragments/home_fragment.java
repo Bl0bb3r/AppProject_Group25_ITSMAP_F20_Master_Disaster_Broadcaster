@@ -121,7 +121,7 @@ public class home_fragment extends Fragment {
                 //transaction.addToBackStack(null);
                 //transaction.commit();
                 String id = disasterService.UsersDisasters.get(0).getId();
-                disasterService.getDisaster(mainActivity.userId, id);
+                disasterService.GetDisaster(id);
             }
         });
 

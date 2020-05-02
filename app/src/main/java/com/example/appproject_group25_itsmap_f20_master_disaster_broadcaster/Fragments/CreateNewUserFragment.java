@@ -62,7 +62,7 @@ public class CreateNewUserFragment extends Fragment {
 
 
         btn_back = rootView.findViewById(R.id.Btn_Cancel);
-        btn_signup.setOnClickListener(new View.OnClickListener() {
+        btn_back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();

@@ -88,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                         //Navigate
                         //navController.navigate(R.id.action_loginFragment_to_settingsOverviewFragment);
 
+                        disasterService.currentUser = mAuth.getCurrentUser();
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
 

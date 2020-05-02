@@ -63,8 +63,9 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        userId = intent.getStringExtra("userID");
+        //Intent intent = getIntent();
+        //userId = intent.getStringExtra("userID");
+
         disaster = new Disaster();
         serviceIntent = new Intent(this, DisasterService.class);
         // initiate progress bar and start button
@@ -128,8 +129,6 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
 
                 //disasterService.InsertDisaster(disaster, userId);
 
-
-                disasterService.GetAllDisasters(userId);
                 disasterService.sendRequest(getApplicationContext());
                 Log.wtf("Binder", "MainActivity bound to service");
             }
@@ -159,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
 
                 //when homepage is loaded get disasters
                 if (disasterService.UsersDisasters.size() < 1) {
-                    disasterService.GetAllDisasters(userId);
+                    disasterService.GetAllDisasters();
                 }
 
             }

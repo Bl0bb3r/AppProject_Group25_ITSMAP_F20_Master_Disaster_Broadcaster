@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Event;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -153,7 +154,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
 
             }
         });
-        //back button
+        //submit button
         btn_submit = (Button) rootView.findViewById(R.id.submit_btn_submit);
         btn_submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -164,9 +165,9 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                 String ImageName = mainActivity.disasterService.UploadImage(currentFile.getAbsolutePath());
                 disaster.setUserImage(ImageName);
                 mainActivity.disasterService.UsersDisasters.add(disaster);
-                mainActivity.disasterService.InsertDisaster(disaster, mainActivity.userId);
+                mainActivity.disasterService.InsertDisaster(disaster);
 
-                Toast.makeText(mainActivity.disasterService, "You got "+disaster.getPoints()+" points!", Toast.LENGTH_LONG).show();
+                Toast.makeText(mainActivity.disasterService, "You got "+disaster.getPoints()+" point(s)!", Toast.LENGTH_LONG).show();
                 //go back to ongoing fragment
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
                 fragmentmanager.popBackStack();
@@ -175,7 +176,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
             }
         });
 
-        //submit button
+        //back button
         btn_back = (Button) rootView.findViewById(R.id.submit_btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -274,9 +275,6 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                         disaster.setLatUser(user.latitude);
                         disaster.setLonUser(user.longitude);
                         disaster.setDistance(results[0]/1000);
-                        //disaster.setUserImage(""+);
-                        //disaster.setDisasterType(DisasterType.Wildfire);
-                        //disaster.setEmblemImage(""+R.drawable.fire);
                         disaster.setPoints();
                     }
                 }
@@ -328,9 +326,6 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                             disaster.setLatUser(user.latitude);
                             disaster.setLonUser(user.longitude);
                             disaster.setDistance(results[0]/1000);
-                            //disaster.setUserImage(""+R.drawable.disasterdude);
-                            disaster.setEmblemImage(""+R.drawable.fire);
-                            disaster.setDisasterType(DisasterType.Wildfire);
                             disaster.setPoints();
 
                         }
@@ -339,6 +334,53 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
 
         googleMap.setOnMarkerClickListener(this);
     }
+    public DisasterType DisasterTypeFromTitle(Disaster event)
+    {
+        if (event.getTitle() != null) {
 
+            String title = event.getTitle();
+
+            if (title.contains("fire")) {
+                return DisasterType.Wildfire;
+            } else if (title.contains("Cyclone")) {
+                return DisasterType.CyclonicStorm;
+            } else if (title.contains("Tornado")) {
+                return DisasterType.Tornado;
+            } else if (title.contains("Volcano")) {
+                return DisasterType.Volcano;
+            } else if (title.contains("Iceberg")) {
+                return DisasterType.Iceberg;
+            } else if (title.contains("Flood")) {
+                return DisasterType.Flood;
+            } else if (title.contains("Blizzard")) {
+                return DisasterType.Blizzard;
+            } else if (title.contains("Hail")) {
+                return DisasterType.HailStorm;
+            } else if (title.contains("Drought")) {
+                return DisasterType.Drought;
+            } else if (title.contains("Dust")) {
+                return DisasterType.DustStorm;
+            } else if (title.contains("Meteor")) {
+                return DisasterType.Meteor;
+            } else if (title.contains("Earthquake")) {
+                return DisasterType.Earthquake;
+            } else if (title.contains("Landslide")) {
+                return DisasterType.Landslide;
+            } else if (title.contains("Avalance")) {
+                return DisasterType.Landslide;
+            } else if (title.contains("Thunder")) {
+                return DisasterType.Thunderstorm;
+            } else if (title.contains("Tsunami")) {
+                return DisasterType.Tsunami;
+            } else if (title.contains("Heat")) {
+                return DisasterType.HeatWeave;
+            }
+            else{
+                return DisasterType.Unknown;
+            }
+        }
+
+        return DisasterType.Unknown;
+    }
 
 }
