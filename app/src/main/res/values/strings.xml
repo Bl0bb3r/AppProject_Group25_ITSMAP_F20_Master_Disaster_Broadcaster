@@ -28,7 +28,7 @@
     <string name="enterPassword">Enter new Password:</string>
     <string name="password_hint">Password</string>
     <string name="verifyPassword">Verify new Password:</string>
-    <string name="total_points" translatable="false" />
+    <string name="total_points" translatable="false">Total points</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="myProfile">My Profile:</string>

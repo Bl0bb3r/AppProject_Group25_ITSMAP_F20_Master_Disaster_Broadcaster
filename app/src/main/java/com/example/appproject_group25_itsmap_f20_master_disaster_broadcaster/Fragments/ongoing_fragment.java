@@ -2,7 +2,6 @@ package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fr
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -42,13 +41,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.base.Stopwatch;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
@@ -57,6 +57,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.reflect.Reflection.getPackageName;
 
@@ -64,7 +65,7 @@ import static com.google.common.reflect.Reflection.getPackageName;
 public class ongoing_fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
 
-    private GoogleMap googleMap;
+    GoogleMap googleMap;
     MapView mapView;
     ListView listViewEvents;
     Button btn_back;
@@ -101,6 +102,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         //mainContext.disasterService.sendRequest(getActivity().getApplicationContext());
         //get user location
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+
 
     }
 
@@ -182,7 +184,10 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         googleMap = gMap;
         setUpMap();
         if (events.size() > 0) {
+            Stopwatch stopwatch = Stopwatch.createStarted();
             SetMarkersOnMap(events);
+            stopwatch.stop();
+            Log.wtf("OnMapReady", " SetMarkerOnMap time: "+stopwatch.elapsed(TimeUnit.MILLISECONDS));
         }
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -263,83 +268,6 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         return false;
     }
 
-    private void SetMarkersOnMap(List<Event> events)
-    {
-        if (events != null) {
-            for (Event event : events) {
-                if (event.getGeometry() != null) {
-                    for (Shape shape : event.getGeometry()) {
-                        Shape.ShapeType type = shape.getType();
-
-                        switch (type) {
-                            case Polygon:
-                                PolygonShape polygon = (PolygonShape) shape;
-                                List<LatLng> points = new ArrayList<>();
-                                for(int i = 0; i< polygon.getCoordinates().length; i++)
-                                {
-                                    int arayArrayLength = polygon.getCoordinates()[i].length;
-                                    for(int j = 0; j< polygon.getCoordinates()[i].length; j++)
-                                    {
-                                        //Cords from nasa is Lon/lat
-                                        double lat = polygon.getCoordinates()[i][j][1];
-                                        double lng = polygon.getCoordinates()[i][j][0];
-                                        LatLng latLng = new LatLng(lat, lng);
-                                        points.add(latLng);
-                                    }
-                                }
-
-                                googleMap.addPolygon(new PolygonOptions().addAll(points).fillColor(Color.BLUE).strokeColor(Color.YELLOW).visible(true));
-                                Log.wtf("PolygonShape", "Polygon contains: " + points.size());
-
-                                break;
-                            case MultiPolygon:
-                                break;
-                            case Point:
-                                PointShape point = (PointShape) shape;
-                                //Cords from nasa is Lon/lat
-                                Log.wtf("PointShape", "Point contains: " + " Lat: " +point.getCoordinates()[1]+" Lon: "+point.getCoordinates()[0]);
-                                if (googleMap != null)
-                                {
-                                    //Cords from nasa is Lon/lat
-                                    LatLng mapPoint = new LatLng(((PointShape) shape).getCoordinates()[1], point.getCoordinates()[0]);
-                                    MainActivity a = (MainActivity) getActivity();
-                                    String resName = MapIconPicker(event);
-                                    InputStream is = a.getResources().openRawResource(Integer.parseInt(resName));
-                                    Bitmap bit = BitmapFactory.decodeStream(new BufferedInputStream(is));
-
-                                    //Bitmap bit = BitmapFactory.decodeResource(mainActivity.getResources(), mainActivity.getResources().getIdentifier(resName,"drawable", mainActivity.getPackageName()));
-                                    //BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(Integer.parseInt(MapIconPicker(event)));
-
-                                    Bitmap bitmap = null;
-                                    Disaster disaster = new Disaster();
-                                    disaster.setDisasterType(DisasterTypeFromTitle(event));
-                                    disaster.setLatDisaster(mapPoint.latitude);
-                                    disaster.setLonDisaster(mapPoint.longitude);
-                                    disaster.setEmblemImage(resName);
-                                    try {
-                                        bitmap = new LoadImageTask().execute(bit).get();
-                                        Marker markerPoint = googleMap.addMarker(new MarkerOptions().position(mapPoint).icon(BitmapDescriptorFactory.fromBitmap(bitmap)).title(event.getTitle()).alpha(0.7f));
-
-                                        markerPoint.setTag(disaster);
-                                    } catch (ExecutionException e) {
-                                        e.printStackTrace();
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                }
-
-                                break;
-
-                            default:
-                                throw new JsonParseException("Unrecognized shape type: " + type);
-
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     private LatLng GetCords(Event event)
     {
@@ -382,6 +310,86 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                 return null;
     }
 
+    private void SetMarkersOnMap(List<Event> events)
+    {
+        if (events != null) {
+            for (Event event : events) {
+                if (event.getGeometry() != null) {
+                    for (Shape shape : event.getGeometry()) {
+                        Shape.ShapeType type = shape.getType();
+
+                        switch (type) {
+                            case Polygon:
+                                PolygonShape polygon = (PolygonShape) shape;
+                                List<LatLng> points = new ArrayList<>();
+                                for(int i = 0; i< polygon.getCoordinates().length; i++)
+                                {
+                                    int arayArrayLength = polygon.getCoordinates()[i].length;
+                                    for(int j = 0; j< polygon.getCoordinates()[i].length; j++)
+                                    {
+                                        //Cords from nasa is Lon/lat
+                                        double lat = polygon.getCoordinates()[i][j][1];
+                                        double lng = polygon.getCoordinates()[i][j][0];
+                                        LatLng latLng = new LatLng(lat, lng);
+                                        points.add(latLng);
+                                    }
+                                }
+
+                                Polygon polygonMarker = googleMap.addPolygon(new PolygonOptions().addAll(points).fillColor(Color.BLUE).strokeColor(Color.YELLOW).visible(true));
+                                //markersToReturn.add(polygonMarker);
+                                //Log.wtf("PolygonShape", "Polygon contains: " + points.size());
+
+                                break;
+                            case MultiPolygon:
+                                break;
+                            case Point:
+                                PointShape point = (PointShape) shape;
+                                //Cords from nasa is Lon/lat
+                                //Log.wtf("PointShape", "Point contains: " + " Lat: " +point.getCoordinates()[1]+" Lon: "+point.getCoordinates()[0]);
+                                if (googleMap != null)
+                                {
+                                    //Cords from nasa is Lon/lat
+                                    LatLng mapPoint = new LatLng(((PointShape) shape).getCoordinates()[1], point.getCoordinates()[0]);
+                                    //MainActivity a = (MainActivity) getActivity();
+                                    String resName = MapIconPicker(event);
+                                    Stopwatch stopwatch = Stopwatch.createStarted();
+                                    InputStream is = mainActivity.getResources().openRawResource(Integer.parseInt(resName));
+                                    Bitmap bit = BitmapFactory.decodeStream(new BufferedInputStream(is));
+                                    stopwatch.stop();
+                                    Log.wtf("InputStream", " loadbitmap: "+stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+                                    Bitmap bitmap = null;
+                                    Disaster disaster = new Disaster();
+                                    disaster.setDisasterType(DisasterTypeFromTitle(event));
+                                    disaster.setLatDisaster(mapPoint.latitude);
+                                    disaster.setLonDisaster(mapPoint.longitude);
+                                    disaster.setEmblemImage(resName);
+                                    Stopwatch stopwatch2 = Stopwatch.createStarted();
+
+                                    try {
+                                        bitmap = new LoadImageTask().execute(bit).get();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Marker markerPoint = googleMap.addMarker(new MarkerOptions().position(mapPoint).icon(BitmapDescriptorFactory.fromBitmap(bitmap)).title(event.getTitle()).alpha(0.7f));
+                                    markerPoint.setTag(disaster);
+                                    stopwatch2.stop();
+                                    Log.wtf("MAP", " format image: "+stopwatch2.elapsed(TimeUnit.MILLISECONDS));
+                                }
+
+                                break;
+
+                            default:
+                                throw new JsonParseException("Unrecognized shape type: " + type);
+
+                        }
+                    }
+                }
+            }
+        }
+    }
     //TODO: Refactor these 2 methodes
     public String MapIconPicker(Event event)
     {
@@ -391,7 +399,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
 
             if (title.contains("fire"))
             {
-                return ""+R.drawable.fire;
+                return ""+ R.drawable.fire;
                 //return "fire";
             }
             else if (title.contains("cyclone"))
