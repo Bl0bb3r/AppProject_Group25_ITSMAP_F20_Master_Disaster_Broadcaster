@@ -10,6 +10,7 @@ Firebase setup:
 https://firebase.google.com/docs/android/setup
 https://medium.com/@sfazleyrabbi/firebase-login-and-registration-authentication-99ea25388cbf
 
+//disregard country clicker - doesnt support API 16 which project demands
 Country Clicker:
 https://www.youtube.com/watch?v=F1aqdARTivA
 https://github.com/Scrounger/CountryCurrencyPicker
