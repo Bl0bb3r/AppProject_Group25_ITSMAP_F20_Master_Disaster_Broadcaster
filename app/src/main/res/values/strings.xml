@@ -46,4 +46,6 @@
     <string name="totalUsers">"Users: "</string>
     <string name="totalSubmits">"Submits: "</string>
     <string name="nicknameTooLong">Nickname too long keep under 16 symbols</string>
+    <string name="rank_end">TH</string>
+    <string name="pts" translatable="false">Pts</string>
 </resources>

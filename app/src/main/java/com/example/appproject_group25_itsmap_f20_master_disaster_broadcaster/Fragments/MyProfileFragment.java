@@ -132,6 +132,8 @@ public class MyProfileFragment extends Fragment {
     private void setProfileDetails() {
         User currUser = mainActivity.disasterService.GetUser();
 
+        //TODO: Make profile picture interactable
+
         // if variable in edit text is different from value from getUser - change - and set in DB
         if (NicknameField.toString().length() > 16) {
             Toast.makeText(mainActivity, "" + R.string.nicknameTooLong, Toast.LENGTH_LONG).show();
@@ -139,12 +141,14 @@ public class MyProfileFragment extends Fragment {
         else {
             if (NicknameField.toString() != currUser.getName()) {
                 // set new value NicknameField.toString() in db
-
+                currUser.setName(NicknameField.getText().toString());
             }
         }
-            if (CountryField.toString() != currUser.getCountry()) {
-                // set new value CountryField.toString() in db
+        if (CountryField.toString() != currUser.getCountry()) {
+            // set new value CountryField.toString() in db
+            currUser.setCountry(CountryField.getText().toString());
+        }
 
-            }
+        mainActivity.disasterService.UpdateUser(currUser);
     }
 }

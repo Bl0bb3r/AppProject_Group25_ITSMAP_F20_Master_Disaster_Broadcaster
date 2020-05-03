@@ -19,29 +19,62 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/rankings_Rank"
+            android:id="@+id/rankings_position_rank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:gravity="start"
             android:text="@string/zero"
             android:textColor="@color/colorWhite"
-            android:gravity="start"
-            android:textSize="45sp"
-            />
+            android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/textView_rankings_position_end"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:gravity="start"
+            android:text="@string/rank_end"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
+        
+        <Space
+            android:layout_width="30dp"
             android:layout_height="wrap_content" />
 
-        <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/roundcorner"
+        <TextView
+            android:id="@+id/textView_rankings_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:gravity="start"
+            android:text="@string/nickname"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
 
-            />
+        <Space
+            android:layout_width="30dp"
+            android:layout_height="wrap_content" />
 
+        <TextView
+            android:id="@+id/textView_rankings_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:gravity="end"
+            android:text="@string/zero"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
 
+        <TextView
+            android:id="@+id/textView_rankings_label_pts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:gravity="end"
+            android:text="@string/pts"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
 
     </LinearLayout>
 

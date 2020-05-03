@@ -132,6 +132,29 @@ public class Repository {
         return disaster[0];
     }
 
+    public List<User> GetAllUsers(){
+        List<User> users = new ArrayList<User>();
+
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
+                                users.add(document.toObject(User.class));
+                            }
+                        } else {
+                            Log.wtf("FIREBASE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+        Intent intent = new Intent("GetAllUsers");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        return users;
+    }
+
     //Upload Image to storage
     public String UploadImage(String filePath){
         Uri file = Uri.fromFile(new File(filePath));

@@ -224,13 +224,18 @@ public class DisasterService extends Service {
         return repository.UploadImage(filepath);
     }
 
+    public List<User> GetAllUsers()
+    {
+        return repository.GetAllUsers();
+    }
+
     public User GetUser() {
         return repository.GetUser(currentUser.getUid());
     }
 
-    /*public void User UpdateUser() {
-        repository.SetUser
-    }*/
+    public void UpdateUser(User user) {
+        repository.UpdateUser(user, currentUser.getUid());
+    }
 
 }
 

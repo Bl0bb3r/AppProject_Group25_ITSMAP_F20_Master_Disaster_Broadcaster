@@ -24,10 +24,12 @@
     <string name="verifyPassword">Bekræft nyt Kodeord:</string>
     <string name="myProfile">Min Profil:</string>
     <string name="name">"Navn: "</string>
-    <string name="nickname">"Kælenavn: "</string>
+    <string name="nickname">"Alias: "</string>
     <string name="country">"Land: "</string>
     <string name="apply">Anvend</string>
     <string name="scopeMe">Vis mig</string>
     <string name="totalUsers">"Brugere: "</string>
     <string name="totalSubmits">"Indsendelser: "</string>
+    <string name="rank_end">.</string>
+    <string name="nicknameTooLong">Alias for langt, hold det under 16 symboler</string>
 </resources>
