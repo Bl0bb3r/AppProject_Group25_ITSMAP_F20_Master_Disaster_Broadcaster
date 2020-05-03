@@ -31,12 +31,19 @@
     <string name="total_points" translatable="false">Total points</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="myProfile">My Profile:</string>
-    <string name="name">Name:</string>
-    <string name="nickname">Nickname:</string>
-    <string name="country">Country:</string>
-    <string name="rank" translatable="false">Rank:</string>
+    <string name="myProfile">"My Profile: "</string>
+    <string name="name">"Name: "</string>
+    <string name="nickname">"Nickname: "</string>
+    <string name="country">"Country: "</string>
+    <string name="rank" translatable="false">"Rank: "</string>
     <string name="points" translatable="false">"Points: "</string>
     <string name="zero" translatable="false">0</string>
     <string name="apply">Apply</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="scopeMe">Show me</string>
+    <string name="top" translatable="false">Top</string>
+    <string name="totalUsers">"Users: "</string>
+    <string name="totalSubmits">"Submits: "</string>
+    <string name="nicknameTooLong">Nickname too long keep under 16 symbols</string>
 </resources>

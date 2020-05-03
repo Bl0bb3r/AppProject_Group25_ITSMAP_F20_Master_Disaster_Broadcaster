@@ -1,7 +1,9 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -12,10 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.User;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 
 public class MyProfileFragment extends Fragment {
+
+    private MainActivity mainActivity;
 
     ImageView ProfilePicture;
     EditText NicknameField;
@@ -32,10 +39,21 @@ public class MyProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
+    // Fragment Lifecycle stuff
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        //get so that i can access DisasterService that is bound to main Activity.
+        mainActivity = (MainActivity) context;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getArguments() != null) {
+            //if any parameters
+        }
 
     }
 
@@ -66,24 +84,67 @@ public class MyProfileFragment extends Fragment {
         btn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                setProfileDetails();
             }
         });
-
-
-
 
         return rootView;
     }
 
-    private void getUserDetails() {
-        String Nickname;
-        String Country;
-        String Rank;
-        String Points;
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        getProfileDetails();
 
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
+    //TODO Check på user details - lav if country/name osv er sat - return values og refresh layout variabler
+
+    private void getProfileDetails() {
+        User tempUser = mainActivity.disasterService.GetUser();
+
+        //https://stackoverflow.com/questions/4590957/how-to-set-text-in-an-edittext
+        //if (profile picture) {
+
+        //}
+        if (tempUser.getName() != null) {
+            NicknameField.setText(tempUser.getName(),TextView.BufferType.EDITABLE);
+        }
+        if (tempUser.getCountry() != null) {
+            CountryField.setText(tempUser.getCountry(),TextView.BufferType.EDITABLE);
+        }
+        if (tempUser.getRank() != 0) {
+            RankField.setText(tempUser.getRank());
+        }
+        if (tempUser.getTotalPoints() != 0) {
+            PointsField.setText(tempUser.getTotalPoints());
+        }
+
+        return;
+    }
+
+    private void setProfileDetails() {
+        User currUser = mainActivity.disasterService.GetUser();
+
+        // if variable in edit text is different from value from getUser - change - and set in DB
+        if (NicknameField.toString().length() > 16) {
+            Toast.makeText(mainActivity, "" + R.string.nicknameTooLong, Toast.LENGTH_LONG).show();
+        }
+        else {
+            if (NicknameField.toString() != currUser.getName()) {
+                // set new value NicknameField.toString() in db
+
+            }
+        }
+            if (CountryField.toString() != currUser.getCountry()) {
+                // set new value CountryField.toString() in db
+
+            }
     }
 }

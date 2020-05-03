@@ -27,4 +27,7 @@
     <string name="nickname">"Kælenavn: "</string>
     <string name="country">"Land: "</string>
     <string name="apply">Anvend</string>
+    <string name="scopeMe">Vis mig</string>
+    <string name="totalUsers">"Brugere: "</string>
+    <string name="totalSubmits">"Indsendelser: "</string>
 </resources>

@@ -29,6 +29,7 @@ import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Mod
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.Shape;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.ShapeDeserializer;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Global;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.User;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Utility.Repository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -222,6 +223,14 @@ public class DisasterService extends Service {
     {
         return repository.UploadImage(filepath);
     }
+
+    public User GetUser() {
+        return repository.GetUser(currentUser.getUid());
+    }
+
+    /*public void User UpdateUser() {
+        repository.SetUser
+    }*/
 
 }
 
