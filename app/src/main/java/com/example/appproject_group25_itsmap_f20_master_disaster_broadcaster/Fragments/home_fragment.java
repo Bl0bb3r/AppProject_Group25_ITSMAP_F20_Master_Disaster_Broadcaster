@@ -86,7 +86,24 @@ public class home_fragment extends Fragment {
         rankings_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                //TODO: open rankings fragment
+                FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentmanager.beginTransaction();
+
+                transaction.replace(R.id.mainactivity_framelayout, new RankingsFragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+        profile_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentmanager.beginTransaction();
+
+                transaction.replace(R.id.mainactivity_framelayout, new MyProfileFragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 

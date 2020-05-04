@@ -13,7 +13,7 @@
     <string name="signIn">Sign In</string>
     <string name="email_hint" translatable="false">Email</string>
     <string name="password">Password</string>
-    <string name="appHeadline1" translatable="false">Disaster Master</string>
+    <string name="appHeadline1" translatable="false">Master Disaster</string>
     <string name="appHeadline2" translatable="false">Broadcaster</string>
     <string name="register">Don\'t have an Account? Register here!</string>
     <string name="signUp">Sign Up</string>

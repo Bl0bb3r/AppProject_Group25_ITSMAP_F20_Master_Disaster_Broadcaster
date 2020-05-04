@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context=".Fragments.MyProfileFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/MyProfilePageHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/myProfile"
+            android:textColor="@color/colorYellow"
+            android:textSize="26sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/editProfilePicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="70dp"
+            android:layout_marginRight="70dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfilePageHint"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/MyProfileNicknameHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/nickname"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editProfilePicture" />
+
+        <EditText
+            android:id="@+id/MyProfileNicknameField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryCards"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/nickname"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+
+            app:layout_constraintBaseline_toBaselineOf="@id/MyProfileNicknameHint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileNicknameHint"
+            app:layout_constraintTop_toBottomOf="@+id/editProfilePicture" />
+
+        <TextView
+            android:id="@+id/MyProfileCountryHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/country"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileNicknameHint" />
+
+        <EditText
+            android:id="@+id/MyProfileCountryField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryCards"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/country"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+
+            app:layout_constraintBaseline_toBaselineOf="@id/MyProfileCountryHint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileNicknameHint"
+            app:layout_constraintTop_toBottomOf="@+id/editProfilePicture" />
+
+
+        <!-- country part picker TODO: find one that support 16
+        <com.scrounger.countrycurrencypicker.library.Buttons.CountryCurrencyButton
+            android:id="@+id/CountryBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="@color/colorPrimaryCards"
+            app:country_code="US"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileNicknameHint"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileNicknameHint"
+            app:show_currency="false" />
+-->
+        <TextView
+            android:id="@+id/MyProfileRankHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/rank"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileCountryHint" />
+
+        <TextView
+            android:id="@+id/MyProfileRankField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="@color/colorPrimaryCards"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/zero"
+            android:textColor="@color/colorYellow"
+            android:textSize="24sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileNicknameHint"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileCountryHint" />
+
+        <TextView
+            android:id="@+id/MyProfilePointsHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/points"
+            android:textColor="@color/colorYellow"
+            android:textSize="22sp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfileRankHint" />
+
+        <TextView
+            android:id="@+id/MyProfilePointsField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryCards"
+            android:fontFamily="@font/audiowide"
+            android:text="@string/zero"
+            android:textColor="@color/colorYellow"
+            android:textSize="24sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/MyProfileNicknameHint"
+            app:layout_constraintTop_toTopOf="@+id/MyProfilePointsHint" />
+
+        <Button
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/btnBackTheme"
+            android:layout_marginLeft="75dp"
+            android:layout_marginStart="75dp"
+            android:text="@string/back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfilePointsHint" />
+
+        <Button
+            android:id="@+id/apply_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/btnGoTheme"
+            android:layout_marginRight="75dp"
+            android:layout_marginEnd="75dp"
+            android:text="@string/apply"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MyProfilePointsHint" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
