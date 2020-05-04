@@ -48,4 +48,8 @@
     <string name="nicknameTooLong">Nickname too long keep under 16 symbols</string>
     <string name="rank_end">TH</string>
     <string name="pts" translatable="false">Pts</string>
+    <string name="first" translatable="false">ST</string>
+    <string name="second" translatable="false">ND</string>
+    <string name="third" translatable="false">RD</string>
+    <string name="fourthAndRest" translatable="false">TH</string>
 </resources>
