@@ -24,8 +24,8 @@
     <LinearLayout
 
         android:id="@+id/layout_username"
-        android:layout_width="418dp"
-        android:layout_height="51dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_marginTop="15dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
@@ -66,6 +66,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:fontFamily="sans-serif"
+                android:textColor="@color/colorYellow"
                 android:hint="@string/email_hint"
                 android:inputType="textEmailAddress"
                 android:maxLines="1">
@@ -79,9 +80,9 @@
     <LinearLayout
 
         android:id="@+id/layout_password"
-        android:layout_width="418dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:weightSum="100"
@@ -120,6 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
+                android:textColor="@color/colorYellow"
                 android:hint="@string/password_hint"
                 android:inputType="textEmailAddress"
                 android:maxLines="1">
@@ -133,9 +135,9 @@
     <LinearLayout
 
         android:id="@+id/layout_verifyPassword"
-        android:layout_width="418dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:weightSum="100"
@@ -173,6 +175,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_gravity="center_vertical"
+                android:textColor="@color/colorYellow"
                 android:hint="@string/password_hint"
                 android:inputType="textEmailAddress"
                 android:maxLines="1">
@@ -189,12 +192,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginStart="80dp"
         android:fontFamily="sans-serif"
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/Btn_SignUp"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/Btn_SignUp"

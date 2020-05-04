@@ -32,4 +32,6 @@
     <string name="totalSubmits">"Indsendelser: "</string>
     <string name="rank_end">.</string>
     <string name="nicknameTooLong">Alias for langt, hold det under 16 symboler</string>
+    <string name="capture">Skærmklip</string>
+    <string name="swap">Skift</string>
 </resources>

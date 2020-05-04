@@ -55,4 +55,7 @@
     <string name="second" translatable="false">ND</string>
     <string name="third" translatable="false">RD</string>
     <string name="fourthAndRest" translatable="false">TH</string>
+    <string name="x" translatable="false">X</string>
+    <string name="capture">Capture</string>
+    <string name="swap">Swap</string>
 </resources>
