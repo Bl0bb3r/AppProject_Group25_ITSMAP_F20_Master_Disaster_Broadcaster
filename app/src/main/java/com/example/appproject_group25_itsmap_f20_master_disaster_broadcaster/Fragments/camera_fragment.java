@@ -57,17 +57,10 @@ public class camera_fragment extends Fragment{
     private Camera mCamera = null;
     private CameraPreview mPreview;
     private MediaRecorder mediaRecorder;
-    private static int rotation;
-    private static boolean whichCamera = true;
-    private static  Camera.Parameters p;
-    private boolean isCameraInitialized;
-    private boolean isRecording = false;
-    final int CAMERA_REQUEST_CODE = 1;
-    MainActivity mainActivity;
+
     String filename;
     FrameLayout preview;
 
-    private static final int FOCUS_AREA_SIZE= 100;
 
     public camera_fragment() {
         // Required empty public constructor
@@ -194,7 +187,7 @@ public class camera_fragment extends Fragment{
                     @Override
                     public void onClick(View v) {
                         // get an image from the camera
-                        mainActivity.fileName = filename;
+                        ((MainActivity)getActivity()).fileName = filename;
                         listener.onImageSent(filename);
 
                         //go back
@@ -248,7 +241,6 @@ public class camera_fragment extends Fragment{
     @Override
     public void onPause() {
         super.onPause();
-        releaseMediaRecorder();       // if you are using MediaRecorder, release it first
         releaseCamera();              // release the camera immediately on pause event
     }
 
@@ -279,8 +271,7 @@ public class camera_fragment extends Fragment{
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        //get so that i can access DisasterService that is bound to main Activity.
-        mainActivity = (MainActivity) context;
+
         if (context instanceof CameraFragmentListener)
         {
             listener = (CameraFragmentListener) context;
@@ -361,50 +352,7 @@ public class camera_fragment extends Fragment{
 
         return mediaFile;
     }
-    private boolean prepareVideoRecorder() {
 
-        mCamera = getCameraInstance();
-        mediaRecorder = new MediaRecorder();
-
-        // Step 1: Unlock and set camera to MediaRecorder
-        mCamera.unlock();
-        mediaRecorder.setCamera(mCamera);
-
-        // Step 2: Set sources
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
-        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-        mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
-        mediaRecorder.setOrientationHint(90);
-        // Step 4: Set output file
-        mediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
-
-        // Step 5: Set the preview output
-        mediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
-
-        // Step 6: Prepare configured MediaRecorder
-        try {
-            mediaRecorder.prepare();
-        } catch (IllegalStateException e) {
-            Log.d("TAG", "IllegalStateException preparing MediaRecorder: " + e.getMessage());
-            releaseMediaRecorder();
-            return false;
-        } catch (IOException e) {
-            Log.d("TAG", "IOException preparing MediaRecorder: " + e.getMessage());
-            releaseMediaRecorder();
-            return false;
-        }
-        return true;
-    }
-        private void releaseMediaRecorder () {
-            if (mediaRecorder != null) {
-                mediaRecorder.reset();   // clear recorder configuration
-                mediaRecorder.release(); // release the recorder object
-                mediaRecorder = null;
-                mCamera.lock();           // lock camera for later use
-            }
-        }
 
         private void releaseCamera () {
             if (mCamera != null) {

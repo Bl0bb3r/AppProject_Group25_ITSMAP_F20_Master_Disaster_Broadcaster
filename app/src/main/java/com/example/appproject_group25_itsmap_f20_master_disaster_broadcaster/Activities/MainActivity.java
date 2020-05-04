@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
     public DisasterService disasterService;
     public LocalBroadcastManager localBroadcastManager;
 
-    //fragment
+    //fragments
        submitDisaster_fragment submit;
        camera_fragment camera;
        home_fragment home;
@@ -65,9 +65,8 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
     Button btn_myDisasters;
     //disaster
     Disaster disaster;
-    //User ID
-    public String userId;
 
+    //filename from camerafragment
     public String fileName;
 
     Bundle saved;
@@ -84,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
         //setup broadcast filters and register it.
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction("NewEvent");
-        filter.addAction("GetALLDB");
         filter.addAction("GoToCamera");
         filter.addAction("GoToSubmit");
         filter.addAction("ReturnFromCamera");
@@ -93,10 +90,6 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         localBroadcastManager.registerReceiver(DisasterReceiver, filter);
 
-        // initiate progress bar and start button
-        progressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
-        //visible the progress bar
-        progressBar.setVisibility(View.VISIBLE);
         //check Fragment
         CheckStoragePermission();
         disaster = new Disaster();
@@ -158,21 +151,9 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            //TODO: once events has been requested dont request the same events again
-            if (intent.getAction().equals("NewEvent"))
-            {
-                Log.wtf("MainActivity", "events size: "+ disasterService.events.size());
-                    //Hide progressbar
-                    progressBar.setVisibility(View.INVISIBLE);
 
-            }
-            else if (intent.getAction().equals("GetALLDB")) {
-                Log.wtf("UsersDisasters", "size: "+disasterService.UsersDisasters.size());
 
-                    //home_fragment.SetMyDisastersBtnVisible();
-
-            }
-            else if (intent.getAction().equals("NoEvents")) {
+            if (intent.getAction().equals("NoEvents")) {
                 Log.wtf("NoEvents", "There was no events at this time");
 
                 progressBar.setVisibility(View.INVISIBLE);
@@ -223,13 +204,15 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
         super.onStop();
 
     }
-
+//Get filename from camerafragment and pass it on to SubmitDisasterFragment
     @Override
     public void onImageSent(String input) {
 
             submit.updateImage(input);
 
     }
+
+    //permissions
     public void CheckLocationPermission(){
         // Here, thisActivity is the current activity
         String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
@@ -356,47 +339,7 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
         }
     }
 
-    public void CheckCamMicLocationStoragePermissions(){
-        // Here, thisActivity is the current activity
-        String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (ContextCompat.checkSelfPermission(this, String.valueOf(permissions)) != PackageManager.PERMISSION_GRANTED) {
 
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    String.valueOf(permissions))) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-                new AlertDialog.Builder(this).setTitle("Permissions needed").setMessage("these permissions is needed and the app wont function without them").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(MainActivity.this, permissions, Global.REQUEST_CAM_AUDIO_STORAGE_MIC);
-                    }
-                }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).create().show();
-
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(this,
-                        permissions,
-                        Global.REQUEST_CAM_AUDIO_STORAGE_MIC);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            // Permission has already been granted
-
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -461,9 +404,6 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
         }
     }
 }

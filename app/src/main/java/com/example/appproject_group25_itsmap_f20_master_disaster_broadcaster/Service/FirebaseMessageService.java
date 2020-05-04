@@ -23,23 +23,13 @@ import com.google.firebase.messaging.RemoteMessage;
 import static com.google.firebase.inappmessaging.internal.Logging.TAG;
 
 //Cloud messaging firebase TODO notify user when new disaster occurring
+//this enables us to send a notification via Firebase Could Messaging.
 public class FirebaseMessageService extends FirebaseMessagingService {
     public FirebaseMessageService() {
     }
 
-    //not used
-    @Override
-    public void onNewToken(String token) {
-        Log.wtf("FirebaseMessageService", "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-        //sendRegistrationToServer(token);
-    }
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // ...
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
@@ -62,8 +52,6 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             sendNotification(title, body);
         }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
     //notification
     private void sendNotification(String title, String body)

@@ -45,6 +45,7 @@ import java.text.DateFormat;
  * create an instance of this fragment.
  */
 public class DisasterDetails extends Fragment implements OnMapReadyCallback {
+
     private static final String ARG_EVENT = "disasterParams";
     //maps
     private GoogleMap googleMap;

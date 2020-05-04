@@ -70,7 +70,6 @@ public class Repository {
                         Log.w("FIREBASE", "Error adding document", e);
                     }
                 });
-
     }
 
     public List<Disaster> GetAllDisasters(String userID){
@@ -101,8 +100,8 @@ public class Repository {
                         }
                     }
                 });
-        Intent intent = new Intent("GetALLDB");
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+       // Intent intent = new Intent("GetALLDB");
+       // LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         return disasters;
     }
 
@@ -147,7 +146,7 @@ public class Repository {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 // ...
-                Toast.makeText(context,"Snapshot Name: "+taskSnapshot.getMetadata().getName(), Toast.LENGTH_LONG).show();
+                Log.wtf("Repository", "Image uploaded");
             }
         });
         return ref.getName();

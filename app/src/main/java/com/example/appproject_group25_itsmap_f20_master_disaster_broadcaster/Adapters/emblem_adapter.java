@@ -37,12 +37,13 @@ public class emblem_adapter extends BaseAdapter {
     private Disaster disaster;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public emblem_adapter(Context c, ArrayList<Disaster> disasters) {
         this.context = c; //we need the context to inflate views
 
+        this.disasters = disasters;
         //https://stackoverflow.com/questions/29670116/remove-duplicates-from-a-list-of-objects-based-on-property-in-java-8
-        this.disasters = (ArrayList<Disaster>) disasters.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingInt(Disaster::getEmblemImage))), ArrayList::new));
+        //removed this becuase we need to support 16 and this was 24 minimum
+        //this.disasters = (ArrayList<Disaster>) disasters.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingInt(Disaster::getEmblemImage))), ArrayList::new));
 
 }
 
@@ -71,7 +72,6 @@ public class emblem_adapter extends BaseAdapter {
         return position;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -83,30 +83,20 @@ public class emblem_adapter extends BaseAdapter {
         }
 
         disaster = disasters.get(position);
-
+        ImageView emblemImage = (ImageView) convertView.findViewById(R.id.emblem_list_image);
         // fill the current position with animal information
         if (disaster != null) {
 
-            // set image
-            ImageView emblemImage = (ImageView) convertView.findViewById(R.id.emblem_list_image);
-
-           // Log.wtf("CustomAdapter", "Image ID: " + disaster.getEmblemImage());
-
-            if (disaster.getEmblemImage() != 0)
+            if (disaster.getEmblemImage() != null)
             {
 
-                emblemImage.setImageResource(disaster.getEmblemImage());
+                emblemImage.setImageResource(Integer.parseInt(disaster.getEmblemImage()));
             }
             else{
-                //emblemImage.setImageResource(R.drawable.cancel);
+                emblemImage.setImageResource(R.drawable.cancel);
             }
         }
         return convertView;
-    }
-    public void updateList(ArrayList<Disaster> updatedDisasters)
-    {
-        disasters = updatedDisasters;
-        notifyDataSetChanged();
     }
 }
 

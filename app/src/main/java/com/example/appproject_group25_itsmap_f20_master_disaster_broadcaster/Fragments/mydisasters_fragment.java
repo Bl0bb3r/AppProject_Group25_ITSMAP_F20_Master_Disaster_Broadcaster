@@ -33,12 +33,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link mydisasters_fragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class mydisasters_fragment extends Fragment implements DisasterAdapter.OnDisasterListener {
 
     //Service
@@ -153,7 +147,6 @@ public class mydisasters_fragment extends Fragment implements DisasterAdapter.On
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onResume() {
         super.onResume();
@@ -181,7 +174,7 @@ public class mydisasters_fragment extends Fragment implements DisasterAdapter.On
             recyclerViewDisasters.setAdapter(disasterAdapter);
             recyclerViewDisasters.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            emblemAdapter = new emblem_adapter(getContext(),disasters);
+            emblemAdapter = new emblem_adapter(getActivity(),disasters);
             emblemAdapter.notifyDataSetChanged();
             gridViewEmblems.setAdapter(emblemAdapter);
 

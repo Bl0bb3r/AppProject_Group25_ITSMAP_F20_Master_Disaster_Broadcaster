@@ -173,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.putExtra("userID", currentUser.getUid());
                         startActivity(intent);
-                        Toast.makeText(LoginActivity.this,"User: "+currentUser.getUid(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(LoginActivity.this,"User: "+currentUser.getUid(), Toast.LENGTH_SHORT).show();
                     }
                 }
                 Log.wtf("Binder", "Login bound to service");

@@ -108,9 +108,6 @@ public class DisasterService extends Service {
         storageRef = storage.getReference();
         repository = new Repository(db, storage, storageRef, getApplicationContext());
 
-        //First time install broadcast this or on open
-        Intent intent = new Intent("FIRST_START");
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
     }
     @Nullable
@@ -216,9 +213,9 @@ public class DisasterService extends Service {
        eonet = gson.fromJson(json, new TypeToken<Eonet>(){}.getType());
 
        events = eonet.getEvents();
-       Intent intent = new Intent("NewEvent");
-       intent.putExtra("event", gson.toJson(eonet));
-       LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+       //Intent intent = new Intent("NewEvent");
+       //intent.putExtra("event", gson.toJson(eonet));
+       //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
    }
 

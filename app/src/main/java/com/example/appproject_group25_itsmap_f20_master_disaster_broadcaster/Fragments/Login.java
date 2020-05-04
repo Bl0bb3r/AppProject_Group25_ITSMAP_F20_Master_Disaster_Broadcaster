@@ -26,10 +26,6 @@ public class Login extends Fragment {
     TextInputEditText EmailField;
     TextInputEditText PasswordField;
     TextView RegisterNewAccount;
-
-    //Firebase authentication variable
-    private FirebaseAuth mAuth;
-
     LoginActivity loginActivity;
 
     public Login() {

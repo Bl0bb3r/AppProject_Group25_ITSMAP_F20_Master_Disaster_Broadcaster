@@ -85,9 +85,9 @@ public class DisasterAdapter extends RecyclerView.Adapter<DisasterAdapter.MyDisa
                 }
             });
         }
-        if (disaster.getEmblemImage() != 0)
+        if (disaster.getEmblemImage() != null)
         {
-            typeImage.setImageResource(disaster.getEmblemImage());
+            typeImage.setImageResource(Integer.parseInt(disaster.getEmblemImage()));
         }
         else{
             typeImage.setImageResource(R.drawable.flood);

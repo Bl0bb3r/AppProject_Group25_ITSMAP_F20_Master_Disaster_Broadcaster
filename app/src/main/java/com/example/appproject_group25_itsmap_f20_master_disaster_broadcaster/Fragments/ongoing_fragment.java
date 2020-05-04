@@ -66,17 +66,17 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
     RecyclerView recyclerViewEvents;
     Button btn_back;
     EventAdapter eventAdapter;
-    //private boolean isBound;
+
+
     Gson gson;
     private ArrayList<Event> events;
-    public LocalBroadcastManager localBroadcastManager;
-    //DisasterService disasterService;
 
     //User Location
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
+    //view
     View rootView;
     public ongoing_fragment() {
         // Required empty public constructor
@@ -96,8 +96,6 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         if (getArguments() != null) {
 
         }
-        //mainContext.disasterService.sendRequest(getActivity().getApplicationContext());
-        //get user location
 
     }
 
@@ -299,7 +297,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                 }
                 return null;
     }
-
+//TODO: support other types of GeoJson data
     private void SetMarkersOnMap(List<Event> events)
     {
 
@@ -351,7 +349,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                                     disaster.setTitle(event.getTitle());
                                     disaster.setLatDisaster(mapPoint.latitude);
                                     disaster.setLonDisaster(mapPoint.longitude);
-                                    disaster.setEmblemImage(Integer.parseInt(resName));
+                                    disaster.setEmblemImage(resName);
 
                                     try {
                                         bitmap = new LoadImageTask().execute(bit).get();
@@ -527,20 +525,6 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
 
         return DisasterType.Unknown;
     }
-
-    private BroadcastReceiver DisasterReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            //TODO: once events has been requested dont request the same events again
-            if (intent.getAction().equals("ServiceBound")) {
-               // isBound = true;
-
-                Log.wtf("OnGoing","DisasterReceiver ServiceBound called");
-            }
-        }
-    };
 
     @Override
     public void onEventClick(int position) {

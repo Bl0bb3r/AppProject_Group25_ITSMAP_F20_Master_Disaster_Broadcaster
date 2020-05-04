@@ -89,13 +89,12 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         // Required empty public constructor
     }
 
+    //file from mainActivity that is passed from camera fragment
     public void updateImage(String filename)
     {
         BitmapFactory.Options options;
         currentFile = new File(filename);
 
-
-        //}
     }
     // TODO: Rename and change types and number of parameters
     public static submitDisaster_fragment newInstance(String disObject) {
@@ -130,12 +129,6 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
 
 
     }
-    private static int exifToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
-        return 0;
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -146,7 +139,10 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
 
         //Maps
         //https://developers.google.com/maps/documentation/android-sdk/start
-
+        mapView = rootView.findViewById(R.id.mapView_submitDisaster);
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+        mapView.getMapAsync(this);
         //take pic button
         btn_cam = rootView.findViewById(R.id.btn_cam);
         btn_cam.setOnClickListener(new View.OnClickListener() {
@@ -154,13 +150,6 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                 //go to cam
                 Intent intent = new Intent("GoToCamera");
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                //go to cam
-                //FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
-                //FragmentTransaction transaction = fragmentmanager.beginTransaction();
-
-                //transaction.replace(R.id.mainactivity_framelayout, new camera_fragment());
-                //transaction.addToBackStack(null);
-                //transaction.commit();
 
             }
         });
@@ -214,7 +203,6 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                     currentFile.getAbsolutePath());
 
             disasterImage.setRotation(rotateImage);
-            //Bitmap bitmap = decodefile(currentFile.getAbsolutePath());
             Glide.with(rootView).load(currentFile).placeholder(R.drawable.disasterdude).into(disasterImage);
         }
 
@@ -421,6 +409,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         }
     }
 
+    //https://stackoverflow.com/questions/33541481/android-capture-picture-with-cameracapturesession-rotating-the-picture-to-landsc
     public int getCameraPhotoOrientation(Context context, Uri imageUri,
                                          String imagePath) {
         int rotate = 0;
@@ -453,88 +442,5 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         //return 90;
     }
 
-    public static Bitmap decodefile(String path) {
-
-        int orientation;
-
-        try {
-
-            if(path==null){
-
-                return null;
-            }
-            // decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-
-            // Find the correct scale value. It should be the power of 2.
-            final int REQUIRED_SIZE = 70;
-            int width_tmp = o.outWidth, height_tmp = o.outHeight;
-            int scale = 4;
-            while (true) {
-                if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
-                    break;
-                width_tmp /= 2;
-                height_tmp /= 2;
-                scale++;
-            }
-            // decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize=scale;
-            Bitmap bm = BitmapFactory.decodeFile(path,o2);
-
-
-            Bitmap bitmap = bm;
-
-            ExifInterface exif = new ExifInterface(path);
-            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-            Log.e("orientation",""+orientation);
-            Matrix m=new Matrix();
-
-            if((orientation==3)){
-
-                m.postRotate(180);
-                m.postScale((float)bm.getWidth(), (float)bm.getHeight());
-
-//               if(m.preRotate(90)){
-                Log.e("in orientation",""+orientation);
-
-                bitmap = Bitmap.createBitmap(bm, 0, 0,bm.getWidth(),bm.getHeight(), m, true);
-                return  bitmap;
-            }
-            else if(orientation==6){
-
-                m.postRotate(90);
-
-                Log.e("in orientation",""+orientation);
-
-                bitmap = Bitmap.createBitmap(bm, 0, 0,bm.getWidth(),bm.getHeight(), m, true);
-                return  bitmap;
-            }
-
-            else if(orientation==8){
-
-                m.postRotate(270);
-
-                Log.e("in orientation",""+orientation);
-
-                bitmap = Bitmap.createBitmap(bm, 0, 0,bm.getWidth(),bm.getHeight(), m, true);
-                return  bitmap;
-            }
-            else if(orientation==0){
-
-                m.postRotate(270);
-
-                Log.e("in orientation",""+orientation);
-
-                bitmap = Bitmap.createBitmap(bm, 0, 0,bm.getWidth(),bm.getHeight(), m, true);
-                return  bitmap;
-            }
-            return bitmap;
-        }
-        catch (Exception e) {
-        }
-        return null;
-    }
 
 }
