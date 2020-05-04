@@ -89,7 +89,7 @@ public class Login extends Fragment {
         ExitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                loginActivity.finish();
             }
         });
 

@@ -39,4 +39,8 @@
     <string name="points" translatable="false">"Points: "</string>
     <string name="zero" translatable="false">0</string>
     <string name="apply">Apply</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="_0">0</string>
 </resources>

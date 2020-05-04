@@ -35,9 +35,6 @@ public class home_fragment extends Fragment {
 
     MainActivity mainActivity;
 
-    Intent serviceIntent;
-    ServiceConnection disasterServiceConnection;
-    DisasterService disasterService;
     private boolean isBound;
 
     Button ongoing_btn;
@@ -79,10 +76,7 @@ public class home_fragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        serviceIntent = new Intent(getActivity(), DisasterService.class);
-        //bind service
-        DisasterServiceConnection();
-        getActivity().bindService(serviceIntent, disasterServiceConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     @Override
@@ -120,20 +114,13 @@ public class home_fragment extends Fragment {
                 //transaction.replace(R.id.mainactivity_framelayout, new mydisasters_fragment());
                 //transaction.addToBackStack(null);
                 //transaction.commit();
-                String id = disasterService.UsersDisasters.get(0).getId();
-                disasterService.GetDisaster(id);
             }
         });
 
         ongoing_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentmanager.beginTransaction();
-
-                transaction.replace(R.id.mainactivity_framelayout, new ongoing_fragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
+                mainActivity.CheckLocationPermission();
 
             }
         });
@@ -147,22 +134,5 @@ public class home_fragment extends Fragment {
         mainActivity = (MainActivity) context;
 
     }
-    private void DisasterServiceConnection()
-    {
-        disasterServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                DisasterService.DisasterServiceBinder binder = (DisasterService.DisasterServiceBinder) service;
-                disasterService = binder.getService();
-                isBound = true;
-                Log.wtf("Binder", "HomeFragment bound to service");
-            }
 
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                isBound = false;
-                Log.wtf("Binder", "HomeFragment unbound to service");
-            }
-        };
-    }
 }

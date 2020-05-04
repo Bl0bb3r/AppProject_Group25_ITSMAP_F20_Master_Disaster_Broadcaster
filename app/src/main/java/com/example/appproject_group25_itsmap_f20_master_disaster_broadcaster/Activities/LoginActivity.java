@@ -1,11 +1,15 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -17,27 +21,33 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.CreateNewUserFragment;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.Login;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.home_fragment;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Global;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+
 import static android.content.ContentValues.TAG;
 
 public class LoginActivity extends AppCompatActivity {
-
 
     //Firebase authentication variable
     private FirebaseAuth mAuth;
@@ -47,17 +57,25 @@ public class LoginActivity extends AppCompatActivity {
     public DisasterService disasterService;
     private boolean isBound;
     Bundle savedIn;
+    private FirebaseUser currentUser;
     //TODO: Insert NavController
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-
         setContentView(R.layout.activity_login);
         savedIn = savedInstance;
+
+
         //Start service
         serviceIntent = new Intent(this, DisasterService.class);
         startService(serviceIntent);
+        Log.wtf("LoginActivity", "DisasterService is started");
+
+
+
+            mAuth = FirebaseAuth.getInstance();
+            currentUser = mAuth.getCurrentUser();
 
     }
 
@@ -87,8 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                         //Navigate
                         //navController.navigate(R.id.action_loginFragment_to_settingsOverviewFragment);
-
-                        disasterService.currentUser = mAuth.getCurrentUser();
+                        disasterService.currentUser = currentUser;
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
 
@@ -136,8 +153,8 @@ public class LoginActivity extends AppCompatActivity {
                 isBound = true;
 
 
-                mAuth = FirebaseAuth.getInstance();
-                FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                //FirebaseUser currentUser = mAuth.getCurrentUser();
                 //check Fragment
                 if (findViewById(R.id.loginactivity_framelayout) != null)
                 {
@@ -147,15 +164,15 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     if (currentUser == null) {
+                        disasterService.currentUser = mAuth.getCurrentUser();
                         Login loginFragment = new Login();
                         getSupportFragmentManager().beginTransaction().add(R.id.loginactivity_framelayout, loginFragment).commit();
                     }
                     else
                     {
-                        Intent intent = new Intent(getApplication(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.putExtra("userID", currentUser.getUid());
                         startActivity(intent);
-                        //disasterService.GetAllDisasters();
                         Toast.makeText(LoginActivity.this,"User: "+currentUser.getUid(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -176,7 +193,20 @@ public class LoginActivity extends AppCompatActivity {
         {
             unbindService(disasterServiceConnection);
             isBound = false;
+            Log.wtf("LoginActivity", "Login onDestroy unbind service");
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isBound)
+        {
+            unbindService(disasterServiceConnection);
+            isBound = false;
+            Log.wtf("LoginActivity", "Login onStop unbind service");
+        }
+    }
+
 
 }

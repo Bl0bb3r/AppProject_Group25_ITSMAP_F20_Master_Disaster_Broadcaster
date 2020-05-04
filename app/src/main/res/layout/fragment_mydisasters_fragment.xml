@@ -111,19 +111,19 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <GridView
-                android:id="@+id/mydisasters_recyclerview"
+                android:id="@+id/mydisasters_gridview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                  />
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/mydisasters_listview"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mydisasters_recyclerview"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="15dp"
-
+            android:foregroundGravity="center"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="330dp"
             android:layout_marginEnd="15dp"
@@ -134,7 +134,7 @@
             app:layout_constraintBottom_toTopOf="@+id/back_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></ListView>
+            app:layout_constraintTop_toTopOf="parent"></androidx.recyclerview.widget.RecyclerView>
 
         <Button
             android:id="@+id/back_btn"
@@ -148,7 +148,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mydisasters_listview" />
+            app:layout_constraintTop_toBottomOf="@+id/mydisasters_recyclerview" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

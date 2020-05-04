@@ -1,8 +1,11 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.volley.AuthFailureError;
@@ -23,12 +27,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Eonet;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Event;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.Shape;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson.ShapeDeserializer;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Global;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.User;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Utility.Repository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,6 +52,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.core.Query;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -67,7 +77,6 @@ import java.util.UUID;
 public class DisasterService extends Service {
 
     private RequestQueue requestQueue;
-    private Global global;
     private IBinder binder = new DisasterServiceBinder();
     public ArrayList<Event> events = new ArrayList<>();
     public ArrayList<Disaster> UsersDisasters = new ArrayList<>();
@@ -77,9 +86,8 @@ public class DisasterService extends Service {
     FirebaseStorage storage;
     public StorageReference storageRef;
     //Firebase authentication variable
-    private FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
-
 //database methods
     Repository repository;
 
@@ -93,16 +101,12 @@ public class DisasterService extends Service {
          db = FirebaseFirestore.getInstance();
          storage = FirebaseStorage.getInstance("gs://disastermasterbroadcaster.appspot.com/");
         mAuth = FirebaseAuth.getInstance();
+
         currentUser = mAuth.getCurrentUser();
 
         // Create a storage reference from our app
         storageRef = storage.getReference();
-
         repository = new Repository(db, storage, storageRef, getApplicationContext());
-
-
-
-        global = new Global();
 
         //First time install broadcast this or on open
         Intent intent = new Intent("FIRST_START");
@@ -112,14 +116,31 @@ public class DisasterService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        Intent serviceIntet = new Intent("ServiceBound");
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(serviceIntet);
+        Log.wtf("DisasterService", "onBind called");
+
+
         return binder;
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        Intent serviceIntet = new Intent("ServiceBound");
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(serviceIntet);
+        Log.wtf("DisasterService", "onRebind called");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         Log.wtf("DisasterService","Service started");
-        UsersDisasters = (ArrayList<Disaster>) GetAllDisasters();
         return Service.START_STICKY;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.wtf("DisasterService", "onUnbind called");
+        return super.onUnbind(intent);
     }
 
     @Override
@@ -133,14 +154,13 @@ public class DisasterService extends Service {
         if(requestQueue==null){
             requestQueue = Volley.newRequestQueue(ctx);
         }
-        StringRequest stringRequest = new StringRequest(Request.Method.GET,global.NASAEONET,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,Global.NASAEONET,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         //log to the the content before parseing it word object.
                         //Log.wtf("StringRequest ", response);
-                        ParseEvents(response);
+                       ParseEvents(response);
                     }
 
                 }, new Response.ErrorListener() {
@@ -170,7 +190,7 @@ public class DisasterService extends Service {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("Content-Type", "application/json;");
-                params.put("Authorization", global.NASAAPIKEY);
+                params.put("Authorization", Global.NASAAPIKEY);
                 return params;
             }};
 
@@ -185,7 +205,7 @@ public class DisasterService extends Service {
         }
     }
 
-   private List<Event> ParseEvents(String json)
+   private void ParseEvents(String json)
    {
        Eonet eonet = new Eonet();
 
@@ -199,13 +219,13 @@ public class DisasterService extends Service {
        Intent intent = new Intent("NewEvent");
        intent.putExtra("event", gson.toJson(eonet));
        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-       return events;
+
    }
 
    //Firebase
     public List<Disaster> GetAllDisasters()
     {
-        return repository.GetAllDisasters(currentUser.getUid());
+       return repository.GetAllDisasters(currentUser.getUid());
     }
 
     public Disaster GetDisaster(String disasterId)
@@ -224,4 +244,10 @@ public class DisasterService extends Service {
     }
 
 }
+
+
+
+
+
+
 

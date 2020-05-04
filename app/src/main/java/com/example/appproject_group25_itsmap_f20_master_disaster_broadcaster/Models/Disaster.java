@@ -12,7 +12,7 @@ public class Disaster {
     private String id;
     private String title;
     private Date date;
-    private String emblemImage;
+    private int emblemImage;
 
     private DisasterType disasterType;
 
@@ -44,11 +44,11 @@ public class Disaster {
         this.id = id;
     }
 
-    public String getEmblemImage() {
+    public int getEmblemImage() {
         return emblemImage;
     }
 
-    public void setEmblemImage(String emblemImage) {
+    public void setEmblemImage(int emblemImage) {
         this.emblemImage = emblemImage;
     }
 

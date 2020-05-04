@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.location.Location;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -47,12 +50,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 
 public class submitDisaster_fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
     private static final String ARG_EVENT = "eventParam";
 
+    public String DISASTER_IMAGE = "DisasterImage";
     private submitDisasterListener listener;
     //maps
     private GoogleMap googleMap;
@@ -76,9 +81,6 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
     //View
     View rootView;
 
-//MainActivity
-    MainActivity mainActivity;
-
     public interface submitDisasterListener{
         void onInputSubmitSent(String input);
     }
@@ -91,6 +93,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
     {
         BitmapFactory.Options options;
         currentFile = new File(filename);
+
 
         //}
     }
@@ -112,6 +115,14 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
             disaster = gson.fromJson(getArguments().getString(ARG_EVENT), Disaster.class);
 
         }
+        if(savedInstanceState != null)
+        {
+            String fileN = savedInstanceState.getString(DISASTER_IMAGE);
+            if(fileN != null){
+                currentFile = new File(fileN);
+            }
+
+        }
 
 
         //get user location
@@ -119,7 +130,12 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
 
 
     }
-
+    private static int exifToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        return 0;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -128,14 +144,8 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
          //DisasterImage
         disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
 
-        Glide.with(rootView).load(currentFile).placeholder(R.drawable.disasterdude).into(disasterImage);
-
         //Maps
         //https://developers.google.com/maps/documentation/android-sdk/start
-        mapView = rootView.findViewById(R.id.mapView_submitDisaster);
-        mapView.onCreate(savedInstanceState);
-        mapView.onResume();
-        mapView.getMapAsync(this);
 
         //take pic button
         btn_cam = rootView.findViewById(R.id.btn_cam);
@@ -162,12 +172,15 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                 date.getTime();
                 disaster.setDate(date);
 
-                String ImageName = mainActivity.disasterService.UploadImage(currentFile.getAbsolutePath());
-                disaster.setUserImage(ImageName);
-                mainActivity.disasterService.UsersDisasters.add(disaster);
-                mainActivity.disasterService.InsertDisaster(disaster);
+                if (currentFile != null) {
+                    String ImageName =  ((MainActivity)getActivity()).disasterService.UploadImage(currentFile.getAbsolutePath());
+                    disaster.setUserImage(ImageName);
+                }
 
-                Toast.makeText(mainActivity.disasterService, "You got "+disaster.getPoints()+" point(s)!", Toast.LENGTH_LONG).show();
+                ((MainActivity)getActivity()).disasterService.UsersDisasters.add(disaster);
+                ((MainActivity)getActivity()).disasterService.InsertDisaster(disaster);
+
+                Toast.makeText( ((MainActivity)getActivity()).disasterService, "You got "+disaster.getPoints()+" point(s)!", Toast.LENGTH_LONG).show();
                 //go back to ongoing fragment
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
                 fragmentmanager.popBackStack();
@@ -192,16 +205,20 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
          return rootView;
     }
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        //get so that i can access DisasterService that is bound to main Activity.
-        mainActivity = (MainActivity) context;
-
-    }
-    @Override
     public void onStart() {
 
         super.onStart();
+        if(currentFile != null)
+        {
+            int rotateImage = getCameraPhotoOrientation(getActivity(), Uri.fromFile(currentFile),
+                    currentFile.getAbsolutePath());
+
+            disasterImage.setRotation(rotateImage);
+            //Bitmap bitmap = decodefile(currentFile.getAbsolutePath());
+            Glide.with(rootView).load(currentFile).placeholder(R.drawable.disasterdude).into(disasterImage);
+        }
+
+
 
     }
     @Override
@@ -381,6 +398,143 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         }
 
         return DisasterType.Unknown;
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            currentFile = new File(savedInstanceState.getString(DISASTER_IMAGE));
+        }
+    }
+
+    // invoked when the activity may be temporarily destroyed, save the instance state here
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
+        if(currentFile != null) {
+            outState.putString(DISASTER_IMAGE, currentFile.getAbsolutePath());
+        }
+    }
+
+    public int getCameraPhotoOrientation(Context context, Uri imageUri,
+                                         String imagePath) {
+        int rotate = 0;
+        try {
+            context.getContentResolver().notifyChange(imageUri, null);
+            File imageFile = new File(imagePath);
+            ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+
+            Log.wtf("RotateImage", "Exif orientation: " + orientation);
+            Log.wtf("RotateImage", "Rotate value: " + rotate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rotate;
+        //return 90;
+    }
+
+    public static Bitmap decodefile(String path) {
+
+        int orientation;
+
+        try {
+
+            if(path==null){
+
+                return null;
+            }
+            // decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+
+            // Find the correct scale value. It should be the power of 2.
+            final int REQUIRED_SIZE = 70;
+            int width_tmp = o.outWidth, height_tmp = o.outHeight;
+            int scale = 4;
+            while (true) {
+                if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
+                    break;
+                width_tmp /= 2;
+                height_tmp /= 2;
+                scale++;
+            }
+            // decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize=scale;
+            Bitmap bm = BitmapFactory.decodeFile(path,o2);
+
+
+            Bitmap bitmap = bm;
+
+            ExifInterface exif = new ExifInterface(path);
+            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+            Log.e("orientation",""+orientation);
+            Matrix m=new Matrix();
+
+            if((orientation==3)){
+
+                m.postRotate(180);
+                m.postScale((float)bm.getWidth(), (float)bm.getHeight());
+
+//               if(m.preRotate(90)){
+                Log.e("in orientation",""+orientation);
+
+                bitmap = Bitmap.createBitmap(bm, 0, 0,bm.getWidth(),bm.getHeight(), m, true);
+                return  bitmap;
+            }
+            else if(orientation==6){
+
+                m.postRotate(90);
+
+                Log.e("in orientation",""+orientation);
+
+                bitmap = Bitmap.createBitmap(bm, 0, 0,bm.getWidth(),bm.getHeight(), m, true);
+                return  bitmap;
+            }
+
+            else if(orientation==8){
+
+                m.postRotate(270);
+
+                Log.e("in orientation",""+orientation);
+
+                bitmap = Bitmap.createBitmap(bm, 0, 0,bm.getWidth(),bm.getHeight(), m, true);
+                return  bitmap;
+            }
+            else if(orientation==0){
+
+                m.postRotate(270);
+
+                Log.e("in orientation",""+orientation);
+
+                bitmap = Bitmap.createBitmap(bm, 0, 0,bm.getWidth(),bm.getHeight(), m, true);
+                return  bitmap;
+            }
+            return bitmap;
+        }
+        catch (Exception e) {
+        }
+        return null;
     }
 
 }
