@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.location.Location;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -47,12 +50,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 
 public class submitDisaster_fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
     private static final String ARG_EVENT = "eventParam";
 
+    public String DISASTER_IMAGE = "DisasterImage";
     private submitDisasterListener listener;
     //maps
     private GoogleMap googleMap;
@@ -76,9 +81,6 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
     //View
     View rootView;
 
-//MainActivity
-    MainActivity mainActivity;
-
     public interface submitDisasterListener{
         void onInputSubmitSent(String input);
     }
@@ -87,12 +89,12 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
         // Required empty public constructor
     }
 
+    //file from mainActivity that is passed from camera fragment
     public void updateImage(String filename)
     {
         BitmapFactory.Options options;
         currentFile = new File(filename);
 
-        //}
     }
     // TODO: Rename and change types and number of parameters
     public static submitDisaster_fragment newInstance(String disObject) {
@@ -112,6 +114,14 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
             disaster = gson.fromJson(getArguments().getString(ARG_EVENT), Disaster.class);
 
         }
+        if(savedInstanceState != null)
+        {
+            String fileN = savedInstanceState.getString(DISASTER_IMAGE);
+            if(fileN != null){
+                currentFile = new File(fileN);
+            }
+
+        }
 
 
         //get user location
@@ -119,7 +129,6 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
 
 
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -128,15 +137,12 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
          //DisasterImage
         disasterImage = (ImageView) rootView.findViewById(R.id.imageView_submitDisaster);
 
-        Glide.with(rootView).load(currentFile).placeholder(R.drawable.disasterdude).into(disasterImage);
-
         //Maps
         //https://developers.google.com/maps/documentation/android-sdk/start
         mapView = rootView.findViewById(R.id.mapView_submitDisaster);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
         mapView.getMapAsync(this);
-
         //take pic button
         btn_cam = rootView.findViewById(R.id.btn_cam);
         btn_cam.setOnClickListener(new View.OnClickListener() {
@@ -144,13 +150,6 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                 //go to cam
                 Intent intent = new Intent("GoToCamera");
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                //go to cam
-                //FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
-                //FragmentTransaction transaction = fragmentmanager.beginTransaction();
-
-                //transaction.replace(R.id.mainactivity_framelayout, new camera_fragment());
-                //transaction.addToBackStack(null);
-                //transaction.commit();
 
             }
         });
@@ -162,12 +161,15 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                 date.getTime();
                 disaster.setDate(date);
 
-                String ImageName = mainActivity.disasterService.UploadImage(currentFile.getAbsolutePath());
-                disaster.setUserImage(ImageName);
-                mainActivity.disasterService.UsersDisasters.add(disaster);
-                mainActivity.disasterService.InsertDisaster(disaster);
+                if (currentFile != null) {
+                    String ImageName =  ((MainActivity)getActivity()).disasterService.UploadImage(currentFile.getAbsolutePath());
+                    disaster.setUserImage(ImageName);
+                }
 
-                Toast.makeText(mainActivity.disasterService, "You got "+disaster.getPoints()+" point(s)!", Toast.LENGTH_LONG).show();
+                ((MainActivity)getActivity()).disasterService.UsersDisasters.add(disaster);
+                ((MainActivity)getActivity()).disasterService.InsertDisaster(disaster);
+
+                Toast.makeText( ((MainActivity)getActivity()).disasterService, "You got "+disaster.getPoints()+" point(s)!", Toast.LENGTH_LONG).show();
                 //go back to ongoing fragment
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
                 fragmentmanager.popBackStack();
@@ -192,16 +194,19 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
          return rootView;
     }
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        //get so that i can access DisasterService that is bound to main Activity.
-        mainActivity = (MainActivity) context;
-
-    }
-    @Override
     public void onStart() {
 
         super.onStart();
+        if(currentFile != null)
+        {
+            int rotateImage = getCameraPhotoOrientation(getActivity(), Uri.fromFile(currentFile),
+                    currentFile.getAbsolutePath());
+
+            disasterImage.setRotation(rotateImage);
+            Glide.with(rootView).load(currentFile).placeholder(R.drawable.disasterdude).into(disasterImage);
+        }
+
+
 
     }
     @Override
@@ -382,5 +387,60 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
 
         return DisasterType.Unknown;
     }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            currentFile = new File(savedInstanceState.getString(DISASTER_IMAGE));
+        }
+    }
+
+    // invoked when the activity may be temporarily destroyed, save the instance state here
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
+        if(currentFile != null) {
+            outState.putString(DISASTER_IMAGE, currentFile.getAbsolutePath());
+        }
+    }
+
+    //https://stackoverflow.com/questions/33541481/android-capture-picture-with-cameracapturesession-rotating-the-picture-to-landsc
+    public int getCameraPhotoOrientation(Context context, Uri imageUri,
+                                         String imagePath) {
+        int rotate = 0;
+        try {
+            context.getContentResolver().notifyChange(imageUri, null);
+            File imageFile = new File(imagePath);
+            ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+
+            Log.wtf("RotateImage", "Exif orientation: " + orientation);
+            Log.wtf("RotateImage", "Rotate value: " + rotate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rotate;
+        //return 90;
+    }
+
 
 }

@@ -1,11 +1,15 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -16,19 +20,27 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.Login;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.camera_fragment;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.home_fragment;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.mydisasters_fragment;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.ongoing_fragment;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments.submitDisaster_fragment;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Event;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Global;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements camera_fragment.CameraFragmentListener{
@@ -39,58 +51,38 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
     public DisasterService disasterService;
     public LocalBroadcastManager localBroadcastManager;
 
-    //fragment
+    //fragments
        submitDisaster_fragment submit;
        camera_fragment camera;
        home_fragment home;
        mydisasters_fragment userDisasters;
 
 
-    private boolean isBound;
+    public boolean isBound;
     //MainActivity view
     ProgressBar progressBar;
     //HomeFragment
     Button btn_myDisasters;
     //disaster
     Disaster disaster;
-    //User ID
-    public String userId;
 
+    //filename from camerafragment
     public String fileName;
+
+    Bundle saved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //Intent intent = getIntent();
-        //userId = intent.getStringExtra("userID");
-
-        disaster = new Disaster();
+        saved = savedInstanceState;
         serviceIntent = new Intent(this, DisasterService.class);
-        // initiate progress bar and start button
-        progressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
-        //visible the progress bar
-        progressBar.setVisibility(View.VISIBLE);
-        //check Fragment
-        if (findViewById(R.id.mainactivity_framelayout) != null)
-        {
-            if (savedInstanceState != null)
-            {
-                return;
-            }
-        }
-
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        //bind service
+        DisasterServiceConnection();
+        bindService(serviceIntent, disasterServiceConnection, Context.BIND_AUTO_CREATE);
         //setup broadcast filters and register it.
+
         IntentFilter filter = new IntentFilter();
-        filter.addAction("NewEvent");
-        filter.addAction("GetALLDB");
         filter.addAction("GoToCamera");
         filter.addAction("GoToSubmit");
         filter.addAction("ReturnFromCamera");
@@ -98,9 +90,30 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         localBroadcastManager.registerReceiver(DisasterReceiver, filter);
 
-        //bind service
-        DisasterServiceConnection();
-        bindService(serviceIntent, disasterServiceConnection, Context.BIND_AUTO_CREATE);
+        //check Fragment
+        CheckStoragePermission();
+        disaster = new Disaster();
+
+
+        if (findViewById(R.id.mainactivity_framelayout) != null)
+        {
+            if (savedInstanceState != null)
+            {
+                return;
+            }
+             home = new home_fragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.mainactivity_framelayout, home).commit();
+
+        }
+
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     public void DisasterServiceConnection()
@@ -111,32 +124,25 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                 DisasterService.DisasterServiceBinder binder = (DisasterService.DisasterServiceBinder) service;
                 disasterService = binder.getService();
                 isBound = true;
-                //Toast.makeText(disasterService, "user ID: "+disaster.getId(), Toast.LENGTH_SHORT).show();
 
-                //firebase test TODO: DELETE THIS
-                disaster.setDistance(21);
-                disaster.setTitle("Firebase test9");
-                disaster.setDisasterType(DisasterType.Thunderstorm);
-                disaster.setLonDisaster(55.0);
-                disaster.setLatDisaster(-33.0);
-                disaster.setLatUser(40.0);
-                disaster.setLonUser(-33.0);
-                disaster.setUserImage(""+R.drawable.disasterdude);
-                disaster.setEmblemImage(""+R.drawable.storm);
-                Date date = new Date();
-                date.getTime();
-                disaster.setDate(date);
-
-                //disasterService.InsertDisaster(disaster, userId);
-
-                disasterService.sendRequest(getApplicationContext());
-                Log.wtf("Binder", "MainActivity bound to service");
+                if (disasterService.currentUser != null) {
+                    disasterService.sendRequest(getApplicationContext());
+                    disasterService.UsersDisasters = (ArrayList<Disaster>) disasterService.GetAllDisasters();
+                }
+                else
+                {
+                    disasterService.currentUser = disasterService.mAuth.getCurrentUser();
+                    disasterService.sendRequest(getApplicationContext());
+                    disasterService.UsersDisasters = (ArrayList<Disaster>) disasterService.GetAllDisasters();
+                }
+                //disasterService.sendRequest(getApplicationContext());
+                Log.wtf("Binder", "MainActivity bound to service -- isBound: "+isBound);
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
                 isBound = false;
-                Log.wtf("Binder", "MainActivity unbound to service");
+                Log.wtf("Binder", "MainActivity unbound to service -- isBound: "+isBound);
             }
         };
     }
@@ -144,40 +150,20 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            home_fragment home_fragment = new home_fragment();
-            //TODO: once events has been requested dont request the same events again
-            if (intent.getAction().equals("NewEvent"))
-            {
-                //Hide progressbar
-                progressBar.setVisibility(View.INVISIBLE);
-
-                //Toast.makeText(context, "New DATA", Toast.LENGTH_SHORT).show();
 
 
-                getSupportFragmentManager().beginTransaction().add(R.id.mainactivity_framelayout, home_fragment).commit();
 
-                //when homepage is loaded get disasters
-                if (disasterService.UsersDisasters.size() < 1) {
-                    disasterService.GetAllDisasters();
-                }
-
-            }
-            else if (intent.getAction().equals("GetALLDB")) {
-                Log.wtf("UsersDisasters", "size: "+disasterService.UsersDisasters.size());
-
-                    //home_fragment.SetMyDisastersBtnVisible();
-
-            }
-            else if (intent.getAction().equals("NoEvents")) {
+            if (intent.getAction().equals("NoEvents")) {
                 Log.wtf("NoEvents", "There was no events at this time");
 
                 progressBar.setVisibility(View.INVISIBLE);
-                getSupportFragmentManager().beginTransaction().add(R.id.mainactivity_framelayout, home_fragment).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.mainactivity_framelayout, home).commit();
 
             }
             else if(intent.getAction().equals("GoToCamera")) {
-                camera = camera_fragment.newInstance();
-                getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, camera).addToBackStack(null).commit();
+
+                CheckCamAudioStoragePermission();
+
             }
             else if(intent.getAction().equals("GoToSubmit")) {
 
@@ -196,6 +182,9 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                 FragmentManager fragmentmanager = getSupportFragmentManager();
                 fragmentmanager.popBackStack();
             }
+            else if (intent.getAction().equals("ServiceBound")) {
+                    isBound = true;
+            }
         }
     };
 
@@ -211,9 +200,210 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+//Get filename from camerafragment and pass it on to SubmitDisasterFragment
+    @Override
     public void onImageSent(String input) {
 
             submit.updateImage(input);
 
+    }
+
+    //permissions
+    public void CheckLocationPermission(){
+        // Here, thisActivity is the current activity
+        String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+        if (ContextCompat.checkSelfPermission(this, String.valueOf(permissions)) != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    String.valueOf(permissions))) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                new AlertDialog.Builder(this).setTitle("Permissions needed").setMessage("this permission is needed. The core functionality of the app wont work").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(MainActivity.this, permissions, Global.REQUEST_FINE_LOCATION);
+                    }
+                }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        permissions,
+                        Global.REQUEST_FINE_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Permission has already been granted
+
+        }
+    }
+    public void CheckStoragePermission()
+    {
+        // Here, thisActivity is the current activity
+        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ContextCompat.checkSelfPermission(this, String.valueOf(permissions)) != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    String.valueOf(permissions))) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                new AlertDialog.Builder(this).setTitle("Permission needed").setMessage("this permission is needed and the app wont function without it").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(MainActivity.this, permissions, Global.REQUEST_WRITE_EXTERNAL_STORAGE);
+                    }
+                }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        permissions,
+                        Global.REQUEST_WRITE_EXTERNAL_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Permission has already been granted
+
+        }
+    }
+
+    public void CheckCamAudioStoragePermission(){
+        // Here, thisActivity is the current activity
+        String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ContextCompat.checkSelfPermission(this, String.valueOf(permissions)) != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    String.valueOf(permissions))) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                new AlertDialog.Builder(this).setTitle("Permissions needed").setMessage("these permissions is needed and the app wont function without them").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(MainActivity.this, permissions, Global.REQUEST_CAMERA_AUDIO_STORAGE);
+                    }
+                }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        permissions,
+                        Global.REQUEST_CAMERA_AUDIO_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Permission has already been granted
+
+        }
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case Global.REQUEST_CAM_AUDIO_STORAGE_MIC: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    Toast.makeText(this, "Permissions granted", Toast.LENGTH_SHORT).show();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, "Permissions not granted", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            case Global.REQUEST_CAMERA_AUDIO_STORAGE:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    camera = camera_fragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, camera).addToBackStack(null).commit();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    //ActivityCompat.requestPermissions(MainActivity.this, permissions, Global.REQUEST_CAMERA_AUDIO_STORAGE);
+                }
+                return;
+            }
+            case Global.REQUEST_FINE_LOCATION:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    FragmentManager fragmentmanager = getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentmanager.beginTransaction();
+
+                    transaction.replace(R.id.mainactivity_framelayout, new ongoing_fragment());
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+            case Global.REQUEST_WRITE_EXTERNAL_STORAGE:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    ActivityCompat.requestPermissions(MainActivity.this, permissions, Global.REQUEST_WRITE_EXTERNAL_STORAGE);
+                }
+                return;
+            }
+        }
     }
 }

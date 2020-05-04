@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -57,12 +58,15 @@ dependencies {
     //firebase
     implementation 'com.google.firebase:firebase-storage:19.1.1'
     implementation 'com.google.firebase:firebase-auth:19.3.1'
-
+    implementation 'com.google.firebase:firebase-inappmessaging-display:19.0.6'
+    implementation 'com.google.firebase:firebase-messaging:20.1.6'
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:17.4.0'
+
+    //notification
+    //implementation "com.android.support:support-compat:28.0.0"
 
     // Country and currencyt picker
     // implementation 'com.github.scrounger:countrycurrencypicker:1.1.1'
 
 }
-apply plugin: 'com.google.gms.google-services'

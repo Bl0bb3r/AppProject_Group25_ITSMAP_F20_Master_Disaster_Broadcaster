@@ -3,6 +3,7 @@ package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Ut
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -30,7 +31,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
             mCamera.setPreviewDisplay(holder);
-            mCamera.setDisplayOrientation(90);
+            //mCamera.setDisplayOrientation(90);
             mCamera.startPreview();
             ispreview = true;
         } catch (IOException e) {
@@ -68,8 +69,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.startPreview();
             ispreview = true;
 
+
         } catch (Exception e){
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
     }
+
 }

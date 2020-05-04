@@ -1,11 +1,16 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.hardware.Camera;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -20,6 +25,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -27,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
@@ -37,20 +44,24 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 
 public class camera_fragment extends Fragment{
 
+    private static int CurrentCameraId = 1;
     private CameraFragmentListener listener;
-    private Camera mCamera;
+    private Camera mCamera = null;
     private CameraPreview mPreview;
     private MediaRecorder mediaRecorder;
-    private boolean isRecording = false;
-    final int CAMERA_REQUEST_CODE = 1;
-    MainActivity mainActivity;
+
     String filename;
+    FrameLayout preview;
+
+
     public camera_fragment() {
         // Required empty public constructor
     }
@@ -70,21 +81,23 @@ public class camera_fragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Create an instance of Camera
-        mCamera = getCameraInstance();
         // get Camera parameters
-        Camera.Parameters params = mCamera.getParameters();
+        //Camera.Parameters params = mCamera.getParameters();
         // set the focus mode
-        params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        //params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         // set Camera parameters
-        mCamera.setParameters(params);
+        //mCamera.setParameters(params);
+
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_camera_fragment, container, false);
         Button btn_swap = rootView.findViewById(R.id.btn_switch_cam);
+
         Button btn_closePreview = (Button) rootView.findViewById(R.id.btn_close_preview_cam);
         Button btn_back_with_img =(Button) rootView.findViewById(R.id.btn_back_with_img);
 
@@ -95,25 +108,26 @@ public class camera_fragment extends Fragment{
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        Log.wtf("CAMERA", "ClosePreview is called");
+                        int currentCameraId = 0;
                         if (mPreview.ispreview) {
                             mCamera.stopPreview();
                         }
                         mCamera.release();
                         //swap the id of the camera to be used
-                        int currentCameraId = 0;
-                        if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK){
-                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+                        //currentCameraId = FindCameraId();
+                        if(CurrentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK){
+                            CurrentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
                         }
-                        else if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT){
-                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                        else if(CurrentCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT){
+                            CurrentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
                         }
                         else {
-                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+                            CurrentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
                         }
-                        mCamera = Camera.open(currentCameraId);
+                        mCamera = Camera.open(CurrentCameraId);
 
-                        setCameraDisplayOrientation(getActivity(), currentCameraId, mCamera);
+                        setCameraDisplayOrientation(getActivity(), CurrentCameraId, mCamera);
                         try {
 
                             mCamera.setPreviewDisplay(mPreview.getHolder());
@@ -123,31 +137,39 @@ public class camera_fragment extends Fragment{
                         mCamera.startPreview();
                         btn_swap.setVisibility(View.VISIBLE);
                         btn_closePreview.setVisibility(View.INVISIBLE);
+                        btn_back_with_img.setVisibility(View.INVISIBLE);
+
                     }
                 }
         );
 
         btn_swap.setOnClickListener(
                 new View.OnClickListener() {
+
                     @Override
                     public void onClick(View v) {
+                        int currentCameraId = 0;
+                        Log.wtf("CAMERA", "SWAP camera is called");
                         if (mPreview.ispreview) {
                             mCamera.stopPreview();
                         }
+
                         //NB: if you don't release the current camera before switching, you app will crash
                         mCamera.release();
 
                         //swap the id of the camera to be used
-                        int currentCameraId = 0;
-                        if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK){
-                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
-                        }
-                        else {
-                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-                        }
-                        mCamera = Camera.open(currentCameraId);
+                         //currentCameraId = FindCameraId();
+                            if (CurrentCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                                CurrentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+                            }
+                            else if(CurrentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK){
+                                CurrentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                            }else {
+                                CurrentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+                            }
 
-                        setCameraDisplayOrientation(getActivity(), currentCameraId, mCamera);
+                        mCamera = Camera.open(CurrentCameraId);
+                        setCameraDisplayOrientation(getActivity(), CurrentCameraId, mCamera);
                         try {
 
                             mCamera.setPreviewDisplay(mPreview.getHolder());
@@ -165,11 +187,12 @@ public class camera_fragment extends Fragment{
                     @Override
                     public void onClick(View v) {
                         // get an image from the camera
-                        mainActivity.fileName = filename;
+                        ((MainActivity)getActivity()).fileName = filename;
                         listener.onImageSent(filename);
+
                         //go back
                         Intent intent = new Intent("ReturnFromCamera");
-                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                        LocalBroadcastManager.getInstance(((MainActivity)getActivity())).sendBroadcast(intent);
 
                     }
                 }
@@ -190,17 +213,34 @@ public class camera_fragment extends Fragment{
         );
 
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(getActivity(), mCamera);
-        FrameLayout preview = (FrameLayout) rootView.findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
+
+        preview = (FrameLayout) rootView.findViewById(R.id.camera_preview);
+
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCamera = getCameraInstance();
+        mPreview = new CameraPreview(getActivity(), mCamera);
+        preview.addView(mPreview);
+        setCameraDisplayOrientation(getActivity(), CurrentCameraId, mCamera);
+
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        releaseMediaRecorder();       // if you are using MediaRecorder, release it first
         releaseCamera();              // release the camera immediately on pause event
     }
 
@@ -231,8 +271,7 @@ public class camera_fragment extends Fragment{
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        //get so that i can access DisasterService that is bound to main Activity.
-        mainActivity = (MainActivity) context;
+
         if (context instanceof CameraFragmentListener)
         {
             listener = (CameraFragmentListener) context;
@@ -254,7 +293,7 @@ public class camera_fragment extends Fragment{
     public static Camera getCameraInstance(){
         Camera c = null;
         try {
-            c = Camera.open(); // attempt to get a Camera instance
+            c = Camera.open(CurrentCameraId); // attempt to get a Camera instance
         }
         catch (Exception e){
             // Camera is not available (in use or does not exist)
@@ -313,50 +352,7 @@ public class camera_fragment extends Fragment{
 
         return mediaFile;
     }
-    private boolean prepareVideoRecorder() {
 
-        mCamera = getCameraInstance();
-        mediaRecorder = new MediaRecorder();
-
-        // Step 1: Unlock and set camera to MediaRecorder
-        mCamera.unlock();
-        mediaRecorder.setCamera(mCamera);
-
-        // Step 2: Set sources
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
-        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-        mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
-        mediaRecorder.setOrientationHint(90);
-        // Step 4: Set output file
-        mediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
-
-        // Step 5: Set the preview output
-        mediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
-
-        // Step 6: Prepare configured MediaRecorder
-        try {
-            mediaRecorder.prepare();
-        } catch (IllegalStateException e) {
-            Log.d("TAG", "IllegalStateException preparing MediaRecorder: " + e.getMessage());
-            releaseMediaRecorder();
-            return false;
-        } catch (IOException e) {
-            Log.d("TAG", "IOException preparing MediaRecorder: " + e.getMessage());
-            releaseMediaRecorder();
-            return false;
-        }
-        return true;
-    }
-        private void releaseMediaRecorder () {
-            if (mediaRecorder != null) {
-                mediaRecorder.reset();   // clear recorder configuration
-                mediaRecorder.release(); // release the recorder object
-                mediaRecorder = null;
-                mCamera.lock();           // lock camera for later use
-            }
-        }
 
         private void releaseCamera () {
             if (mCamera != null) {
@@ -387,8 +383,13 @@ public class camera_fragment extends Fragment{
         } else {  // back-facing
             result = (info.orientation - degrees + 360) % 360;
         }
+        Camera.Parameters p = camera.getParameters();
+        p.setRotation(result);
+        camera.setParameters(p);
         camera.setDisplayOrientation(result);
     }
+
+
 
 }
 

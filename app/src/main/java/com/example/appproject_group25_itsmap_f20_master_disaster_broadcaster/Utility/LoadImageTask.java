@@ -30,8 +30,4 @@ public class LoadImageTask extends AsyncTask<Bitmap, Void, Bitmap> {
         return ScaledBitmap;
     }
 
-    @Override
-    protected void onPostExecute(Bitmap result) {
-       // callback.onResponse(result);
-    }
 }
