@@ -1,5 +1,6 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,22 +9,22 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
-import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.event_adapter;
+
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.EventAdapter;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Event;
@@ -48,39 +49,35 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.common.base.Stopwatch;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
-import static com.google.common.reflect.Reflection.getPackageName;
 
 
-public class ongoing_fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class ongoing_fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, EventAdapter.OnEventListener {
 
 
     GoogleMap googleMap;
     MapView mapView;
-    ListView listViewEvents;
+    RecyclerView recyclerViewEvents;
     Button btn_back;
-    event_adapter eventAdapter;
+    EventAdapter eventAdapter;
+
 
     Gson gson;
-    private ArrayList<Event> events = new ArrayList<>();
-    private MainActivity mainActivity;
-    //DisasterService disasterService;
+    private ArrayList<Event> events;
 
     //User Location
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
+    //view
+    View rootView;
     public ongoing_fragment() {
         // Required empty public constructor
     }
@@ -99,17 +96,16 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         if (getArguments() != null) {
 
         }
-        //mainContext.disasterService.sendRequest(getActivity().getApplicationContext());
-        //get user location
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
-
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_ongoing_fragment, container, false);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+        events = new ArrayList<>();
+
+        rootView = inflater.inflate(R.layout.fragment_ongoing_fragment, container, false);
         //Maps
         //https://developers.google.com/maps/documentation/android-sdk/start
         mapView = rootView.findViewById(R.id.mapView_ongoing);
@@ -127,43 +123,46 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
             }
         });
 
-        listViewEvents = (ListView) rootView.findViewById(R.id.ongoing_listview);
+        recyclerViewEvents = (RecyclerView) rootView.findViewById(R.id.ongoing_recyclerview);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+                LinearLayoutManager.VERTICAL);
+        dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recyclerview_space));
+        recyclerViewEvents.addItemDecoration(dividerItemDecoration);
 
-            if (mainActivity.disasterService.events.size() > 0) {
-                events = mainActivity.disasterService.events;
-            }
+        recyclerViewEvents.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        eventAdapter = new event_adapter(getContext(), events);
-        eventAdapter.notifyDataSetChanged();
-
-        listViewEvents.setAdapter(eventAdapter);
-
-        listViewEvents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-               if (googleMap != null) {
-                   if (events.size() > position) {
-                       googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(GetCords(events.get(position)), 10));
-                   }
-               }
-            }
-        });
 
         // Inflate the layout for this fragment
         return rootView;
     }
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        //get so that i can access DisasterService that is bound to main Activity.
-        mainActivity = (MainActivity) context;
 
-    }
     @Override
     public void onResume() {
-        Log.e("DEBUG", "onResume of LoginFragment");
         super.onResume();
+        Log.wtf("OnGoing", "DisasterService is -- isBound: "+((MainActivity) getActivity()).isBound);
+        if (((MainActivity) getActivity()).isBound) {
+
+            if (((MainActivity)getActivity()).disasterService.events.size() > 0) {
+                events = ((MainActivity)getActivity()).disasterService.events;
+
+                for(int i = 0; i < events.size()-1; i++)
+                {
+                    for (int j = 0; j < ((MainActivity)getActivity()).disasterService.UsersDisasters.size()-1;j++)
+                    {
+                        if (events.get(i).getTitle().equals(((MainActivity)getActivity()).disasterService.UsersDisasters.get(j).getTitle()))
+                        {
+                            events.remove(i);
+                        }
+                    }
+                }
+                Log.wtf("OnGoing", "Events -- Size: "+events.size());
+
+                eventAdapter = new EventAdapter(events, this);
+                eventAdapter.notifyDataSetChanged();
+                recyclerViewEvents.setAdapter(eventAdapter);
+
+            }
+        }
     }
     @Override
     public void onStart() {
@@ -184,10 +183,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         googleMap = gMap;
         setUpMap();
         if (events.size() > 0) {
-            Stopwatch stopwatch = Stopwatch.createStarted();
             SetMarkersOnMap(events);
-            stopwatch.stop();
-            Log.wtf("OnMapReady", " SetMarkerOnMap time: "+stopwatch.elapsed(TimeUnit.MILLISECONDS));
         }
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -250,20 +246,12 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         Disaster disaster = (Disaster) marker.getTag();
         gson = new Gson();
 
-        FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentmanager.beginTransaction();
-
         String jsonDisaster = gson.toJson(disaster);
 
         //go to submit disaster
         Intent intent = new Intent("GoToSubmit");
         intent.putExtra("Disaster", jsonDisaster);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-
-        //submitDisaster_fragment mFragment = submitDisaster_fragment.newInstance(jsonDisaster);
-        //transaction.replace(R.id.mainactivity_framelayout, mFragment);
-        //transaction.addToBackStack(null);
-        //transaction.commit();
 
         return false;
     }
@@ -309,9 +297,10 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                 }
                 return null;
     }
-
+//TODO: support other types of GeoJson data
     private void SetMarkersOnMap(List<Event> events)
     {
+
         if (events != null) {
             for (Event event : events) {
                 if (event.getGeometry() != null) {
@@ -336,8 +325,6 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                                 }
 
                                 Polygon polygonMarker = googleMap.addPolygon(new PolygonOptions().addAll(points).fillColor(Color.BLUE).strokeColor(Color.YELLOW).visible(true));
-                                //markersToReturn.add(polygonMarker);
-                                //Log.wtf("PolygonShape", "Polygon contains: " + points.size());
 
                                 break;
                             case MultiPolygon:
@@ -350,21 +337,19 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                                 {
                                     //Cords from nasa is Lon/lat
                                     LatLng mapPoint = new LatLng(((PointShape) shape).getCoordinates()[1], point.getCoordinates()[0]);
-                                    //MainActivity a = (MainActivity) getActivity();
+
                                     String resName = MapIconPicker(event);
-                                    Stopwatch stopwatch = Stopwatch.createStarted();
-                                    InputStream is = mainActivity.getResources().openRawResource(Integer.parseInt(resName));
+
+                                    InputStream is = ((MainActivity)getActivity()).getResources().openRawResource(Integer.parseInt(resName));
                                     Bitmap bit = BitmapFactory.decodeStream(new BufferedInputStream(is));
-                                    stopwatch.stop();
-                                    Log.wtf("InputStream", " loadbitmap: "+stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
                                     Bitmap bitmap = null;
                                     Disaster disaster = new Disaster();
                                     disaster.setDisasterType(DisasterTypeFromTitle(event));
+                                    disaster.setTitle(event.getTitle());
                                     disaster.setLatDisaster(mapPoint.latitude);
                                     disaster.setLonDisaster(mapPoint.longitude);
                                     disaster.setEmblemImage(resName);
-                                    Stopwatch stopwatch2 = Stopwatch.createStarted();
 
                                     try {
                                         bitmap = new LoadImageTask().execute(bit).get();
@@ -375,8 +360,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                                     }
                                     Marker markerPoint = googleMap.addMarker(new MarkerOptions().position(mapPoint).icon(BitmapDescriptorFactory.fromBitmap(bitmap)).title(event.getTitle()).alpha(0.7f));
                                     markerPoint.setTag(disaster);
-                                    stopwatch2.stop();
-                                    Log.wtf("MAP", " format image: "+stopwatch2.elapsed(TimeUnit.MILLISECONDS));
+
                                 }
 
                                 break;
@@ -390,7 +374,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
             }
         }
     }
-    //TODO: Refactor these 2 methodes
+    //TODO: Refactor these 2
     public String MapIconPicker(Event event)
     {
         if (event.getTitle() != null) {
@@ -540,5 +524,15 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
         }
 
         return DisasterType.Unknown;
+    }
+
+    @Override
+    public void onEventClick(int position) {
+        Log.wtf("EventAdapter", "Click called position: "+ position);
+        if (googleMap != null) {
+            if (events.size() > position) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(GetCords(events.get(position)), 10));
+            }
+        }
     }
 }

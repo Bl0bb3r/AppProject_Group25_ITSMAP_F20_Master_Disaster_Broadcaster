@@ -19,7 +19,6 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class CreateNewUserFragment extends Fragment {
 
-    private LoginActivity loginActivity;
 
     Button btn_back;
     Button btn_signup;
@@ -27,27 +26,17 @@ public class CreateNewUserFragment extends Fragment {
     TextInputEditText editText_password1;
     TextInputEditText editText_password2;
 
-    //TODO: Firebase database med users?
-    //FirebaseDatabase FirebaseDB;
-
     private View rootView;
 
 
     public CreateNewUserFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        //get so that i can access DisasterService that is bound to main Activity.
-        loginActivity = (LoginActivity) context;
     }
 
     @Override
@@ -96,19 +85,19 @@ public class CreateNewUserFragment extends Fragment {
         String _password = password.trim();
         
         if(TextUtils.isEmpty(_email)) {
-            Toast.makeText(loginActivity, ""+ R.string.emailEmpty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ""+ R.string.emailEmpty, Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(_password)) {
-            Toast.makeText(loginActivity, ""+ R.string.passEmpty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ""+ R.string.passEmpty, Toast.LENGTH_SHORT).show();
             return;
         }
         if (_password.length() < 8) {
-            Toast.makeText(loginActivity, ""+ R.string.passShort, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ""+ R.string.passShort, Toast.LENGTH_SHORT).show();
         }
 
         //here
-        loginActivity.RegisterUser(_email, _password);
+        ((LoginActivity)getActivity()).RegisterUser(_email, _password);
 
 
     }
