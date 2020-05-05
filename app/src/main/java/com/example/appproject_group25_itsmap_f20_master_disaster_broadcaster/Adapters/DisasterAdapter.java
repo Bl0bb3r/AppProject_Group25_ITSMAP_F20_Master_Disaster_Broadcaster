@@ -17,14 +17,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-
-public class DisasterAdapter extends RecyclerView.Adapter<DisasterAdapter.MyDisastersViewHolder> {
+//for all adapters https://www.youtube.com/watch?v=3WR4QAiVuCw
+//https://github.com/firebase/FirebaseUI-Android/tree/master/firestore
+public class DisasterAdapter extends FirestoreRecyclerAdapter<Disaster, DisasterAdapter.MyDisastersViewHolder> {
 
     private ArrayList<Disaster> disasters;
     private Disaster disaster;
@@ -33,13 +37,11 @@ public class DisasterAdapter extends RecyclerView.Adapter<DisasterAdapter.MyDisa
     // each data item is just a string in this case
     // Create a storage reference from our app
 
-    public DisasterAdapter() {
-        super();
-    }
-
-    public DisasterAdapter(ArrayList<Disaster> disasters, OnDisasterListener onDisasterListener) {
-        this.disasters = disasters;
+    public DisasterAdapter(@NonNull FirestoreRecyclerOptions<Disaster> options, OnDisasterListener onDisasterListener)
+    {
+        super(options);
         this.mDisasterListener = onDisasterListener;
+
     }
 
     @NonNull
@@ -59,23 +61,17 @@ public class DisasterAdapter extends RecyclerView.Adapter<DisasterAdapter.MyDisa
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyDisastersViewHolder holder, int position) {
+    protected void onBindViewHolder(@NonNull MyDisastersViewHolder holder, int position, @NonNull Disaster model) {
 
-        Disaster disaster = disasters.get(position);
 
-        //set the views from the holder
-        TextView points = holder.points;
-        ImageView typeImage = holder.typeImage;
-        ImageView userImage = holder.userImage;
+        holder.points.setText(""+ model.getPoints());
 
-        points.setText(""+ disaster.getPoints());
-
-        if (disaster.getUserImage() != null) {
-            storageRef.child(disaster.getUserImage()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        if (model.getUserImage() != null) {
+            storageRef.child(model.getUserImage()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     // Got the download URL for 'users/me/profile.png'
-                    Glide.with(holder.userImage).load(uri).into(userImage);
+                    Glide.with(holder.userImage).load(uri).into(holder.userImage);
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -85,19 +81,17 @@ public class DisasterAdapter extends RecyclerView.Adapter<DisasterAdapter.MyDisa
                 }
             });
         }
-        if (disaster.getEmblemImage() != null)
+        if (model.getEmblemImage() != null)
         {
-            typeImage.setImageResource(Integer.parseInt(disaster.getEmblemImage()));
+            holder.typeImage.setImageResource(Integer.parseInt(model.getEmblemImage()));
         }
         else{
-            typeImage.setImageResource(R.drawable.flood);
+            holder.typeImage.setImageResource(R.drawable.flood);
         }
-
     }
 
 
-
-    public static class MyDisastersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyDisastersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public OnDisasterListener onDisasterListener;
         public TextView points;
@@ -117,24 +111,18 @@ public class DisasterAdapter extends RecyclerView.Adapter<DisasterAdapter.MyDisa
 
         @Override
         public void onClick(View v) {
-            onDisasterListener.onDisasterClick(getAdapterPosition());
+
+            if (getAdapterPosition() != RecyclerView.NO_POSITION && onDisasterListener != null)
+            {
+                onDisasterListener.onDisasterClick(getAdapterPosition(), getSnapshots().getSnapshot(getAdapterPosition()));
+            }
+
         }
     }
 
 
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public int getItemCount() {
-        return disasters.size();
-    }
-
     public interface OnDisasterListener {
-        void onDisasterClick(int position);
+        void onDisasterClick(int position, DocumentSnapshot documentSnapshot);
 
     }
 }

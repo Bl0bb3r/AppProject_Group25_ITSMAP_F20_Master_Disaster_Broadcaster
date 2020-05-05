@@ -160,18 +160,7 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                 DisasterService.DisasterServiceBinder binder = (DisasterService.DisasterServiceBinder) service;
                 disasterService = binder.getService();
                 isBound = true;
-
-                if (disasterService.currentUser != null) {
-                    disasterService.sendRequest(getApplicationContext());
-                    disasterService.UsersDisasters = (ArrayList<Disaster>) disasterService.GetAllDisasters();
-                }
-                else
-                {
-                    disasterService.currentUser = disasterService.mAuth.getCurrentUser();
-                    disasterService.sendRequest(getApplicationContext());
-                    disasterService.UsersDisasters = (ArrayList<Disaster>) disasterService.GetAllDisasters();
-                }
-                //disasterService.sendRequest(getApplicationContext());
+                disasterService.sendRequest(getApplicationContext());
                 Log.wtf("Binder", "MainActivity bound to service -- isBound: "+isBound);
             }
 

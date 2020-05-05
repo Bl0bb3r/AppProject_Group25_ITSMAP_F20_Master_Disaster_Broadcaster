@@ -79,7 +79,6 @@ public class DisasterService extends Service {
     private RequestQueue requestQueue;
     private IBinder binder = new DisasterServiceBinder();
     public ArrayList<Event> events = new ArrayList<>();
-    public ArrayList<Disaster> UsersDisasters = new ArrayList<>();
     private Gson gson;
     //firebase
     FirebaseFirestore db;
@@ -213,37 +212,13 @@ public class DisasterService extends Service {
        eonet = gson.fromJson(json, new TypeToken<Eonet>(){}.getType());
 
        events = eonet.getEvents();
-       //Intent intent = new Intent("NewEvent");
-       //intent.putExtra("event", gson.toJson(eonet));
-       //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-
    }
-
-   //Firebase
-    public List<Disaster> GetAllDisasters()
-    {
-       return repository.GetAllDisasters(currentUser.getUid());
-    }
-
-    public Disaster GetDisaster(String disasterId)
-    {
-        return repository.GetDisaster(currentUser.getUid(), disasterId);
-    }
-
-    public void InsertDisaster(Disaster disaster)
-    {
-        repository.InsertDisaster(disaster, currentUser.getUid());
-    }
 
     public String UploadImage(String filepath)
     {
         return repository.UploadImage(filepath);
     }
-    
-    public void GetAllUsers()
-    {
-        //repository.GetAllUsers();
-    }
+
 
 
 }

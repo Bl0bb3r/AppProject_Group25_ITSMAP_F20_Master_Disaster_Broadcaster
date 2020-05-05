@@ -56,9 +56,9 @@ public class Repository {
     }
 
 //Disasters methodes
-    public void InsertDisaster(Disaster disaster, String userId)
+    public void InsertDisaster(Disaster disaster)
     {
-        CollectionReference disasterCollRef = db.collection("users").document(userId).collection("disasters");
+        CollectionReference disasterCollRef = db.collection("users").document(currentUser.getUid()).collection("disasters");
         // Add a new document with a generated ID
         disasterCollRef
                 .add(disaster)
@@ -67,7 +67,6 @@ public class Repository {
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d("FIREBASE", "DocumentSnapshot added with ID: " + documentReference.getId());
 
-                        GetAllDisasters(userId);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -137,35 +136,6 @@ public class Repository {
         return disaster[0];
     }
 
-    public void GetAllUsers(GetAllUsersCallBack callback){
-        List<User> users = new ArrayList<User>();
-
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
-
-                                User user = document.toObject(User.class);
-                                Log.wtf("Repository", " User points: "+user.getTotalPoints());
-                                users.add(document.toObject(User.class));
-                                Log.wtf("Repository", " User List size: "+users.size());
-                                callback.onDataReceived(document.toObject(User.class));
-                            }
-                        } else {
-                            Log.wtf("FIREBASE", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-        //Intent intent = new Intent("GetAllUsers");
-        //LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-
-       // return users;
-    }
-
     //Upload Image to storage
     public String UploadImage(String filePath){
         Uri file = Uri.fromFile(new File(filePath));
@@ -186,8 +156,5 @@ public class Repository {
         });
         return ref.getName();
     }
-
-    //USer methods
-
 
 }

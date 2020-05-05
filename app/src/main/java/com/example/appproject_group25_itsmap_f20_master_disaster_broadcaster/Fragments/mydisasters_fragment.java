@@ -1,16 +1,14 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,24 +23,30 @@ import android.widget.TextView;
 
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.DisasterAdapter;
-import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.emblem_adapter;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.EmblemAdapter;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
-import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class mydisasters_fragment extends Fragment implements DisasterAdapter.OnDisasterListener {
-
-
+public class mydisasters_fragment extends Fragment implements DisasterAdapter.OnDisasterListener, EmblemAdapter.OnEmblemListener {
+    private StorageReference storageRef;
+    //FirestoreRecyclerAdapter adapter;
     RecyclerView recyclerViewDisasters;
-    GridView gridViewEmblems;
+    RecyclerView gridViewEmblems;
     Button btn_back;
     TextView textView_totalPoints;
     TextView textView_rank;
     private DisasterAdapter disasterAdapter;
-    private emblem_adapter emblemAdapter;
+    private EmblemAdapter emblemAdapter;
     //list with the submitted disasters
     ArrayList<Disaster> disasters;
     //totalpoints
@@ -83,13 +87,30 @@ public class mydisasters_fragment extends Fragment implements DisasterAdapter.On
         disasters = new ArrayList<>();
         rootView = inflater.inflate(R.layout.fragment_mydisasters_fragment, container, false);
         recyclerViewDisasters = (RecyclerView) rootView.findViewById(R.id.mydisasters_recyclerview);
+        gridViewEmblems = (RecyclerView) rootView.findViewById(R.id.mydisasters_gridview);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+                LinearLayoutManager.VERTICAL);
+        dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recyclerview_space));
+
+        recyclerViewDisasters.addItemDecoration(dividerItemDecoration);
+        RecyclerViewSetup();
+        recyclerViewDisasters.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewDisasters.setAdapter(disasterAdapter);
+        disasterAdapter.notifyDataSetChanged();
+
+
+
+        gridViewEmblems.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+        gridViewEmblems.setAdapter(emblemAdapter);
+        emblemAdapter.notifyDataSetChanged();
 
 
         textView_totalPoints = rootView.findViewById(R.id.textview_totalPoints);
         textView_rank = rootView.findViewById(R.id.textview_worldRank);
 
         btn_back = (Button) rootView.findViewById(R.id.back_btn);
-        gridViewEmblems = (GridView) rootView.findViewById(R.id.mydisasters_gridview);
+
 
         btn_back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -97,30 +118,6 @@ public class mydisasters_fragment extends Fragment implements DisasterAdapter.On
                 fragmentmanager.popBackStack();
             }
         });
-
-
-        gridViewEmblems.setNumColumns(4);
-
-
-
-        gridViewEmblems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                //TODO: emblem click?
-
-            }
-        });
-
-
-
-        recyclerViewDisasters.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: disaster click show disaster
-            }
-        });
-
 
 
         // Inflate the layout for this fragment
@@ -138,57 +135,56 @@ public class mydisasters_fragment extends Fragment implements DisasterAdapter.On
     public void onStart() {
 
         super.onStart();
-
+        disasterAdapter.startListening();
+        emblemAdapter.startListening();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (disasters != null)
-        {
-            disasters.clear();
-        }
 
-        if (((MainActivity)getActivity()).isBound)
-        {
-            disasters = (ArrayList<Disaster>) ((MainActivity) getActivity()).disasterService.UsersDisasters;
-            Log.wtf("MyDisasters", "UserDisaster size: "+disasters.size());
-            for (Disaster disaster : disasters)
-            {
-                Totalpoints += disaster.getPoints();
-            }
-            recyclerViewDisasters = (RecyclerView) rootView.findViewById(R.id.mydisasters_recyclerview);
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
-                    LinearLayoutManager.VERTICAL);
-            dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recyclerview_space));
-            recyclerViewDisasters.addItemDecoration(dividerItemDecoration);
-            disasterAdapter = new DisasterAdapter(disasters, this);
-            disasterAdapter.notifyDataSetChanged();
-
-            recyclerViewDisasters.setAdapter(disasterAdapter);
-            recyclerViewDisasters.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-            emblemAdapter = new emblem_adapter(getActivity(),disasters);
-            emblemAdapter.notifyDataSetChanged();
-            gridViewEmblems.setAdapter(emblemAdapter);
-
-
-            textView_totalPoints.setText(""+Totalpoints);
-            textView_rank.setText("1");
-        }
     }
 
     @Override
     public void onStop() {
 
         super.onStop();
+        disasterAdapter.stopListening();
+        emblemAdapter.stopListening();
     }
 
     @Override
-    public void onDisasterClick(int position) {
+    public void onDisasterClick(int position, DocumentSnapshot documentSnapshot) {
         Log.wtf("MyDisasters", "Recyclerview clicked position: "+position);
-        String disaster = gson.toJson(disasters.get(position));
+        String disaster = gson.toJson(documentSnapshot.toObject(Disaster.class));
         disasterDetails = DisasterDetails.newInstance(disaster);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, disasterDetails).addToBackStack(null).commit();
+    }
+
+
+    private void RecyclerViewSetup() {
+        Query query = ((MainActivity) getActivity()).db.collection("users").document(((MainActivity) getActivity()).currentUser.getUid()).collection("disasters");
+
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    return;
+                }
+
+               queryDocumentSnapshots.toObjects(Disaster.class);
+
+            }
+        });
+
+        FirestoreRecyclerOptions<Disaster> options = new FirestoreRecyclerOptions.Builder<Disaster>().setQuery(query, Disaster.class).build();
+        disasterAdapter = new DisasterAdapter(options, this);
+        emblemAdapter = new EmblemAdapter(options, this);
+
+    }
+
+    @Override
+    public void onEmblemClick(int position, DocumentSnapshot documentSnapshot) {
+        //emblem on click
     }
 }
