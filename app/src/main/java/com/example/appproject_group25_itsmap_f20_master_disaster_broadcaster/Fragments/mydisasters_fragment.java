@@ -35,13 +35,7 @@ import java.util.ArrayList;
 
 public class mydisasters_fragment extends Fragment implements DisasterAdapter.OnDisasterListener {
 
-    //Service
-    private Intent serviceIntent;
-    private ServiceConnection disasterServiceConnection;
-    private DisasterService disasterService;
-    private boolean isBound;
-    //
-    //ListView listViewMyDisasters;
+
     RecyclerView recyclerViewDisasters;
     GridView gridViewEmblems;
     Button btn_back;

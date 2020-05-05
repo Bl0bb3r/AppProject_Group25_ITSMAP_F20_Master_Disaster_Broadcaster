@@ -39,14 +39,20 @@ public class Repository {
     FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference storageRef;
+    FirebaseUser currentUser;
     Context context;
 
-    public Repository(FirebaseFirestore _db, FirebaseStorage _storage, StorageReference _storageRef, Context _context)
+    public interface GetAllUsersCallBack
+    {
+        void onDataReceived(User user);
+    }
+    public Repository(FirebaseFirestore _db, FirebaseStorage _storage, StorageReference _storageRef, FirebaseUser _currentUser, Context _context)
     {
         db = _db;
         storage = _storage;
         context = _context;
         storageRef = _storageRef;
+        currentUser = _currentUser;
     }
 
 //Disasters methodes
@@ -131,7 +137,7 @@ public class Repository {
         return disaster[0];
     }
 
-    public List<User> GetAllUsers(){
+    public void GetAllUsers(GetAllUsersCallBack callback){
         List<User> users = new ArrayList<User>();
 
         db.collection("users")
@@ -142,16 +148,22 @@ public class Repository {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
+
+                                User user = document.toObject(User.class);
+                                Log.wtf("Repository", " User points: "+user.getTotalPoints());
                                 users.add(document.toObject(User.class));
+                                Log.wtf("Repository", " User List size: "+users.size());
+                                callback.onDataReceived(document.toObject(User.class));
                             }
                         } else {
                             Log.wtf("FIREBASE", "Error getting documents.", task.getException());
                         }
                     }
                 });
-        Intent intent = new Intent("GetAllUsers");
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-        return users;
+        //Intent intent = new Intent("GetAllUsers");
+        //LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+       // return users;
     }
 
     //Upload Image to storage
@@ -176,33 +188,6 @@ public class Repository {
     }
 
     //USer methods
-    public User GetUser(String userId)
-    {
-        final User[] user = new User[1];
-        db.collection("users").document(userId).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
-                            user[0] = document.toObject(User.class);
-                            Log.wtf("FIREBASE", "ID: "+document.getId()+" Name: "+user[0].getName());
 
-                        } else {
-                            Log.wtf("FIREBASE", "Error getting documents.", task.getException());
-                        }
-                    }
 
-                });
-        return user[0];
-    }
-
-    public void UpdateUser(User user, String userId)
-    {
-        DocumentReference userRef = db.collection("users").document(userId);
-        // set/merge the user object
-        userRef.set(user, SetOptions.merge());
-
-    }
 }

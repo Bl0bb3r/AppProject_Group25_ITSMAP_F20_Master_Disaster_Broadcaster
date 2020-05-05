@@ -88,7 +88,7 @@ public class DisasterService extends Service {
     //Firebase authentication variable
     public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
-//database methods
+    //database methods
     Repository repository;
 
 
@@ -106,7 +106,7 @@ public class DisasterService extends Service {
 
         // Create a storage reference from our app
         storageRef = storage.getReference();
-        repository = new Repository(db, storage, storageRef, getApplicationContext());
+        repository = new Repository(db, storage, storageRef, currentUser, getApplicationContext());
 
 
     }
@@ -240,18 +240,12 @@ public class DisasterService extends Service {
         return repository.UploadImage(filepath);
     }
     
-    public List<User> GetAllUsers()
+    public void GetAllUsers()
     {
-        return repository.GetAllUsers();
+        //repository.GetAllUsers();
     }
 
-    public User GetUser() {
-        return repository.GetUser(currentUser.getUid());
-    }
 
-    public void UpdateUser(User user) {
-        repository.UpdateUser(user, currentUser.getUid());
-    }
 }
 
 

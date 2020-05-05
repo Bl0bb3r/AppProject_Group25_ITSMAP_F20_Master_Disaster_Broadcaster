@@ -8,7 +8,7 @@ public class User {
     private int rank;
     private String country;
     private int totalPoints;
-    private List<Disaster> disasters;
+
 
     public String getName() {
         return name;
@@ -42,13 +42,6 @@ public class User {
         this.totalPoints = totalPoints;
     }
 
-    public List<Disaster> getDisasters() {
-        return disasters;
-    }
-
-    public void setDisasters(List<Disaster> disasters) {
-        this.disasters = disasters;
-    }
 
 
 }

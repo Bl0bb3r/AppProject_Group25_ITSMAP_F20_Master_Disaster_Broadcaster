@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.IBinder;
+import android.service.notification.NotificationListenerService;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,7 +90,7 @@ public class home_fragment extends Fragment {
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentmanager.beginTransaction();
 
-                transaction.replace(R.id.mainactivity_framelayout, new RankingsFragment());
+                transaction.replace(R.id.mainactivity_framelayout, RankingsFragment.newInstance());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -101,7 +102,7 @@ public class home_fragment extends Fragment {
                 FragmentManager fragmentmanager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentmanager.beginTransaction();
 
-                transaction.replace(R.id.mainactivity_framelayout, new MyProfileFragment());
+                transaction.replace(R.id.mainactivity_framelayout, MyProfileFragment.newInstance());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

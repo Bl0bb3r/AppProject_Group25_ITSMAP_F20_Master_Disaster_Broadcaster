@@ -32,9 +32,12 @@ import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fra
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Global;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.User;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -42,6 +45,9 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
@@ -51,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //Firebase authentication variable
     private FirebaseAuth mAuth;
+    public FirebaseFirestore db;
     //Service
     public Intent serviceIntent;
     public ServiceConnection disasterServiceConnection;
@@ -66,7 +73,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         savedIn = savedInstance;
 
-
+        FirebaseApp.initializeApp(getApplicationContext());
+        db = FirebaseFirestore.getInstance();
         //Start service
         serviceIntent = new Intent(this, DisasterService.class);
         startService(serviceIntent);
@@ -135,6 +143,13 @@ public class LoginActivity extends AppCompatActivity {
 
                 }
                 else {
+
+                    User user = new User();
+                    user.setCountry("undefined");
+                    user.setName("undefined");
+                    user.setTotalPoints(0);
+
+                    InsertUser(user, task.getResult().getUser().getUid());
 
                     FragmentManager fragmentmanager = getSupportFragmentManager();
                     fragmentmanager.popBackStack();
@@ -208,5 +223,26 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    //firebase insert user into db
+    public void InsertUser(User user, String userId)
+    {
+        // Add a new document with a generated ID
+        db.collection("users").document(userId)
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("FIREBASE", "DocumentSnapshot added with ID: "+ userId);
+
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FIREBASE", "Error adding document", e);
+                    }
+                });
+    }
 
 }
