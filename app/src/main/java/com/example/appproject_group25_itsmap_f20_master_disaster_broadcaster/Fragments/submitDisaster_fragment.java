@@ -167,7 +167,7 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
                 }
 
                 ((MainActivity)getActivity()).disasterService.UsersDisasters.add(disaster);
-                ((MainActivity)getActivity()).disasterService.InsertDisaster(disaster);
+                ((MainActivity)getActivity()).repository.InsertDisaster(disaster);
 
                 Toast.makeText( ((MainActivity)getActivity()).disasterService, "You got "+disaster.getPoints()+" point(s)!", Toast.LENGTH_LONG).show();
                 //go back to ongoing fragment

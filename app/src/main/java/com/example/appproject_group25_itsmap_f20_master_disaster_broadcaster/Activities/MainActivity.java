@@ -36,14 +36,33 @@ import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Mod
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.DisasterType;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Event;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Global;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.User;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Utility.Repository;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements camera_fragment.CameraFragmentListener{
+
+
+    //firebase
+    public FirebaseFirestore db;
+    public FirebaseStorage storage;
+    public StorageReference storageRef;
+    //Firebase authentication variable
+    public FirebaseAuth mAuth;
+    public FirebaseUser currentUser;
+    public Repository repository;
 
     //Service
     public Intent serviceIntent;
@@ -82,6 +101,21 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
         bindService(serviceIntent, disasterServiceConnection, Context.BIND_AUTO_CREATE);
         //setup broadcast filters and register it.
 
+        //Firebase
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseApp.initializeApp(getApplicationContext());
+        db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance("gs://disastermasterbroadcaster.appspot.com/");
+        mAuth = FirebaseAuth.getInstance();
+
+        currentUser = mAuth.getCurrentUser();
+
+        // Create a storage reference from our app
+        storageRef = storage.getReference();
+
+        repository = new Repository(db, storage, storageRef, currentUser, getApplicationContext());
+
+
         IntentFilter filter = new IntentFilter();
         filter.addAction("GoToCamera");
         filter.addAction("GoToSubmit");
@@ -89,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
         filter.addAction("ReturnFromSubmit");
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         localBroadcastManager.registerReceiver(DisasterReceiver, filter);
+
+
 
         //check Fragment
         CheckStoragePermission();
@@ -124,18 +160,7 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                 DisasterService.DisasterServiceBinder binder = (DisasterService.DisasterServiceBinder) service;
                 disasterService = binder.getService();
                 isBound = true;
-
-                if (disasterService.currentUser != null) {
-                    disasterService.sendRequest(getApplicationContext());
-                    disasterService.UsersDisasters = (ArrayList<Disaster>) disasterService.GetAllDisasters();
-                }
-                else
-                {
-                    disasterService.currentUser = disasterService.mAuth.getCurrentUser();
-                    disasterService.sendRequest(getApplicationContext());
-                    disasterService.UsersDisasters = (ArrayList<Disaster>) disasterService.GetAllDisasters();
-                }
-                //disasterService.sendRequest(getApplicationContext());
+                disasterService.sendRequest(getApplicationContext());
                 Log.wtf("Binder", "MainActivity bound to service -- isBound: "+isBound);
             }
 
@@ -406,4 +431,5 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
             }
         }
     }
+
 }

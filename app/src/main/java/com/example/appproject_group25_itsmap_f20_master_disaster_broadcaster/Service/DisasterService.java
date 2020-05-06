@@ -79,7 +79,6 @@ public class DisasterService extends Service {
     private RequestQueue requestQueue;
     private IBinder binder = new DisasterServiceBinder();
     public ArrayList<Event> events = new ArrayList<>();
-    public ArrayList<Disaster> UsersDisasters = new ArrayList<>();
     private Gson gson;
     //firebase
     FirebaseFirestore db;
@@ -88,7 +87,7 @@ public class DisasterService extends Service {
     //Firebase authentication variable
     public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
-//database methods
+    //database methods
     Repository repository;
 
 
@@ -106,7 +105,7 @@ public class DisasterService extends Service {
 
         // Create a storage reference from our app
         storageRef = storage.getReference();
-        repository = new Repository(db, storage, storageRef, getApplicationContext());
+        repository = new Repository(db, storage, storageRef, currentUser, getApplicationContext());
 
 
     }
@@ -213,45 +212,15 @@ public class DisasterService extends Service {
        eonet = gson.fromJson(json, new TypeToken<Eonet>(){}.getType());
 
        events = eonet.getEvents();
-       //Intent intent = new Intent("NewEvent");
-       //intent.putExtra("event", gson.toJson(eonet));
-       //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-
    }
-
-   //Firebase
-    public List<Disaster> GetAllDisasters()
-    {
-       return repository.GetAllDisasters(currentUser.getUid());
-    }
-
-    public Disaster GetDisaster(String disasterId)
-    {
-        return repository.GetDisaster(currentUser.getUid(), disasterId);
-    }
-
-    public void InsertDisaster(Disaster disaster)
-    {
-        repository.InsertDisaster(disaster, currentUser.getUid());
-    }
 
     public String UploadImage(String filepath)
     {
         return repository.UploadImage(filepath);
     }
-    
-    public List<User> GetAllUsers()
-    {
-        return repository.GetAllUsers();
-    }
 
-    public User GetUser() {
-        return repository.GetUser(currentUser.getUid());
-    }
 
-    public void UpdateUser(User user) {
-        repository.UpdateUser(user, currentUser.getUid());
-    }
+
 }
 
 

@@ -55,10 +55,9 @@
             android:id="@+id/MyProfileNicknameField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryCards"
             android:layout_marginTop="50dp"
+            android:background="@color/colorPrimaryCards"
             android:fontFamily="@font/audiowide"
-            android:text="@string/nickname"
             android:textColor="@color/colorYellow"
             android:textSize="22sp"
 
@@ -86,10 +85,9 @@
             android:id="@+id/MyProfileCountryField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryCards"
             android:layout_marginTop="50dp"
+            android:background="@color/colorPrimaryCards"
             android:fontFamily="@font/audiowide"
-            android:text="@string/country"
             android:textColor="@color/colorYellow"
             android:textSize="22sp"
 

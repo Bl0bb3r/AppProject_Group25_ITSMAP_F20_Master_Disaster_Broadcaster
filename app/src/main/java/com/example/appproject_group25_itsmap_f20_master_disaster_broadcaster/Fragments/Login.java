@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Login extends Fragment {
 
+    private static final String EMAIL_FIELD = "UserEmail";
+    private static final String PWD_FIELD = "UserPassword";
     Button ExitBtn;
     Button SignInBtn;
     TextInputEditText EmailField;
@@ -112,6 +116,33 @@ public class Login extends Fragment {
         //get so that i can access DisasterService that is bound to main Activity.
         loginActivity = (LoginActivity) context;
 
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            if (savedInstanceState.getString(EMAIL_FIELD) != null) {
+                EmailField.setText(savedInstanceState.getString(EMAIL_FIELD));
+            }
+            if (savedInstanceState.getString(PWD_FIELD) != null) {
+                PasswordField.setText(savedInstanceState.getString(PWD_FIELD));
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (EmailField != null)
+        {
+            outState.putString(EMAIL_FIELD,EmailField.getText().toString());
+        }
+        if (PasswordField != null) {
+            outState.putString(PWD_FIELD,PasswordField.getText().toString());
+        }
+        
+     
     }
 }
 
