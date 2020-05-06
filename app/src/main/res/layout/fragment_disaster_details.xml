@@ -19,6 +19,7 @@
             android:id="@+id/disaster_details_linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="220dp"
+            android:layout_marginTop="15dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -83,12 +84,10 @@
                     android:id="@+id/textview_points"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginLeft="15dp"
                     android:layout_marginTop="20dp"
                     android:text="@string/_0"
                     android:textColor="@color/colorWhite"
-                    app:layout_constraintStart_toEndOf="@+id/textview_label_points"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView_label_title">
 
                 </TextView>
@@ -109,11 +108,10 @@
                     android:id="@+id/disaster_details_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:text="2020-05-04"
                     android:textColor="@color/colorWhite"
-                    app:layout_constraintStart_toEndOf="@+id/textview_label_date"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textview_label_points">
 
                 </TextView>
@@ -123,7 +121,7 @@
         <LinearLayout
             android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="5dp"
             android:orientation="vertical"

@@ -58,4 +58,5 @@
     <string name="x" translatable="false">X</string>
     <string name="capture">Capture</string>
     <string name="swap">Swap</string>
+    <string name="disasterImg">Disaster Image</string>
 </resources>
