@@ -21,7 +21,8 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
@@ -45,7 +46,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Title"
+                        android:text="@string/title"
                         android:textColor="@color/colorWhite"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +60,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="20dp"
-                        android:text="Point(s)"
+                        android:text="@string/points"
                         android:textColor="@color/colorWhite"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView_label_title">
@@ -86,7 +87,7 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:text="Date"
+                        android:text="@string/date"
                         android:textColor="@color/colorWhite"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textview_label_points">
@@ -98,8 +99,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
                         android:layout_marginTop="15dp"
-                        android:text="2020-05-04"
+                        android:text="@string/dateExample"
                         android:textColor="@color/colorWhite"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textview_label_date"
@@ -111,7 +113,7 @@
 
             <LinearLayout
                 android:id="@+id/disaster_details_linearLayout3"
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="160dp"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
@@ -121,6 +123,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
+                    android:contentDescription="@string/disasterImg"
                     android:id="@+id/disaster_details_imageView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

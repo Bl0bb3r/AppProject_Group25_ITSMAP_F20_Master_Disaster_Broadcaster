@@ -45,7 +45,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_gravity="center"
-                android:text="Change Picture" />
+                android:text="@string/changePicture" />
         </LinearLayout>
 
         <LinearLayout
@@ -80,7 +80,7 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Submit"
+            android:text="@string/submit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

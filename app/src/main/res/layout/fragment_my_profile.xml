@@ -26,6 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:contentDescription="@string/myProfilePicture"
             android:id="@+id/editProfilePicture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

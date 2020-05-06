@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_marginLeft="10dp"
-                    android:text="World rank"
+                    android:text="@string/worldRank"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp"
                     tools:text="World rank"
@@ -90,8 +90,8 @@
                     android:layout_marginLeft="100dp"
                     android:layout_marginStart="100dp"
                     android:layout_weight="1"
-                    android:gravity="right"
-                    android:text="12304215124"
+                    android:gravity="end"
+                    android:text="@string/zero"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp" />
 
@@ -139,7 +139,9 @@
             app:layout_constraintBottom_toTopOf="@+id/back_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></androidx.recyclerview.widget.RecyclerView>
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
 
         <Button
             android:id="@+id/back_btn"

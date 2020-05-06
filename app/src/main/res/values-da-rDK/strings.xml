@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="back">Tilbage</string>
-    <string name="logout" translatable="false">Log ud</string>
     <string name="profile">Min Profil</string>
     <string name="rankings">Rangliste</string>
     <string name="my_disasters">Mine Katastrofer</string>
@@ -35,4 +34,11 @@
     <string name="capture">Skærmklip</string>
     <string name="swap">Skift</string>
     <string name="disasterImg">Katastrofe Billede</string>
+    <string name="submit">Indsend</string>
+    <string name="changePicture">Skift Billede</string>
+    <string name="worldRank">Verdens Rangering</string>
+    <string name="myProfilePicture">Profil billede</string>
+    <string name="date">Dato:</string>
+    <string name="logout">Log ud</string>
+    <string name="title">"Titel: "</string>
 </resources>

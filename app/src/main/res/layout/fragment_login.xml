@@ -5,15 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.Login">
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackground">
 
         <ImageView
             android:id="@+id/imageView"
+            android:contentDescription="@string/appImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -49,14 +48,13 @@
             android:fontFamily="@font/audiowide"
             android:text="@string/appHeadline2"
             android:textColor="@color/colorYellow"
-            android:textSize="23dp"
+            android:textSize="23sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/TVLoginFragment_P1" />
 
 
         <LinearLayout
-
             android:id="@+id/layout_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +67,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.425">
+            app:layout_constraintVertical_bias="0.425"
+            android:baselineAligned="false">
 
             <com.google.android.material.textfield.TextInputLayout
 
@@ -100,7 +99,6 @@
         </LinearLayout>
 
         <LinearLayout
-
             android:id="@+id/layout_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -112,7 +110,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_username"
-            app:layout_constraintVertical_bias="0.022">
+            app:layout_constraintVertical_bias="0.022"
+            android:baselineAligned="false">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_password"

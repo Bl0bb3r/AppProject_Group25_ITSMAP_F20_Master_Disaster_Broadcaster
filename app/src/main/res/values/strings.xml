@@ -59,4 +59,12 @@
     <string name="capture">Capture</string>
     <string name="swap">Swap</string>
     <string name="disasterImg">Disaster Image</string>
+    <string name="submit">Submit</string>
+    <string name="changePicture">Change Picture</string>
+    <string name="worldRank">World Rank:</string>
+    <string name="myProfilePicture">Profile Picture</string>
+    <string name="appImage" translatable="false">Application\'s Banner</string>
+    <string name="date">Date:</string>
+    <string name="dateExample" translatable="false">06-05-2020</string>
+    <string name="title">Title:</string>
 </resources>
