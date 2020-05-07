@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RankingsFragment extends Fragment implements RankingsRecyclerAdapter.OnRankListener {
+public class RankingsFragment extends Fragment implements RankingsRecyclerAdapter.OnRankListener, Repository.UsersCallBack, Repository.SubmitsCallBack {
     private String TOTAL_USERS = "TotalUsers";
     private ArrayList<User>  mUserList = new ArrayList<>();
 
@@ -104,9 +104,11 @@ public class RankingsFragment extends Fragment implements RankingsRecyclerAdapte
         rankingsRecyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        //Rank Placement
-        //holder.textView_placement.setText(mUserList.get(position).getRank());
-        Users.setText("0");
+
+        ((MainActivity)getActivity()).repository.GetTotalSubmits(this);
+        ((MainActivity)getActivity()).repository.GetTotalUsers(this);
+
+
         Log.wtf("Rankings", "totalUsers TextView: "+ Users.getText());
 
 
@@ -154,7 +156,6 @@ public class RankingsFragment extends Fragment implements RankingsRecyclerAdapte
         adapter = new RankingsRecyclerAdapter(options, this);
 
     }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -172,7 +173,6 @@ public class RankingsFragment extends Fragment implements RankingsRecyclerAdapte
         adapter.stopListening();
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -186,9 +186,18 @@ public class RankingsFragment extends Fragment implements RankingsRecyclerAdapte
 
     }
 
-
     @Override
     public void onRankClick(int position, DocumentSnapshot documentSnapshot) {
         //Rankings click in the list
+    }
+
+    @Override
+    public void onUsersCallback(double totalUsers) {
+        Users.setText(""+totalUsers);
+    }
+
+    @Override
+    public void onSubmitCallback(double totalSubmits) {
+        Submits.setText(""+totalSubmits);
     }
 }

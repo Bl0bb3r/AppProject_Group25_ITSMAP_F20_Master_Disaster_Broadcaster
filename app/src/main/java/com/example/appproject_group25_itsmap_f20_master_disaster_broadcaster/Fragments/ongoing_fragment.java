@@ -78,7 +78,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
     EventAdapter eventAdapter;
 
     Gson gson;
-    private ArrayList<Event> events;
+     private static  ArrayList<Event> events;
 
     //User Location
     private FusedLocationProviderClient mFusedLocationClient;
@@ -92,8 +92,9 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
     }
 
     // TODO: Rename and change types and number of parameters
-    public static ongoing_fragment newInstance() {
+    public static ongoing_fragment newInstance(ArrayList<Event> _events) {
         ongoing_fragment fragment = new ongoing_fragment();
+        events = _events;
         return fragment;
 
     }
@@ -112,7 +113,6 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
-        events = new ArrayList<>();
 
         rootView = inflater.inflate(R.layout.fragment_ongoing_fragment, container, false);
         //Maps
@@ -149,10 +149,10 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
     public void onResume() {
         super.onResume();
         Log.wtf("OnGoing", "DisasterService is -- isBound: " + ((MainActivity) getActivity()).isBound);
-        if (((MainActivity) getActivity()).isBound) {
+       // if (((MainActivity) getActivity()).isBound) {
 
-            if (((MainActivity) getActivity()).disasterService.events.size() > 0) {
-                events = ((MainActivity) getActivity()).disasterService.events;
+        //    if (((MainActivity) getActivity()).disasterService.events.size() > 0) {
+         //       events = ((MainActivity) getActivity()).disasterService.events;
 
                 //      for(int i = 0; i < events.size()-1; i++)
                 //      {
@@ -169,8 +169,8 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                 eventAdapter = new EventAdapter(events, this);
                 eventAdapter.notifyDataSetChanged();
                 recyclerViewEvents.setAdapter(eventAdapter);
-            }
-        }
+        //    }
+       // }
     }
     @Override
     public void onStart() {
@@ -332,7 +332,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                                     }
                                 }
 
-                                Polygon polygonMarker = googleMap.addPolygon(new PolygonOptions().addAll(points).fillColor(Color.BLUE).strokeColor(Color.YELLOW).visible(true));
+                                //googleMap.addPolygon(new PolygonOptions().addAll(points).fillColor(Color.BLUE).strokeColor(Color.YELLOW).visible(true));
 
                                 break;
                             case MultiPolygon:

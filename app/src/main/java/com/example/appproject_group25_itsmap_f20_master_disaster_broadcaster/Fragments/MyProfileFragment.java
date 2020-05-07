@@ -34,6 +34,7 @@ public class MyProfileFragment extends Fragment {
     private static final String COUNTRY_FIELD = "UserCountry";
     private static final String RANK_FIELD = "UserRank";
     private static final String POINT_FIELD ="UserPoints";
+
     ImageView ProfilePicture;
     EditText NicknameField;
     EditText CountryField;
