@@ -148,28 +148,27 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
     @Override
     public void onResume() {
         super.onResume();
-        Log.wtf("OnGoing", "DisasterService is -- isBound: "+((MainActivity) getActivity()).isBound);
+        Log.wtf("OnGoing", "DisasterService is -- isBound: " + ((MainActivity) getActivity()).isBound);
         if (((MainActivity) getActivity()).isBound) {
 
-            if (((MainActivity)getActivity()).disasterService.events.size() > 0) {
-                events = ((MainActivity)getActivity()).disasterService.events;
+            if (((MainActivity) getActivity()).disasterService.events.size() > 0) {
+                events = ((MainActivity) getActivity()).disasterService.events;
 
-                for(int i = 0; i < events.size()-1; i++)
-                {
-                    for (int j = 0; j < ((MainActivity)getActivity()).disasterService.UsersDisasters.size()-1;j++)
-                    {
-                        if (events.get(i).getTitle().equals(((MainActivity)getActivity()).disasterService.UsersDisasters.get(j).getTitle()))
-                        {
-                            events.remove(i);
-                        }
-                    }
-                }
-                Log.wtf("OnGoing", "Events -- Size: "+events.size());
+                //      for(int i = 0; i < events.size()-1; i++)
+                //      {
+                //          for (int j = 0; j < ((MainActivity)getActivity()).disasterService.UsersDisasters.size()-1;j++)
+                //          {
+                //              if (events.get(i).getTitle().equals(((MainActivity)getActivity()).disasterService.UsersDisasters.get(j).getTitle()))
+                //              {
+                //                 events.remove(i);
+                //            }
+                //        }
+
+                Log.wtf("OnGoing", "Events -- Size: " + events.size());
 
                 eventAdapter = new EventAdapter(events, this);
                 eventAdapter.notifyDataSetChanged();
                 recyclerViewEvents.setAdapter(eventAdapter);
-
             }
         }
     }

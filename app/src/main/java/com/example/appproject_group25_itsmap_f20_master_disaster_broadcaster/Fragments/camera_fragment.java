@@ -80,13 +80,6 @@ public class camera_fragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Create an instance of Camera
-        // get Camera parameters
-        //Camera.Parameters params = mCamera.getParameters();
-        // set the focus mode
-        //params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-        // set Camera parameters
-        //mCamera.setParameters(params);
 
     }
 
