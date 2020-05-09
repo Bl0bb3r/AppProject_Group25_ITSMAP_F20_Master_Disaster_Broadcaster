@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -19,7 +20,9 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class CreateNewUserFragment extends Fragment {
 
-
+    private static final String EMAIL_FIELD ="Email";
+    private static final String PW_FIELD = "Password";
+    private static final String PW_VERIFY_FIELD = "VerifyPW";
     Button btn_back;
     Button btn_signup;
     TextInputEditText editText_email;
@@ -30,12 +33,21 @@ public class CreateNewUserFragment extends Fragment {
 
 
     public CreateNewUserFragment() {
+        // Required empty public constructor
+    }
 
+    public static CreateNewUserFragment newInstance() {
+        CreateNewUserFragment fragment = new CreateNewUserFragment();
+
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            //if any parameters
+        }
 
     }
 
@@ -102,6 +114,24 @@ public class CreateNewUserFragment extends Fragment {
 
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null)
+        {
+            editText_email.setText(savedInstanceState.getString(EMAIL_FIELD));
+            editText_password1.setText(savedInstanceState.getString(PW_FIELD));
+            editText_password2.setText(savedInstanceState.getString(PW_VERIFY_FIELD));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EMAIL_FIELD, editText_email.getText().toString());
+        outState.putString(PW_FIELD, editText_password1.getText().toString());
+        outState.putString(PW_VERIFY_FIELD, editText_password2.getText().toString());
+    }
 }
 
 
