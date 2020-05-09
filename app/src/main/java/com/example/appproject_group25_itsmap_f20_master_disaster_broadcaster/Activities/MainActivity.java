@@ -365,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
     }
 
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {

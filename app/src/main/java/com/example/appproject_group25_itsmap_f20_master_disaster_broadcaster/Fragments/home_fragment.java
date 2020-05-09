@@ -19,15 +19,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.LoginActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Activities.MainActivity;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Service.DisasterService;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class home_fragment extends Fragment {
 
 
-
+    FirebaseAuth mAuth;
     private boolean isBound;
 
     Button ongoing_btn;
@@ -112,6 +114,16 @@ public class home_fragment extends Fragment {
             public void onClick(View v) {
 
                 ((MainActivity)getActivity()).CheckLocationPermission();
+
+            }
+        });
+
+        logout_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            FirebaseAuth.getInstance().signOut();
+            getActivity().finish();
+            startActivity(new Intent(getContext(), LoginActivity.class));
 
             }
         });

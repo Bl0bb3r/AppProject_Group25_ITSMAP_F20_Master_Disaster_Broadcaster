@@ -54,13 +54,16 @@
 
         <EditText
             android:id="@+id/MyProfileNicknameField"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:background="@color/colorPrimaryCards"
             android:fontFamily="@font/audiowide"
             android:textColor="@color/colorYellow"
+            android:text="@string/nickname"
             android:textSize="22sp"
+            android:maxLines="1"
+            android:gravity="center"
 
             app:layout_constraintBaseline_toBaselineOf="@id/MyProfileNicknameHint"
             app:layout_constraintEnd_toEndOf="parent"
@@ -84,13 +87,16 @@
 
         <EditText
             android:id="@+id/MyProfileCountryField"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:background="@color/colorPrimaryCards"
             android:fontFamily="@font/audiowide"
             android:textColor="@color/colorYellow"
+            android:text="@string/country"
             android:textSize="22sp"
+            android:maxLines="1"
+            android:gravity="center"
 
             app:layout_constraintBaseline_toBaselineOf="@id/MyProfileCountryHint"
             app:layout_constraintEnd_toEndOf="parent"
