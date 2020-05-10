@@ -96,7 +96,7 @@ public class MyProfileFragment extends Fragment {
         btn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (NicknameField.getText().toString().length() > 16) {
+                if (NicknameField.getText().toString().trim().length() > 16) {
                     Toast.makeText(getActivity(), "" + getText(R.string.nicknameTooLong), Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -148,7 +148,7 @@ public class MyProfileFragment extends Fragment {
         tempUser.setName(NicknameField.getText().toString());
 
         tempUser.setCountry(CountryField.getText().toString());
-        if (RankField.getText() != getText(R.string.no_rank)) {
+        if (RankField.getText() != "0") {
             tempUser.setRank(Integer.parseInt(RankField.getText().toString()));
         }
         else
