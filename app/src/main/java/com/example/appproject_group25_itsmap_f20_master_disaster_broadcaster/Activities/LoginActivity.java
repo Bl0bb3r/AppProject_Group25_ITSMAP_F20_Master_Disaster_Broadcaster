@@ -147,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                     user.setCountry("undefined");
                     user.setName("undefined");
                     user.setTotalPoints(0);
+                    user.setRank(0);
 
                     InsertUser(user, task.getResult().getUser().getUid());
 
