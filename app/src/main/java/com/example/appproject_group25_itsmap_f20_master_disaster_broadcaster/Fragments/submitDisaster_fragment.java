@@ -392,7 +392,9 @@ public class submitDisaster_fragment extends Fragment implements OnMapReadyCallb
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if(savedInstanceState != null) {
-            currentFile = new File(savedInstanceState.getString(DISASTER_IMAGE));
+            if(savedInstanceState.getString(DISASTER_IMAGE) != null) {
+                currentFile = new File(savedInstanceState.getString(DISASTER_IMAGE));
+            }
         }
     }
 

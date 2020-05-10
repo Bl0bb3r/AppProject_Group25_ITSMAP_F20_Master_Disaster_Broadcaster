@@ -239,18 +239,12 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
 
     //permissions
     public void CheckLocationPermission(){
-        // Here, thisActivity is the current activity
         String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
         if (ContextCompat.checkSelfPermission(this, String.valueOf(permissions)) != PackageManager.PERMISSION_GRANTED) {
 
             // Permission is not granted
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     String.valueOf(permissions))) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
 
                 new AlertDialog.Builder(this).setTitle("Permissions needed").setMessage("this permission is needed. The core functionality of the app wont work").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
@@ -270,9 +264,6 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                         permissions,
                         Global.REQUEST_FINE_LOCATION);
 
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         } else {
             // Permission has already been granted
@@ -281,18 +272,12 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
     }
     public void CheckStoragePermission()
     {
-        // Here, thisActivity is the current activity
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (ContextCompat.checkSelfPermission(this, String.valueOf(permissions)) != PackageManager.PERMISSION_GRANTED) {
 
-            // Permission is not granted
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     String.valueOf(permissions))) {
 
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
 
                 new AlertDialog.Builder(this).setTitle("Permission needed").setMessage("this permission is needed and the app wont function without it").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
@@ -312,9 +297,6 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                         permissions,
                         Global.REQUEST_WRITE_EXTERNAL_STORAGE);
 
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         } else {
             // Permission has already been granted
@@ -405,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                     FragmentManager fragmentmanager = getSupportFragmentManager();
                     FragmentTransaction transaction = fragmentmanager.beginTransaction();
 
-                    transaction.replace(R.id.mainactivity_framelayout, new ongoing_fragment());
+                    transaction.replace(R.id.mainactivity_framelayout, ongoing_fragment.newInstance(disasterService.events));
                     transaction.addToBackStack(null);
                     transaction.commit();
 

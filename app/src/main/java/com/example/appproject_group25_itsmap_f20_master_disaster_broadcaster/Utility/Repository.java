@@ -157,4 +157,68 @@ public class Repository {
         return ref.getName();
     }
 
+    public void GetUser(UserCallBack callback)
+    {
+
+        db.collection("users").document(currentUser.getUid()).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
+                            User user = document.toObject(User.class);
+                            callback.onUserCallback(user);
+
+                        } else {
+                            Log.wtf("FIREBASE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+    }
+    public void GetTotalSubmits(SubmitsCallBack callback)
+    {
+
+        db.collection("globals").document("global1").get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
+                            callback.onSubmitCallback(document.getDouble("totalSubmits"));
+                        } else {
+                            Log.wtf("FIREBASE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void GetTotalUsers(UsersCallBack callback) {
+        db.collection("globals").document("global1").get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            Log.wtf("FIREBASE", document.getId() + " => " + document.getData());
+                            callback.onUsersCallback(document.getDouble("totalUsers"));
+
+                        } else {
+                            Log.wtf("FIREBASE", "Error getting documents.", task.getException());
+                        }
+                    }
+
+                });
+    }
+    public interface UsersCallBack {
+        void onUsersCallback(double totalUsers);
+    }
+    public interface SubmitsCallBack {
+        void onSubmitCallback(double totalSubmits);
+    }
+    public interface UserCallBack {
+        void onUserCallback(User user);
+    }
 }

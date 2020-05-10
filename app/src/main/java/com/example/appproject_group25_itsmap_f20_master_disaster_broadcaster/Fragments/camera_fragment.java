@@ -213,7 +213,6 @@ public class camera_fragment extends Fragment{
         return rootView;
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -227,7 +226,6 @@ public class camera_fragment extends Fragment{
         mPreview = new CameraPreview(getActivity(), mCamera);
         preview.addView(mPreview);
         setCameraDisplayOrientation(getActivity(), CurrentCameraId, mCamera);
-
 
     }
 

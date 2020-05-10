@@ -25,7 +25,9 @@ import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Act
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.DisasterAdapter;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Adapters.EmblemAdapter;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.Disaster;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.User;
 import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Utility.Repository;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -37,7 +39,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class mydisasters_fragment extends Fragment implements DisasterAdapter.OnDisasterListener, EmblemAdapter.OnEmblemListener {
+public class mydisasters_fragment extends Fragment implements DisasterAdapter.OnDisasterListener, EmblemAdapter.OnEmblemListener, Repository.UserCallBack {
     private StorageReference storageRef;
     //FirestoreRecyclerAdapter adapter;
     RecyclerView recyclerViewDisasters;
@@ -109,6 +111,7 @@ public class mydisasters_fragment extends Fragment implements DisasterAdapter.On
         textView_totalPoints = rootView.findViewById(R.id.textview_totalPoints);
         textView_rank = rootView.findViewById(R.id.textview_worldRank);
 
+        ((MainActivity)getActivity()).repository.GetUser(this);
         btn_back = (Button) rootView.findViewById(R.id.back_btn);
 
 
@@ -186,5 +189,11 @@ public class mydisasters_fragment extends Fragment implements DisasterAdapter.On
     @Override
     public void onEmblemClick(int position, DocumentSnapshot documentSnapshot) {
         //emblem on click
+    }
+
+    @Override
+    public void onUserCallback(User user) {
+        textView_totalPoints.setText(""+user.getTotalPoints());
+        textView_rank.setText(""+user.getRank());
     }
 }
