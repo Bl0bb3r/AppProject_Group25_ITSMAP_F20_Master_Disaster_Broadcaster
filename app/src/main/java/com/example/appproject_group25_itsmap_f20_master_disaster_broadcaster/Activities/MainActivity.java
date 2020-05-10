@@ -375,11 +375,11 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    Toast.makeText(this, "Permissions granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, ""+R.string.permissions_granted, Toast.LENGTH_SHORT).show();
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(this, "Permissions not granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, ""+R.string.permissions_notgranted, Toast.LENGTH_SHORT).show();
                 }
                 return;
             }

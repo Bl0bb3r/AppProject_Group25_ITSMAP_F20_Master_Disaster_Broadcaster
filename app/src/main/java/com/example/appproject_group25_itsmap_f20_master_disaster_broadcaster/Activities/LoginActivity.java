@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         //Authenticate
-                        Toast.makeText(LoginActivity.this, "Authentication successfull.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, ""+R.string.auth_succes, Toast.LENGTH_LONG).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         //TODO: Look at Nav Controller
                         //Init Navigation
@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
 
                     } else {
-                        Toast.makeText(LoginActivity.this, "Authentication failed. Try Again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, ""+R.string.auth_fail, Toast.LENGTH_LONG).show();
                     }
                 }
             });

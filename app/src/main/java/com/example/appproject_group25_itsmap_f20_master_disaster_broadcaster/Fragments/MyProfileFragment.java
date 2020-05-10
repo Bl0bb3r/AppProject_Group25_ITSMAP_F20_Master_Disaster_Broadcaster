@@ -135,7 +135,7 @@ public class MyProfileFragment extends Fragment {
                 RankField.setText(""+user.getRank());
             }
             else{
-                RankField.setText("No rank");
+                RankField.setText(""+R.string.no_rank);
             }
             PointsField.setText(""+user.getTotalPoints());
     }
@@ -147,7 +147,7 @@ public class MyProfileFragment extends Fragment {
         tempUser.setName(NicknameField.getText().toString());
 
         tempUser.setCountry(CountryField.getText().toString());
-        if (RankField.getText() != "No rank") {
+        if (RankField.getText() != "" + R.string.no_rank) {
             tempUser.setRank(Integer.parseInt(RankField.getText().toString()));
         }
         else
@@ -189,7 +189,7 @@ public class MyProfileFragment extends Fragment {
             userRef.set(user, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(getActivity(), "Profile updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), ""+R.string.profile_update, Toast.LENGTH_SHORT).show();
                 }
             });
 

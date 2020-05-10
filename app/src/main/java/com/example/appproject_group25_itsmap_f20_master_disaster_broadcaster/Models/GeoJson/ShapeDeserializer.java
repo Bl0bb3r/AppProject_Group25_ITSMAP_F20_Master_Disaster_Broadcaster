@@ -1,5 +1,6 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Models.GeoJson;
 
+import com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.R;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -26,7 +27,7 @@ import java.lang.reflect.Type;
                 case Point:
                     return context.deserialize(json, PointShape.class);
                 default:
-                    throw new JsonParseException("Unrecognized shape type: " + type);
+                    throw new JsonParseException(""+R.string.unrecognized_shape + type);
             }
         }
         else if(json instanceof JsonArray) {
@@ -44,7 +45,7 @@ import java.lang.reflect.Type;
                     case Point:
                         return context.deserialize(json, PointShape.class);
                     default:
-                        throw new JsonParseException("Unrecognized shape type: " + type);
+                        throw new JsonParseException(""+R.string.unrecognized_shape + type);
                 }
 
             }

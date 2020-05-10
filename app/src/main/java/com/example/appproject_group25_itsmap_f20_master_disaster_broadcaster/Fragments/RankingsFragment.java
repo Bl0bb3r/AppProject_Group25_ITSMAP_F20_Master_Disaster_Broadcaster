@@ -106,7 +106,7 @@ public class RankingsFragment extends Fragment implements RankingsRecyclerAdapte
 
         //Rank Placement
         //holder.textView_placement.setText(mUserList.get(position).getRank());
-        Users.setText("0");
+        Users.setText(R.string.zero);
         Log.wtf("Rankings", "totalUsers TextView: "+ Users.getText());
 
 

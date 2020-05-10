@@ -67,4 +67,14 @@
     <string name="date">Date:</string>
     <string name="dateExample" translatable="false">06-05-2020</string>
     <string name="title">Title:</string>
+    <string name="auth_fail">Authentication failed. Please try Again...</string>
+    <string name="auth_succes">Authentication Successfull</string>
+    <string name="permissions_granted">Permissions granted</string>
+    <string name="permissions_notgranted">Permissions not granted</string>
+    <string name="no_rank">No Rank</string>
+    <string name="profile_update">Profile updated</string>
+    <string name="you_got">You got</string>
+    <string name="point_s" translatable="false">Point(s)!</string>
+    <string name="unrecognized_shape">Unrecognized shape type:</string>
+    <string name="no_events">No events nearby</string>
 </resources>
