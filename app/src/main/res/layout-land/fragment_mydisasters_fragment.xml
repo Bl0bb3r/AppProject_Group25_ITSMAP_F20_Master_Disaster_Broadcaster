@@ -100,14 +100,16 @@
 
         <LinearLayout
             android:id="@+id/linearLayout6"
-            android:layout_width="250dp"
-            android:layout_height="210dp"
+            android:layout_width="280dp"
+            android:layout_height="0dp"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/roundcorner"
             android:orientation="horizontal"
             android:padding="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/back_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
 
@@ -118,22 +120,21 @@
                 android:orientation="horizontal" />
 
 
-
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mydisasters_recyclerview"
-            android:layout_width="wrap_content"
-            android:layout_height="210dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="25dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginEnd="15dp"
             android:layout_marginRight="15dp"
             android:background="@color/colorPrimary"
             android:divider="@android:color/transparent"
             android:dividerHeight="15sp"
             android:foregroundGravity="center"
+            android:padding="10dp"
             app:layout_constraintBottom_toTopOf="@+id/back_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/linearLayout6"
