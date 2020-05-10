@@ -173,7 +173,7 @@ public class DisasterService extends Service {
                     v.vibrate(500);
                 }
 
-                Toast.makeText(ctx,""+R.string.no_events, Toast.LENGTH_LONG).show();
+                Toast.makeText(ctx,""+getText(R.string.no_events), Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent("NoEvents");
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);

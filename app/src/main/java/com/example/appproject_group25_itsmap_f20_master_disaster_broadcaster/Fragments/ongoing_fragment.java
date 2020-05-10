@@ -298,7 +298,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                                     LatLng latLng = new LatLng(((PointShape) shape).getCoordinates()[1], point.getCoordinates()[0]);
                                     return latLng;
                             default:
-                                throw new JsonParseException(""+R.string.unrecognized_shape + type);
+                                throw new JsonParseException(""+getText(R.string.unrecognized_shape) + type);
 
                         }
                     }
@@ -374,7 +374,7 @@ public class ongoing_fragment extends Fragment implements OnMapReadyCallback, Go
                                 break;
 
                             default:
-                                throw new JsonParseException(""+R.string.unrecognized_shape + type);
+                                throw new JsonParseException(""+getText(R.string.unrecognized_shape) + type);
 
                         }
                     }

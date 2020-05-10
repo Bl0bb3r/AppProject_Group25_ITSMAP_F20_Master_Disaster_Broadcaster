@@ -90,7 +90,7 @@ public class Login extends Fragment {
             @Override
             public void onClick(View view) {
                 loginActivity.finish();
-                System.exit(0);
+                System.exit(1);
             }
         });
 
