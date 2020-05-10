@@ -148,13 +148,7 @@ public class MyProfileFragment extends Fragment {
         tempUser.setName(NicknameField.getText().toString());
 
         tempUser.setCountry(CountryField.getText().toString());
-        if (RankField.getText() != "0") {
-            tempUser.setRank(Integer.parseInt(RankField.getText().toString()));
-        }
-        else
-        {
-            tempUser.setRank(0);
-        }
+
         tempUser.setTotalPoints(Integer.parseInt(PointsField.getText().toString()));
 
         UpdateUser(tempUser);
@@ -190,7 +184,7 @@ public class MyProfileFragment extends Fragment {
             userRef.set(user, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(getActivity(), ""+R.string.profile_update, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), ""+getText(R.string.profile_update), Toast.LENGTH_SHORT).show();
                 }
             });
 

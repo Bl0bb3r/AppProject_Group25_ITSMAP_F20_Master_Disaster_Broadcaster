@@ -1,6 +1,7 @@
 package com.example.appproject_group25_itsmap_f20_master_disaster_broadcaster.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -91,6 +92,16 @@ public class Login extends Fragment {
             public void onClick(View view) {
                 loginActivity.finish();
                 System.exit(1);
+
+                /*int pid = android.os.Process.myPid();
+                android.os.Process.killProcess(pid);*/
+
+                //this.finishAffinity() - should support API 16 - doesnt work.
+                // finishAndRemoveTask(); - similar - only supports API 21 - so cant use for this project per requirrements. (not tested)
+
+                // here we would use the above action - it attempts to restart the application for some reason.
+                // many alternatives was attempted - as you can see above.
+
             }
         });
 
