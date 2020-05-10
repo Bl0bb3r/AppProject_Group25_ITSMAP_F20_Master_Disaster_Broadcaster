@@ -20,7 +20,7 @@
     <string name="cancel">Cancel</string>
     <string name="registerNewUser">Register new user</string>
     <string name="enterEmail">Enter Email address:</string>
-    <string name="passEmpty">Password field is empty, please try again...</string>
+    <string name="passEmpty">Password field is empty, please try again…</string>
     <string name="passShort">Password was too short, enter minimum 8 characters</string>
     <string name="emailEmpty">Email Address field is empty, please try again</string>
     <string name="registrationSuccess">Registration completed</string>

@@ -29,12 +29,13 @@
             <ImageView
                 android:contentDescription="@string/disasterImg"
                 android:id="@+id/imageView_submitDisaster"
-                android:layout_width="wrap_content"
-                android:layout_height="180dp"
+                android:layout_width="0dp"
+                android:layout_height="300dp"
                 android:layout_gravity="center"
                 android:src="@drawable/fire"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_weight="1"
                  />
 
             <Button
