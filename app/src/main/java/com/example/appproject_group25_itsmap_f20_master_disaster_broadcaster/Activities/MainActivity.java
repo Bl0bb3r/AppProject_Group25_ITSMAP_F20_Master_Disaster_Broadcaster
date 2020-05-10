@@ -233,7 +233,9 @@ public class MainActivity extends AppCompatActivity implements camera_fragment.C
     @Override
     public void onImageSent(String input) {
 
-            submit.updateImage(input);
+            if(submit != null) {
+                submit.updateImage(input);
+            }
 
     }
 

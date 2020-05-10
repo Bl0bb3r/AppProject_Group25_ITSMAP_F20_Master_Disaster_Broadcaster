@@ -18,53 +18,42 @@
 
         <LinearLayout
             android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/submit_btn_back"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout7"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
 
             <ImageView
-                android:contentDescription="@string/disasterImg"
                 android:id="@+id/imageView_submitDisaster"
-                android:layout_width="wrap_content"
-                android:layout_height="180dp"
-                android:layout_gravity="center"
-                android:src="@drawable/disasterdude"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                 />
+                android:layout_width="300dp"
+                android:layout_height="250dp"
+                android:contentDescription="@string/disasterImg"
+                android:src="@drawable/disasterdude" />
 
-            <Button
-                android:id="@+id/btn_cam"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:textColor="@color/colorWhite"
-                android:layout_gravity="center"
-                android:text="@string/changePicture" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/linearLayout7"
+            android:layout_width="330dp"
             android:layout_height="0dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/submit_btn_submit"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapView_submitDisaster"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
+                android:layout_height="match_parent" />
         </LinearLayout>
         <Button
             android:id="@+id/submit_btn_back"
@@ -86,6 +75,19 @@
             android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btn_cam"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/changePicture"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/submit_btn_back" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
