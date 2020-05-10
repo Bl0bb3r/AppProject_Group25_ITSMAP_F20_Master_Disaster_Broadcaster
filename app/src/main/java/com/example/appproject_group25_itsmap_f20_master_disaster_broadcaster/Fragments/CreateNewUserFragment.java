@@ -97,15 +97,15 @@ public class CreateNewUserFragment extends Fragment {
         String _password = password.trim();
         
         if(TextUtils.isEmpty(_email)) {
-            Toast.makeText(getActivity(), ""+ R.string.emailEmpty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ""+ getText(R.string.emailEmpty), Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(_password)) {
-            Toast.makeText(getActivity(), ""+ R.string.passEmpty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ""+ getText(R.string.passEmpty), Toast.LENGTH_SHORT).show();
             return;
         }
         if (_password.length() < 8) {
-            Toast.makeText(getActivity(), ""+ R.string.passShort, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ""+ getText(R.string.passShort), Toast.LENGTH_SHORT).show();
         }
 
         //here

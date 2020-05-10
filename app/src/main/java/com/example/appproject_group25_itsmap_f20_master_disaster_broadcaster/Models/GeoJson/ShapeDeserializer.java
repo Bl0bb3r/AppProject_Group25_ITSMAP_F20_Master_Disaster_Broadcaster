@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
                 case Point:
                     return context.deserialize(json, PointShape.class);
                 default:
-                    throw new JsonParseException(""+R.string.unrecognized_shape + type);
+                    throw new JsonParseException("Unrecognized shape type: " + type);
             }
         }
         else if(json instanceof JsonArray) {
@@ -45,7 +45,7 @@ import java.lang.reflect.Type;
                     case Point:
                         return context.deserialize(json, PointShape.class);
                     default:
-                        throw new JsonParseException(""+R.string.unrecognized_shape + type);
+                        throw new JsonParseException("Unrecognized shape type: " + type);
                 }
 
             }

@@ -47,7 +47,7 @@
     <string name="permissions_notgranted">Tilladelser ej givet</string>
     <string name="no_rank">Ingen Rank</string>
     <string name="profile_update">Profil opdateret</string>
-    <string name="you_got">"Du tjente "</string>
+    <string name="you_got">Du tjente</string>
     <string name="unrecognized_shape">"Ukendt format type: "</string>
     <string name="no_events">Ingen events i nærheden</string>
 </resources>
