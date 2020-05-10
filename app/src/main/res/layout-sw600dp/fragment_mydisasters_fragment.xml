@@ -44,7 +44,7 @@
                     android:gravity="center"
                     android:text="@string/total_points"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp"
+                    android:textSize="30sp"
                     tools:text="Total points" />
 
                 <TextView
@@ -60,7 +60,7 @@
                     android:gravity="end"
                     android:text="@string/zero"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp" />
+                    android:textSize="30sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -79,7 +79,7 @@
                     android:gravity="center"
                     android:text="@string/worldRank"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp"
+                    android:textSize="30sp"
                     tools:text="World rank" />
 
                 <TextView
@@ -94,7 +94,7 @@
                     android:gravity="end"
                     android:text="@string/zero"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp" />
+                    android:textSize="30sp" />
 
             </LinearLayout>
 
@@ -103,7 +103,7 @@
         <LinearLayout
             android:id="@+id/linearLayout6"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="250dp"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"

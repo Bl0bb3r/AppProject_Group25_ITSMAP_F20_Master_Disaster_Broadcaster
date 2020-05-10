@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardview_rankings"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@drawable/roundcorner"
@@ -11,10 +11,14 @@
 
     <LinearLayout
         android:id="@+id/rankings_customRow"
-        android:layout_width="360dp"
+        android:layout_width="match_parent"
         android:layout_height="90dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,10 +51,10 @@
 
         <TextView
             android:id="@+id/textView_rankings_name"
-            android:layout_width="wrap_content"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/audiowide"
-            android:gravity="start"
+            android:gravity="center"
             android:text="@string/nickname"
             android:textColor="@color/colorWhite"
             android:textSize="20sp" />
@@ -64,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/audiowide"
-            android:gravity="end"
+            android:gravity="end|center_vertical"
             android:text="@string/zero"
             android:textColor="@color/colorWhite"
             android:textSize="20sp" />
@@ -74,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/audiowide"
-            android:gravity="end"
+            android:gravity="end|center_vertical|center_horizontal"
             android:text="@string/pts"
             android:textColor="@color/colorWhite"
             android:textSize="20sp" />

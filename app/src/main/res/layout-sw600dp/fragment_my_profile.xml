@@ -18,7 +18,7 @@
             android:fontFamily="@font/audiowide"
             android:text="@string/myProfile"
             android:textColor="@color/colorYellow"
-            android:textSize="26sp"
+            android:textSize="40sp"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
@@ -26,14 +26,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:contentDescription="@string/myProfilePicture"
             android:id="@+id/editProfilePicture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginRight="50dp"
+            android:layout_width="225dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="50dp"
+            android:contentDescription="@string/myProfilePicture"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MyProfilePageHint"
             tools:src="@tools:sample/avatars" />
 
@@ -41,27 +40,28 @@
             android:id="@+id/MyProfileNicknameHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="50dp"
             android:fontFamily="@font/audiowide"
             android:text="@string/nickname"
             android:textColor="@color/colorYellow"
-            android:textSize="22sp"
+            android:textSize="30sp"
 
+            app:layout_constraintEnd_toEndOf="@+id/MyProfilePageHint"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/MyProfilePageHint" />
+            app:layout_constraintTop_toBottomOf="@+id/editProfilePicture" />
 
         <EditText
             android:id="@+id/MyProfileNicknameField"
-            android:layout_width="150dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryCards"
             android:layout_marginTop="50dp"
             android:fontFamily="@font/audiowide"
             android:text="@string/nickname"
             android:textColor="@color/colorYellow"
-            android:textSize="22sp"
+            android:textSize="30sp"
             android:maxLines="1"
             android:gravity="center"
 
@@ -73,27 +73,28 @@
             android:id="@+id/MyProfileCountryHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
             android:fontFamily="@font/audiowide"
             android:text="@string/country"
             android:textColor="@color/colorYellow"
-            android:textSize="22sp"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
+            android:textSize="30sp"
 
+            app:layout_constraintEnd_toEndOf="@+id/MyProfilePageHint"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MyProfileNicknameHint" />
 
         <EditText
             android:id="@+id/MyProfileCountryField"
-            android:layout_width="150dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryCards"
             android:layout_marginTop="50dp"
             android:fontFamily="@font/audiowide"
             android:text="@string/country"
             android:textColor="@color/colorYellow"
-            android:textSize="22sp"
+            android:textSize="30sp"
             android:maxLines="1"
             android:gravity="center"
 
@@ -120,14 +121,15 @@
             android:id="@+id/MyProfileRankHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
             android:fontFamily="@font/audiowide"
             android:text="@string/rank"
             android:textColor="@color/colorYellow"
-            android:textSize="22sp"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
+            android:textSize="30sp"
 
+            app:layout_constraintEnd_toEndOf="@+id/MyProfilePageHint"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MyProfileCountryHint" />
 
@@ -139,7 +141,7 @@
             android:fontFamily="@font/audiowide"
             android:text="@string/zero"
             android:textColor="@color/colorYellow"
-            android:textSize="24sp"
+            android:textSize="30sp"
 
             app:layout_constraintBottom_toBottomOf="@+id/MyProfileRankHint"
             app:layout_constraintEnd_toEndOf="parent"
@@ -150,14 +152,15 @@
             android:id="@+id/MyProfilePointsHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
             android:fontFamily="@font/audiowide"
             android:text="@string/points"
             android:textColor="@color/colorYellow"
-            android:textSize="22sp"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
+            android:textSize="30sp"
 
+            app:layout_constraintEnd_toEndOf="@+id/MyProfilePageHint"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MyProfileRankHint" />
 
@@ -169,7 +172,7 @@
             android:fontFamily="@font/audiowide"
             android:text="@string/zero"
             android:textColor="@color/colorYellow"
-            android:textSize="24sp"
+            android:textSize="30sp"
 
             app:layout_constraintBottom_toBottomOf="@+id/MyProfilePointsHint"
             app:layout_constraintEnd_toEndOf="parent"

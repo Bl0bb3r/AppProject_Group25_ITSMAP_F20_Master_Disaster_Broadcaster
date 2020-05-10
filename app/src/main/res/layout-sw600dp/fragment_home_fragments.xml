@@ -39,8 +39,8 @@
             <Button
                 android:id="@+id/btn_ongoing"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="356dp"
-                android:layout_height="85dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
@@ -48,13 +48,14 @@
                 android:layout_marginRight="15dp"
                 android:layout_gravity="center"
                 android:background="@drawable/roundcorner"
-                android:text="@string/ongoing" />
+                android:text="@string/ongoing"
+                android:textSize="30sp"/>
 
             <Button
                 android:id="@+id/btn_mydisasters"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="356dp"
-                android:layout_height="85dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
@@ -62,13 +63,14 @@
                 android:layout_marginRight="15dp"
                 android:layout_gravity="center"
                 android:background="@drawable/roundcorner"
-                android:text="@string/my_disasters" />
+                android:text="@string/my_disasters"
+                android:textSize="30sp"/>
 
             <Button
                 android:id="@+id/btn_rankings"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="356dp"
-                android:layout_height="85dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
@@ -76,13 +78,14 @@
                 android:layout_marginRight="15dp"
                 android:layout_gravity="center"
                 android:background="@drawable/roundcorner"
-                android:text="@string/rankings" />
+                android:text="@string/rankings"
+                android:textSize="30sp"/>
 
             <Button
                 android:id="@+id/btn_profile"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="356dp"
-                android:layout_height="85dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
@@ -90,7 +93,8 @@
                 android:layout_marginRight="15dp"
                 android:layout_gravity="center"
                 android:background="@drawable/roundcorner"
-                android:text="@string/profile"/>
+                android:text="@string/profile"
+                android:textSize="30sp"/>
 
         </LinearLayout>
     </LinearLayout>
