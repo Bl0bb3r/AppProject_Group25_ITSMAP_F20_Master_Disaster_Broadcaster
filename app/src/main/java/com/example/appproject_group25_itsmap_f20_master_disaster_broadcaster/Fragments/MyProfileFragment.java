@@ -148,7 +148,7 @@ public class MyProfileFragment extends Fragment {
         tempUser.setName(NicknameField.getText().toString());
 
         tempUser.setCountry(CountryField.getText().toString());
-        if (RankField.getText() != "" + getText(R.string.no_rank)) {
+        if (RankField.getText() != getText(R.string.no_rank)) {
             tempUser.setRank(Integer.parseInt(RankField.getText().toString()));
         }
         else
