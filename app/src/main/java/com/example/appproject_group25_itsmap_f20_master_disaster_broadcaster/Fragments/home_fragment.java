@@ -124,7 +124,6 @@ public class home_fragment extends Fragment {
             FirebaseAuth.getInstance().signOut();
             getActivity().finish();
             startActivity(new Intent(getContext(), LoginActivity.class));
-
             }
         });
         // Inflate the layout for this fragment

@@ -26,52 +26,62 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textColor="@color/colorWhite"
                 android:gravity="center"
                 android:text="@string/logout" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="280dp"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <Button
                 android:id="@+id/btn_ongoing"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="356dp"
+                android:layout_width="match_parent"
                 android:layout_height="85dp"
+                android:layout_gravity="center"
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_gravity="center"
                 android:background="@drawable/roundcorner"
-                android:text="@string/ongoing" />
+                android:text="@string/ongoing"
+                android:textColor="@color/colorWhite" />
 
             <Button
                 android:id="@+id/btn_mydisasters"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="356dp"
+                android:layout_width="match_parent"
                 android:layout_height="85dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
+                android:textColor="@color/colorWhite"
                 android:layout_gravity="center"
                 android:background="@drawable/roundcorner"
                 android:text="@string/my_disasters" />
-
+        </LinearLayout>
+            <LinearLayout
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
             <Button
                 android:id="@+id/btn_rankings"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="356dp"
+                android:layout_width="match_parent"
                 android:layout_height="85dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
+                android:textColor="@color/colorWhite"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_gravity="center"
@@ -81,19 +91,20 @@
             <Button
                 android:id="@+id/btn_profile"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="356dp"
+                android:layout_width="match_parent"
                 android:layout_height="85dp"
+                android:layout_gravity="center"
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_gravity="center"
                 android:background="@drawable/roundcorner"
-                android:text="@string/profile"/>
+                android:text="@string/profile"
+                android:textColor="@color/colorWhite" />
 
         </LinearLayout>
-    </LinearLayout>
 
+    </LinearLayout>
 
 </FrameLayout>

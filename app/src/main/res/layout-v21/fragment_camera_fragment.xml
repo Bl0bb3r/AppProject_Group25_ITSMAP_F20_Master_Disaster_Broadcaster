@@ -15,9 +15,9 @@
             style="@style/btnGoTheme"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:textColor="#FFFFFF"
+
             android:textSize="15sp"
-            android:background="#00000000"
+
             android:text="@string/capture"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -25,31 +25,27 @@
 
         <Button
             android:id="@+id/btn_switch_cam"
-            style="@style/btnBackTheme"
+            style="@style/btnGoTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginRight="15dp"
-            android:background="#00000000"
             android:text="@string/swap"
-            android:textColor="#FFFFFF"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_close_preview_cam" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_back_with_img"
-            style="@style/btnBackTheme"
+            style="@style/btnGoTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
-            android:textColor="#FFFFFF"
             android:textSize="15sp"
-            android:background="#00000000"
             android:text="@android:string/ok"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -61,10 +57,9 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginRight="15dp"
-            android:background="#00000000"
             android:text="@string/x"
-            android:textColor="#FFFFFF"
             android:textSize="15sp"
+            style="@style/btnGoTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

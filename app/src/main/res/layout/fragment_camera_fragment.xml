@@ -7,18 +7,17 @@
 
     <Button
         android:id="@+id/btn_close_preview_cam"
-        style="@style/btnBackTheme"
+        style="@style/btnGoTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
-        android:background="#00000000"
-        android:text="@string/x"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/x"
+        android:textSize="20sp"
+      />
 
     <Button
         android:id="@+id/button_capture"
@@ -35,28 +34,28 @@
 
     <Button
         android:id="@+id/btn_switch_cam"
-        style="@style/btnBackTheme"
+        style="@style/btnGoTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
-        android:background="#00000000"
-        android:text="@string/swap"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_close_preview_cam" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/swap"
+        android:textSize="15sp" />
 
     <Button
         android:id="@+id/btn_back_with_img"
-        style="@style/btnBackTheme"
+        style="@style/btnGoTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="15dp"
+        android:background="@color/colorYellow"
+
         android:text="@android:string/ok"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
